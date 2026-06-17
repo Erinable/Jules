@@ -1,0 +1,108 @@
+# Root-level Pre-commit Configuration for Jules Project
+# This runs checks for both backend and frontend
+
+repos:
+  # Basic file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+        name: Check YAML syntax
+      - id: check-json
+        name: Check JSON syntax
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+        name: Check for case conflicts
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+      - id: detect-private-key
+        name: Detect private keys
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        files: \.(md|yml|yaml|json|js|jsx|ts|tsx|py)$
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: mixed-line-ending
+        name: Check mixed line endings
+        args: ['--fix=lf']
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        name: Markdown lint
+        args: ['--fix']
+
+  # Docker file linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        name: Lint Dockerfiles
+
+  # Check for secrets in all files
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: Detect secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package-lock.json
+
+  # Backend Python checks (only for backend directory)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.8
+    hooks:
+      - id: ruff
+        name: Ruff linter (backend)
+        files: ^backend/.*\.py$
+        args: [--fix]
+      - id: ruff-format
+        name: Ruff formatter (backend)
+        files: ^backend/.*\.py$
+
+  # Frontend JavaScript/TypeScript checks (only for frontend directory)
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.2.0
+    hooks:
+      - id: eslint
+        name: ESLint (frontend)
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        types: [file]
+        args: ['--fix']
+        additional_dependencies:
+          - eslint@8.56.0
+          - eslint-config-next@15.0.0
+          - typescript@5.3.3
+
+  # Frontend Prettier formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        name: Prettier (frontend)
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md)$
+        args: ['--write']
+
+  # Commitlint for commit messages
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.13.0
+    hooks:
+      - id: commitlint
+        name: Validate commit message
+        stages: [commit-msg]
+        additional_dependencies: ['@commitlint/config-conventional']
+
+# CI configuration
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

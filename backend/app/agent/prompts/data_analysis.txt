@@ -1,0 +1,16 @@
+Generate a data analysis script with the following requirements:
+
+{requirements}
+
+Your code should include:
+- pandas for data manipulation
+- Data loading and cleaning
+- Statistical analysis
+- Data visualization (matplotlib/seaborn)
+- Result export (CSV, JSON, or Excel)
+- Error handling for missing data
+- Summary statistics and insights
+- Comprehensive docstrings
+- Type hints
+
+Return only the complete Python code without explanations.

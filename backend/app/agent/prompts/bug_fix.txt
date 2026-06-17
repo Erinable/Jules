@@ -1,0 +1,20 @@
+Fix the bug in the following code:
+
+{code}
+
+Bug description:
+{bug_description}
+
+Expected behavior:
+{expected_behavior}
+
+Your fixed code should:
+- Identify and fix the root cause of the bug
+- Maintain existing functionality
+- Add error handling to prevent similar bugs
+- Add comments explaining the fix
+- Include type hints
+- Follow PEP 8 style guidelines
+- Add docstrings if missing
+
+Return only the fixed Python code without explanations.

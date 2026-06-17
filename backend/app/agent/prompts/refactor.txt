@@ -1,0 +1,19 @@
+Refactor the following code to improve its quality:
+
+{code}
+
+Requirements:
+{requirements}
+
+Your refactored code should:
+- Improve code structure and organization
+- Reduce complexity and duplication
+- Follow PEP 8 style guidelines
+- Add proper error handling
+- Improve variable and function names
+- Add type hints
+- Add comprehensive docstrings
+- Maintain the same functionality
+- Improve performance where possible
+
+Return only the refactored Python code without explanations.

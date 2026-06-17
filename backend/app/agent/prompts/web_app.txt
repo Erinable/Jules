@@ -1,0 +1,15 @@
+Generate a complete Flask web application with the following requirements:
+
+{requirements}
+
+Your code should include:
+- Flask app setup with proper configuration
+- RESTful API endpoints with proper HTTP methods
+- Input validation and error handling
+- JSON responses with appropriate status codes
+- Database models (SQLAlchemy)
+- Basic authentication if needed
+- Comprehensive docstrings
+- Type hints
+
+Return only the complete Python code without explanations.

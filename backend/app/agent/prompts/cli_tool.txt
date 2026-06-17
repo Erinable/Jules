@@ -1,0 +1,16 @@
+Generate a command-line tool with the following requirements:
+
+{requirements}
+
+Your code should include:
+- argparse for command-line argument parsing
+- Proper subcommands if needed
+- Input validation
+- Help text and usage examples
+- Error handling with clear error messages
+- Progress indicators for long-running operations
+- Configuration file support if needed
+- Comprehensive docstrings
+- Type hints
+
+Return only the complete Python code without explanations.

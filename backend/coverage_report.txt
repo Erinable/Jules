@@ -1,0 +1,271 @@
+/Users/hanguoliang01/opt/anaconda3/lib/python3.9/site-packages/pytest_asyncio/plugin.py:217: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+============================= test session starts ==============================
+platform darwin -- Python 3.9.19, pytest-8.3.4, pluggy-1.5.0 -- /Users/hanguoliang01/opt/anaconda3/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/hanguoliang01/development/auto-coder/Jules/backend
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-3.5.0, cov-7.1.0, playwright-0.6.2, asyncio-0.26.0, base-url-2.1.0
+asyncio: mode=strict, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 194 items
+
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_analyze_simple_python_code PASSED [  0%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_analyze_syntax_error PASSED [  1%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_complexity_simple PASSED [  1%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_complexity_with_if PASSED [  2%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_complexity_with_multiple_branches PASSED [  2%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_complexity_with_loops PASSED [  3%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_maintainability_simple PASSED [  3%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_maintainability_complex PASSED [  4%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_maintainability_empty_code PASSED [  4%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_eval PASSED [  5%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_exec PASSED [  5%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_os_system PASSED [  6%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_hardcoded_password PASSED [  6%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_pickle PASSED [  7%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_safe_code PASSED [  7%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_analyze_unsupported_language PASSED [  8%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_complexity_no_functions PASSED [  8%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_calculate_complexity_async_function PASSED [  9%]
+tests/test_agent_analyzer.py::TestCodeAnalyzer::test_detect_security_issues_multiple_patterns PASSED [  9%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_create_execution PASSED [ 10%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_get_by_id PASSED [ 10%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_get_by_id_not_found PASSED [ 11%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_get_by_task PASSED [ 11%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_update_status PASSED [ 12%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_update_status_with_state PASSED [ 12%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_update_status_not_found PASSED [ 13%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_delete PASSED [ 13%]
+tests/test_agent_execution_repository.py::TestAgentExecutionRepository::test_delete_not_found PASSED [ 14%]
+tests/test_agent_executor.py::TestAgentExecutor::test_init PASSED        [ 14%]
+tests/test_agent_executor.py::TestAgentExecutor::test_execute_task_success PASSED [ 15%]
+tests/test_agent_executor.py::TestAgentExecutor::test_execute_task_failure PASSED [ 15%]
+tests/test_agent_executor.py::TestAgentExecutor::test_generate_code PASSED [ 16%]
+tests/test_agent_executor.py::TestAgentExecutor::test_build_prompt PASSED [ 17%]
+tests/test_agent_executor.py::TestAgentExecutor::test_build_prompt_no_description PASSED [ 17%]
+tests/test_agent_executor.py::TestAgentExecutor::test_analyze_quality PASSED [ 18%]
+tests/test_agent_executor.py::TestAgentExecutor::test_save_code_version PASSED [ 18%]
+tests/test_agent_executor.py::TestAgentExecutor::test_save_code_version_calculates_hash PASSED [ 19%]
+tests/test_agent_llm_client.py::TestLLMClient::test_init_mock_mode PASSED [ 19%]
+tests/test_agent_llm_client.py::TestLLMClient::test_generate_mock_web_app PASSED [ 20%]
+tests/test_agent_llm_client.py::TestLLMClient::test_generate_mock_cli_tool PASSED [ 20%]
+tests/test_agent_llm_client.py::TestLLMClient::test_generate_mock_generic PASSED [ 21%]
+tests/test_agent_llm_client.py::TestLLMClient::test_count_tokens PASSED  [ 21%]
+tests/test_agent_llm_client.py::TestLLMClient::test_count_tokens_empty PASSED [ 22%]
+tests/test_agent_llm_client.py::TestLLMClient::test_calculate_cost_gpt4 PASSED [ 22%]
+tests/test_agent_llm_client.py::TestLLMClient::test_calculate_cost_gpt35 PASSED [ 23%]
+tests/test_agent_llm_client.py::TestLLMClient::test_calculate_cost_large_tokens PASSED [ 23%]
+tests/test_agent_llm_client.py::TestLLMClient::test_log_call PASSED      [ 24%]
+tests/test_agent_llm_client.py::TestLLMClient::test_init_uses_config PASSED [ 24%]
+tests/test_agent_llm_client.py::TestLLMClient::test_generate_with_custom_model PASSED [ 25%]
+tests/test_agent_llm_client.py::TestLLMClient::test_generate_with_max_tokens PASSED [ 25%]
+tests/test_agent_llm_client.py::TestLLMClient::test_count_tokens_fallback_when_tiktoken_unavailable PASSED [ 26%]
+tests/test_agent_repository.py::TestAgentRepository::test_create_agent PASSED [ 26%]
+tests/test_agent_repository.py::TestAgentRepository::test_get_by_id PASSED [ 27%]
+tests/test_agent_repository.py::TestAgentRepository::test_get_by_id_not_found PASSED [ 27%]
+tests/test_agent_repository.py::TestAgentRepository::test_get_by_name PASSED [ 28%]
+tests/test_agent_repository.py::TestAgentRepository::test_get_by_name_not_found PASSED [ 28%]
+tests/test_agent_repository.py::TestAgentRepository::test_get_all_active PASSED [ 29%]
+tests/test_agent_repository.py::TestAgentRepository::test_get_all PASSED [ 29%]
+tests/test_agent_repository.py::TestAgentRepository::test_update_description PASSED [ 30%]
+tests/test_agent_repository.py::TestAgentRepository::test_update_config PASSED [ 30%]
+tests/test_agent_repository.py::TestAgentRepository::test_update_both_fields PASSED [ 31%]
+tests/test_agent_repository.py::TestAgentRepository::test_update_no_fields PASSED [ 31%]
+tests/test_agent_repository.py::TestAgentRepository::test_update_not_found PASSED [ 32%]
+tests/test_agent_repository.py::TestAgentRepository::test_delete PASSED  [ 32%]
+tests/test_agent_repository.py::TestAgentRepository::test_delete_not_found PASSED [ 33%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_submit_task PASSED [ 34%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_submit_multiple_tasks PASSED [ 34%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_priority_ordering PASSED [ 35%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_get_next_task_empty_queue PASSED [ 35%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_get_next_task_moves_to_running PASSED [ 36%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_max_concurrent_limit PASSED [ 36%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_update_task_status_completed PASSED [ 37%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_update_task_status_failed PASSED [ 37%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_retry_failed_task PASSED [ 38%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_retry_non_existent_task PASSED [ 38%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_retry_max_attempts_reached PASSED [ 39%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_get_queue_status PASSED [ 39%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_get_running_tasks PASSED [ 40%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_get_failed_tasks PASSED [ 40%]
+tests/test_agent_scheduler.py::TestAgentScheduler::test_task_entry_has_metadata PASSED [ 41%]
+tests/test_agent_worker.py::TestAgentWorker::test_init PASSED            [ 41%]
+tests/test_agent_worker.py::TestAgentWorker::test_start_sets_running PASSED [ 42%]
+tests/test_agent_worker.py::TestAgentWorker::test_stop PASSED            [ 42%]
+tests/test_agent_worker.py::TestAgentWorker::test_execute_task_success PASSED [ 43%]
+tests/test_agent_worker.py::TestAgentWorker::test_execute_task_not_found PASSED [ 43%]
+tests/test_agent_worker.py::TestAgentWorker::test_execute_task_failure PASSED [ 44%]
+tests/test_api_agents.py::TestAgentAPI::test_create_agent PASSED         [ 44%]
+tests/test_api_agents.py::TestAgentAPI::test_create_agent_duplicate_name PASSED [ 45%]
+tests/test_api_agents.py::TestAgentAPI::test_get_agent PASSED            [ 45%]
+tests/test_api_agents.py::TestAgentAPI::test_list_agents PASSED          [ 46%]
+tests/test_api_agents.py::TestAgentAPI::test_list_active_agents PASSED   [ 46%]
+tests/test_api_agents.py::TestAgentAPI::test_update_agent PASSED         [ 47%]
+tests/test_api_agents.py::TestAgentAPI::test_delete_agent PASSED         [ 47%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_create_code_file PASSED [ 48%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_create_code_file_duplicate_path PASSED [ 48%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_get_code_file PASSED [ 49%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_get_code_file_not_found PASSED [ 50%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_list_code_files_by_project PASSED [ 50%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_update_code_file PASSED [ 51%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_update_code_file_not_found PASSED [ 51%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_delete_code_file PASSED [ 52%]
+tests/test_api_code_files.py::TestCodeFileAPI::test_delete_code_file_not_found PASSED [ 52%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_create_execution PASSED [ 53%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_create_execution_with_state PASSED [ 53%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_get_execution PASSED [ 54%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_get_execution_not_found PASSED [ 54%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_list_executions PASSED [ 55%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_update_execution_status PASSED [ 55%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_update_execution_status_invalid PASSED [ 56%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_delete_execution PASSED [ 56%]
+tests/test_api_executions.py::TestAgentExecutionAPI::test_delete_execution_not_found PASSED [ 57%]
+tests/test_api_health.py::TestHealthAPI::test_health_check PASSED        [ 57%]
+tests/test_api_health.py::TestHealthAPI::test_readiness_check PASSED     [ 58%]
+tests/test_api_health.py::TestHealthAPI::test_liveness_check PASSED      [ 58%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric PASSED [ 59%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_with_defaults PASSED [ 59%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_invalid_complexity PASSED [ 60%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_invalid_maintainability PASSED [ 60%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_invalid_coverage PASSED [ 61%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_get_quality_metric PASSED [ 61%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_get_quality_metric_not_found PASSED [ 62%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_get_latest_quality_metric PASSED [ 62%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_get_latest_quality_metric_not_found PASSED [ 63%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_get_quality_metric_history PASSED [ 63%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_get_quality_metric_history_with_pagination PASSED [ 64%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_delete_quality_metric PASSED [ 64%]
+tests/test_api_quality.py::TestQualityMetricAPI::test_delete_quality_metric_not_found PASSED [ 65%]
+tests/test_api_tasks.py::TestTaskAPI::test_create_task PASSED            [ 65%]
+tests/test_api_tasks.py::TestTaskAPI::test_get_task PASSED               [ 66%]
+tests/test_api_tasks.py::TestTaskAPI::test_get_task_not_found PASSED     [ 67%]
+tests/test_api_tasks.py::TestTaskAPI::test_list_tasks PASSED             [ 67%]
+tests/test_api_tasks.py::TestTaskAPI::test_update_task PASSED            [ 68%]
+tests/test_api_tasks.py::TestTaskAPI::test_update_task_status PASSED     [ 68%]
+tests/test_api_tasks.py::TestTaskAPI::test_delete_task PASSED            [ 69%]
+tests/test_api_users.py::TestUserAPI::test_create_user PASSED            [ 69%]
+tests/test_api_users.py::TestUserAPI::test_create_user_duplicate_email PASSED [ 70%]
+tests/test_api_users.py::TestUserAPI::test_get_user PASSED               [ 70%]
+tests/test_api_users.py::TestUserAPI::test_get_user_not_found PASSED     [ 71%]
+tests/test_api_users.py::TestUserAPI::test_list_users PASSED             [ 71%]
+tests/test_api_users.py::TestUserAPI::test_update_user PASSED            [ 72%]
+tests/test_api_users.py::TestUserAPI::test_update_user_not_found PASSED  [ 72%]
+tests/test_api_users.py::TestUserAPI::test_delete_user PASSED            [ 73%]
+tests/test_api_users.py::TestUserAPI::test_delete_user_not_found PASSED  [ 73%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_create_file PASSED [ 74%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_get_by_id PASSED [ 74%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_get_by_id_not_found PASSED [ 75%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_get_by_path PASSED [ 75%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_get_by_path_not_found PASSED [ 76%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_list_by_project PASSED [ 76%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_update_content PASSED [ 77%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_update_content_not_found PASSED [ 77%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_delete PASSED [ 78%]
+tests/test_code_file_repository.py::TestCodeFileRepository::test_delete_not_found PASSED [ 78%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_create_version PASSED [ 79%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_by_id PASSED [ 79%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_by_id_not_found PASSED [ 80%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_latest PASSED [ 80%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_latest_not_found PASSED [ 81%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_history PASSED [ 81%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_history_with_limit PASSED [ 82%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_by_version_number PASSED [ 82%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_get_by_version_number_not_found PASSED [ 83%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_delete PASSED [ 84%]
+tests/test_code_version_repository.py::TestCodeVersionRepository::test_delete_not_found PASSED [ 84%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_create_metric PASSED [ 85%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_get_by_id PASSED [ 85%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_get_by_id_not_found PASSED [ 86%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_get_latest PASSED [ 86%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_get_latest_not_found PASSED [ 87%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_get_history PASSED [ 87%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_get_history_with_limit PASSED [ 88%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_delete PASSED [ 88%]
+tests/test_quality_metric_repository.py::TestQualityMetricRepository::test_delete_not_found PASSED [ 89%]
+tests/test_task_repository.py::TestTaskRepository::test_create_task PASSED [ 89%]
+tests/test_task_repository.py::TestTaskRepository::test_get_by_id PASSED [ 90%]
+tests/test_task_repository.py::TestTaskRepository::test_get_by_id_not_found PASSED [ 90%]
+tests/test_task_repository.py::TestTaskRepository::test_get_by_project PASSED [ 91%]
+tests/test_task_repository.py::TestTaskRepository::test_get_by_status PASSED [ 91%]
+tests/test_task_repository.py::TestTaskRepository::test_update_status PASSED [ 92%]
+tests/test_task_repository.py::TestTaskRepository::test_update_status_not_found PASSED [ 92%]
+tests/test_task_repository.py::TestTaskRepository::test_update PASSED    [ 93%]
+tests/test_task_repository.py::TestTaskRepository::test_update_partial PASSED [ 93%]
+tests/test_task_repository.py::TestTaskRepository::test_delete PASSED    [ 94%]
+tests/test_task_repository.py::TestTaskRepository::test_delete_not_found PASSED [ 94%]
+tests/test_user_repository.py::TestUserRepository::test_create_user PASSED [ 95%]
+tests/test_user_repository.py::TestUserRepository::test_get_by_id PASSED [ 95%]
+tests/test_user_repository.py::TestUserRepository::test_get_by_id_not_found PASSED [ 96%]
+tests/test_user_repository.py::TestUserRepository::test_get_by_email PASSED [ 96%]
+tests/test_user_repository.py::TestUserRepository::test_get_by_email_not_found PASSED [ 97%]
+tests/test_user_repository.py::TestUserRepository::test_get_all PASSED   [ 97%]
+tests/test_user_repository.py::TestUserRepository::test_update PASSED    [ 98%]
+tests/test_user_repository.py::TestUserRepository::test_update_not_found PASSED [ 98%]
+tests/test_user_repository.py::TestUserRepository::test_delete PASSED    [ 99%]
+tests/test_user_repository.py::TestUserRepository::test_delete_not_found PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/test_api_executions.py::TestAgentExecutionAPI::test_update_execution_status_invalid
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_invalid_complexity
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_invalid_maintainability
+tests/test_api_quality.py::TestQualityMetricAPI::test_create_quality_metric_invalid_coverage
+  /Users/hanguoliang01/opt/anaconda3/lib/python3.9/site-packages/starlette/_exception_handler.py:59: DeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+    response = await handler(conn, exc)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.9.19-final-0 _______________
+
+Name                                             Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------------
+app/agent/analyzer.py                               68      7    90%   74-75, 106, 108, 110, 151-152
+app/agent/config.py                                 13      0   100%
+app/agent/executor.py                               71      0   100%
+app/agent/llm_client.py                             47     14    70%   26-31, 57-67, 135-140
+app/agent/scheduler.py                              75      9    88%   123, 170, 175-184
+app/agent/worker.py                                 56     15    73%   42-56, 96-107
+app/api/v1/agents.py                                87     29    67%   72, 133, 145, 170, 203-215, 241-250, 280-304, 320-324
+app/api/v1/code_files.py                            44      1    98%   125
+app/api/v1/executions.py                            41      2    95%   102, 114
+app/api/v1/health.py                                12      0   100%
+app/api/v1/quality.py                               37      0   100%
+app/api/v1/tasks.py                                 52      5    90%   101, 114, 145, 153, 178
+app/api/v1/users.py                                 44      1    98%   116
+app/database/base.py                                 3      0   100%
+app/database/connection.py                          13      4    69%   42-46
+app/database/session.py                             16      9    44%   27-35, 47
+app/dependencies/database.py                         8      4    50%   23-27
+app/dependencies/pagination.py                       4      0   100%
+app/main.py                                         17      2    88%   65, 81
+app/models/agent.py                                 14      0   100%
+app/models/agent_execution.py                       21      0   100%
+app/models/code_file.py                             18      0   100%
+app/models/code_version.py                          17      0   100%
+app/models/llm_call.py                              18      0   100%
+app/models/project.py                               21      0   100%
+app/models/quality_metric.py                        18      0   100%
+app/models/task.py                                  19      0   100%
+app/models/user.py                                  15      0   100%
+app/repositories/agent_execution_repository.py      33      0   100%
+app/repositories/agent_repository.py                36      0   100%
+app/repositories/code_file_repository.py            30      1    97%   94
+app/repositories/code_version_repository.py         27      1    96%   106
+app/repositories/quality_metric_repository.py       26      1    96%   111
+app/repositories/task_repository.py                 42      1    98%   147
+app/repositories/user_repository.py                 27      0   100%
+app/schemas/agent_schema.py                         19      0   100%
+app/schemas/code_file_schema.py                     20      0   100%
+app/schemas/execution_schema.py                     22      0   100%
+app/schemas/quality_schema.py                       19      0   100%
+app/schemas/task_schema.py                          25      0   100%
+app/schemas/user_schema.py                          17      0   100%
+------------------------------------------------------------------------------
+TOTAL                                             1212    106    91%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+Coverage JSON written to file coverage.json
+Required test coverage of 80% reached. Total coverage: 91.25%
+======================= 194 passed, 4 warnings in 31.36s =======================

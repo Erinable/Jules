@@ -1,0 +1,149 @@
+name: Database Migration CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/alembic/**'
+      - '.github/workflows/db-migration.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/alembic/**'
+      - '.github/workflows/db-migration.yml'
+
+jobs:
+  validate-migrations:
+    name: Validate Database Migrations
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: jules_migration_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Check for migration conflicts
+        run: |
+          echo "Checking for migration conflicts..."
+          poetry run alembic branches
+
+      - name: Test migrations (upgrade)
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/jules_migration_test
+        run: |
+          echo "Testing upgrade migrations..."
+          poetry run alembic upgrade head
+
+      - name: Test migrations (downgrade)
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/jules_migration_test
+        run: |
+          echo "Testing downgrade migrations..."
+          poetry run alembic downgrade -1
+
+      - name: Test full migration cycle
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/jules_migration_test
+        run: |
+          echo "Testing full migration cycle..."
+          poetry run alembic downgrade base
+          poetry run alembic upgrade head
+
+      - name: Verify database schema
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/jules_migration_test
+        run: |
+          echo "Verifying database schema..."
+          poetry run python -c "
+          from sqlalchemy import create_engine, inspect
+          import os
+
+          engine = create_engine(os.getenv('DATABASE_URL'))
+          inspector = inspect(engine)
+          tables = inspector.get_table_names()
+
+          print(f'Found {len(tables)} tables:')
+          for table in tables:
+              print(f'  - {table}')
+
+          if len(tables) == 0:
+              raise Exception('No tables found in database')
+          "
+
+  check-migration-message:
+    name: Check Migration Message Quality
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check migration files
+        run: |
+          echo "Checking for new migration files..."
+          MIGRATION_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep 'backend/alembic/versions/' || true)
+
+          if [ -z "$MIGRATION_FILES" ]; then
+            echo "No new migration files found"
+            exit 0
+          fi
+
+          echo "Found migration files:"
+          echo "$MIGRATION_FILES"
+
+          # Check migration file naming and content
+          for file in $MIGRATION_FILES; do
+            echo "Checking $file..."
+
+            # Check if file has descriptive message
+            BASENAME=$(basename "$file")
+            if [[ $BASENAME =~ ^[0-9a-f]+_\.py$ ]]; then
+              echo "❌ Migration file has empty message: $BASENAME"
+              echo "Please provide a descriptive message for the migration"
+              exit 1
+            fi
+
+            # Check if migration has docstring
+            if ! grep -q '"""' "$file"; then
+              echo "⚠️  Migration file missing docstring: $BASENAME"
+            fi
+          done
+
+          echo "✅ All migration files look good"

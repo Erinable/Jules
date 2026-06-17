@@ -1,0 +1,206 @@
+name: Code Quality Monitoring
+
+on:
+  push:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  sonarqube-scan:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    if: github.repository_owner != 'fork'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: poetry install --no-interaction
+
+      - name: Run tests with coverage
+        working-directory: ./backend
+        run: poetry run pytest --cov=app --cov-report=xml
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=jules
+            -Dsonar.sources=backend/app,frontend/app,frontend/components
+            -Dsonar.tests=backend/tests,frontend/__tests__
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+
+  code-metrics:
+    name: Generate Code Metrics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install analysis tools
+        run: |
+          pip install radon cloc
+
+      - name: Generate metrics
+        run: |
+          echo "# Code Quality Metrics Report" > metrics-report.md
+          echo "" >> metrics-report.md
+          echo "Generated on: $(date)" >> metrics-report.md
+          echo "" >> metrics-report.md
+
+          echo "## Lines of Code" >> metrics-report.md
+          cloc --by-file --md backend/app frontend/app frontend/components >> metrics-report.md
+          echo "" >> metrics-report.md
+
+          echo "## Cyclomatic Complexity (Backend)" >> metrics-report.md
+          radon cc backend/app -a -s >> metrics-report.md
+          echo "" >> metrics-report.md
+
+          echo "## Maintainability Index (Backend)" >> metrics-report.md
+          radon mi backend/app -s >> metrics-report.md
+          echo "" >> metrics-report.md
+
+      - name: Upload metrics report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics-report
+          path: metrics-report.md
+
+      - name: Comment PR with metrics
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const metrics = fs.readFileSync('metrics-report.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: metrics
+            });
+
+  dependency-audit:
+    name: Security Audit Dependencies
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        component: [backend, frontend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (Frontend)
+        if: matrix.component == 'frontend'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python (Backend)
+        if: matrix.component == 'backend'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry (Backend)
+        if: matrix.component == 'backend'
+        uses: snok/install-poetry@v1
+
+      - name: Run npm audit (Frontend)
+        if: matrix.component == 'frontend'
+        working-directory: ./frontend
+        run: |
+          npm audit --audit-level=moderate --json > npm-audit.json || true
+          cat npm-audit.json
+
+      - name: Run Poetry audit (Backend)
+        if: matrix.component == 'backend'
+        working-directory: ./backend
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+          pip install safety
+          safety check --file=requirements.txt --json > safety-audit.json || true
+          cat safety-audit.json
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.component }}-security-audit
+          path: |
+            ${{ matrix.component }}/*-audit.json
+
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install license checker
+        run: npm install -g license-checker
+
+      - name: Check frontend licenses
+        working-directory: ./frontend
+        run: |
+          npm ci
+          license-checker --json --out licenses-frontend.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Check backend licenses
+        working-directory: ./backend
+        run: |
+          poetry install --no-interaction
+          poetry export -f requirements.txt --output requirements.txt
+          pip install pip-licenses
+          pip-licenses --format=json --output-file=../licenses-backend.json
+
+      - name: Upload license reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-reports
+          path: |
+            licenses-*.json

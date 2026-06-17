@@ -22,9 +22,11 @@
       "@/*": ["./*"],
       "@/components/*": ["./components/*"],
       "@/lib/*": ["./lib/*"],
-      "@/app/*": ["./app/*"]
+      "@/app/*": ["./app/*"],
+      "@/services": ["./src/services/index.ts"],
+      "@/types": ["./src/types/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "vitest.config.ts", "vitest.setup.ts", "**/*.test.ts", "**/*.test.tsx"]
 }

@@ -10,6 +10,7 @@ export interface QualityMetric {
   security_issues: number
   test_coverage: number
   measured_at: string
+  [key: string]: unknown
 }
 
 export interface QualityMetricCreate {

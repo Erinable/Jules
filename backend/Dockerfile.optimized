@@ -1,0 +1,71 @@
+# ============================================
+# Backend Dockerfile - 优化版
+# 多阶段构建，减少生产镜像体积
+# ============================================
+
+# ----------------------------------------
+# Stage 1: 构建阶段
+# ----------------------------------------
+FROM python:3.11-slim AS builder
+WORKDIR /app
+
+# 安装系统依赖（编译需要）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Poetry
+RUN pip install --no-cache-dir poetry==1.7.1
+
+# 复制依赖文件
+COPY pyproject.toml poetry.lock* ./
+
+# 配置 Poetry 不创建虚拟环境（在容器中不需要）
+RUN poetry config virtualenvs.create false
+
+# 导出生产依赖到 requirements.txt（仅 main 组）
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
+
+# ----------------------------------------
+# Stage 2: 生产运行
+# ----------------------------------------
+FROM python:3.11-slim AS runner
+WORKDIR /app
+
+# 安装运行时依赖（PostgreSQL 客户端库）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建非 root 用户
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 创建虚拟环境
+RUN python -m venv /app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
+
+# 复制 requirements.txt 并安装依赖
+COPY --from=builder /app/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制应用代码
+COPY app/ ./app/
+COPY alembic/ ./alembic/
+COPY alembic.ini .
+
+# 设置正确的权限
+RUN chown -R appuser:appuser /app
+
+# 切换到非 root 用户
+USER appuser
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD python -c "import httpx; r = httpx.get('http://localhost:8000/health'); exit(0 if r.status_code == 200 else 1)"
+
+# 启动命令
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

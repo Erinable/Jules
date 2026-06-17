@@ -12,6 +12,7 @@ export interface Execution {
   status: ExecutionStatus
   started_at: string
   completed_at?: string
+  [key: string]: unknown
 }
 
 export interface ExecutionCreate {

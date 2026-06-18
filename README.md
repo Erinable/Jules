@@ -1,25 +1,24 @@
 # Jules
 
-Jules is a full-stack AI code generation platform. The current repository contains a
-FastAPI backend, a Next.js frontend, PostgreSQL, Redis, Celery worker definitions,
-database migrations, tests, Docker Compose configuration, and CI workflows.
+Jules 是一个前后端一体的 AI 代码生成平台。仓库包含 FastAPI 后端、Next.js 前端、PostgreSQL、Redis、Alembic 数据库迁移、Docker Compose 本地开发环境、测试和 CI/CD 配置。
 
-## Stack
+## 当前状态
 
-- Backend: Python 3.11, FastAPI, SQLAlchemy, Alembic, Poetry
-- Frontend: Next.js 15, React 18, TypeScript, Tailwind CSS, Axios
-- Runtime services: PostgreSQL 16, Redis 7, optional Celery worker and beat
-- Quality tools: Ruff, mypy, pytest, ESLint, Prettier, Vitest, pre-commit
+- 前端：Next.js 15、React 18、TypeScript、Tailwind CSS、Axios
+- 后端：Python 3.11、FastAPI、SQLAlchemy、Alembic、Poetry
+- 数据层：PostgreSQL 16、Redis 7
+- 异步任务：Celery worker / beat，默认通过 `workers` profile 启动
+- 质量工具：pre-commit、Ruff、pytest、mypy、ESLint、Prettier、Vitest
 
-## Quick Start
+## 快速启动
 
-Requirements:
+前置要求：
 
 - Docker 20.10+
 - Docker Compose v2
 - Git
 
-Start the development stack:
+启动开发环境：
 
 ```bash
 cp .env.example .env
@@ -27,35 +26,45 @@ docker compose up -d --build
 docker compose ps
 ```
 
-The backend container runs `alembic upgrade head` before starting FastAPI, so a
-fresh database is migrated automatically.
+访问地址：
 
-Open:
+- 前端：<http://localhost:3000>
+- 后端 API：<http://localhost:8000>
+- OpenAPI 文档：<http://localhost:8000/docs>
 
-- Frontend: <http://localhost:3000>
-- Backend API: <http://localhost:8000>
-- API docs: <http://localhost:8000/docs>
+后端容器启动时会先执行 `alembic upgrade head`，新数据库会自动迁移到最新版本。
 
-Use either `localhost` or `127.0.0.1` for the frontend. The backend CORS config
-allows both local origins.
+## 常用命令
 
-## Project Layout
+查看日志：
 
-```text
-.
-├── backend/              # FastAPI app, models, migrations, tests
-├── frontend/             # Next.js app, components, services, tests
-├── docs/                 # Architecture, API, database, and design docs
-├── .github/workflows/    # CI/CD workflows
-├── docker-compose.yml    # Local development stack
-├── CHANGELOG.md          # Release notes
-├── CONTRIBUTING.md       # Contribution guide
-└── README.md             # Project entry point
+```bash
+docker compose logs -f backend
+docker compose logs -f frontend
 ```
 
-## Development
+重启服务：
 
-Backend:
+```bash
+docker compose restart backend
+docker compose restart frontend
+```
+
+启动可选 worker：
+
+```bash
+docker compose --profile workers up -d
+```
+
+停止服务：
+
+```bash
+docker compose down
+```
+
+## 本地开发
+
+后端：
 
 ```bash
 cd backend
@@ -63,7 +72,7 @@ poetry install
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Frontend:
+前端：
 
 ```bash
 cd frontend
@@ -71,30 +80,15 @@ npm install
 npm run dev
 ```
 
-Docker helpers:
+## 检查和测试
 
-```bash
-docker compose logs -f backend
-docker compose logs -f frontend
-docker compose restart backend
-docker compose down
-```
-
-Optional workers:
-
-```bash
-docker compose --profile workers up -d
-```
-
-## Checks
-
-Run the main checks locally:
+推荐先跑全量 pre-commit：
 
 ```bash
 pre-commit run --all-files
 ```
 
-Backend:
+后端：
 
 ```bash
 cd backend
@@ -104,7 +98,7 @@ poetry run ruff format --check .
 poetry run mypy app --ignore-missing-imports
 ```
 
-Frontend:
+前端：
 
 ```bash
 cd frontend
@@ -114,17 +108,32 @@ npm run format:check
 npm test
 ```
 
-## Documentation
+## 项目结构
 
-- Backend details: [backend/README.md](backend/README.md)
-- Frontend details: [frontend/README.md](frontend/README.md)
-- Architecture docs: [docs/architecture/](docs/architecture/)
-- WebSocket API docs: [docs/api/websocket.md](docs/api/websocket.md)
-- Database docs: [docs/database.md](docs/database.md)
-- Development notes: [docs/development.md](docs/development.md)
+```text
+.
+├── backend/              # FastAPI 应用、模型、迁移、测试
+├── frontend/             # Next.js 应用、组件、服务、测试
+├── docs/                 # 架构、API、数据库、设计文档
+├── .github/workflows/    # CI/CD 工作流
+├── docker-compose.yml    # 本地开发环境
+├── CHANGELOG.md          # 版本变更记录
+├── CONTRIBUTING.md       # 贡献指南
+└── README.md             # 项目入口文档
+```
 
-## Notes
+## 文档入口
 
-- `docker compose up -d` starts frontend, backend, PostgreSQL, and Redis.
-- Celery services are behind the `workers` profile and are not started by default.
-- Do not commit generated coverage artifacts or local virtual environments.
+- 后端说明：[backend/README.md](backend/README.md)
+- 前端说明：[frontend/README.md](frontend/README.md)
+- 架构文档：[docs/architecture/](docs/architecture/)
+- WebSocket API：[docs/api/websocket.md](docs/api/websocket.md)
+- 数据库说明：[docs/database.md](docs/database.md)
+- 开发说明：[docs/development.md](docs/development.md)
+
+## 注意事项
+
+- 前端可使用 `localhost` 或 `127.0.0.1` 访问，后端 CORS 已允许这两个本地来源。
+- `docker compose up -d` 默认只启动 frontend、backend、postgres、redis。
+- Celery worker 和 beat 默认不启动，需要使用 `--profile workers`。
+- 不要提交本地虚拟环境、依赖目录、覆盖率报告或缓存文件。

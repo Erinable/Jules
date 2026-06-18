@@ -23,7 +23,7 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      { find: "@/app", replacement: path.resolve(__dirname, "./app") },
+      { find: "@/app", replacement: path.resolve(__dirname, "./src/app") },
       {
         find: "@/components",
         replacement: path.resolve(__dirname, "./components"),
@@ -34,7 +34,6 @@ export default defineConfig({
       },
       { find: "@/hooks", replacement: path.resolve(__dirname, "./src/hooks") },
       { find: "@/lib", replacement: path.resolve(__dirname, "./lib") },
-      { find: "@/pages", replacement: path.resolve(__dirname, "./src/pages") },
       {
         find: "@/services",
         replacement: path.resolve(__dirname, "./src/services"),

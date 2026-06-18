@@ -11,7 +11,6 @@ jobs:
   sonarqube-scan:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
-    if: github.repository_owner != 'fork'
 
     steps:
       - name: Checkout code
@@ -19,12 +18,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check SonarQube configuration
+        id: sonar-config
+        run: |
+          if [ -n "${SONAR_TOKEN}" ] && [ -n "${SONAR_HOST_URL}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping SonarQube analysis because SONAR_TOKEN or SONAR_HOST_URL is not configured."
+          fi
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
       - name: Set up Python
+        if: steps.sonar-config.outputs.enabled == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install Poetry
+        if: steps.sonar-config.outputs.enabled == 'true'
         uses: snok/install-poetry@v1
         with:
           version: latest
@@ -32,14 +46,17 @@ jobs:
           virtualenvs-in-project: true
 
       - name: Install dependencies
+        if: steps.sonar-config.outputs.enabled == 'true'
         working-directory: ./backend
         run: poetry install --no-interaction
 
       - name: Run tests with coverage
+        if: steps.sonar-config.outputs.enabled == 'true'
         working-directory: ./backend
         run: poetry run pytest --cov=app --cov-report=xml
 
       - name: SonarQube Scan
+        if: steps.sonar-config.outputs.enabled == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -47,7 +64,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=jules
-            -Dsonar.sources=backend/app,frontend/app,frontend/components,frontend/src
+            -Dsonar.sources=backend/app,frontend/src/app,frontend/components,frontend/src
             -Dsonar.tests=backend/tests,frontend/src/components/progress/__tests__
             -Dsonar.python.coverage.reportPaths=backend/coverage.xml
             -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
@@ -67,7 +84,9 @@ jobs:
 
       - name: Install analysis tools
         run: |
-          pip install radon cloc
+          sudo apt-get update
+          sudo apt-get install -y cloc
+          pip install radon
 
       - name: Generate metrics
         run: |
@@ -77,7 +96,7 @@ jobs:
           echo "" >> metrics-report.md
 
           echo "## Lines of Code" >> metrics-report.md
-          cloc --by-file --md backend/app frontend/app frontend/components >> metrics-report.md
+          cloc --by-file --md backend/app frontend/src/app frontend/components >> metrics-report.md
           echo "" >> metrics-report.md
 
           echo "## Cyclomatic Complexity (Backend)" >> metrics-report.md

@@ -21,8 +21,8 @@ RUN npm ci
 COPY . .
 
 # 设置环境变量
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_ENV development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=development
 
 # 开发阶段
 FROM node:20-alpine AS development
@@ -56,8 +56,8 @@ RUN npm ci
 
 COPY . .
 
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
 
 # 构建生产版本
 RUN npm run build
@@ -67,8 +67,8 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -82,7 +82,7 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]

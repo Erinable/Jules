@@ -281,6 +281,7 @@ class InMemoryConnectionManager(ConnectionManager):
 - **推送不加锁**: `send_to_user` 读取索引后释放锁
 
 **v1.2 优化**（如性能不足）:
+
 - 分片锁（按 user_id hash 分 16 个分片）
 - 读写锁（读多写少场景）
 
@@ -464,4 +465,5 @@ class WebSocketUser(User):
 ---
 
 **变更记录**:
+
 - 2026-06-17: v1.0 初版设计（tom）

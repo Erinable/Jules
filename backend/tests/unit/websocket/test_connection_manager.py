@@ -10,7 +10,6 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-
 from app.core.connection_manager import Connection, InMemoryConnectionManager
 from app.schemas.websocket import MessageType, WSMessage
 

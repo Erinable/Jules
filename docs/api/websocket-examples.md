@@ -311,7 +311,7 @@ router = APIRouter()
 @router.post("/agents/{agent_id}/start")
 async def start_agent(agent_id: str, user_id: str):
     # 执行 Agent 启动逻辑...
-    
+
     # 推送状态更新到用户
     message = WSMessage(
         type=MessageType.AGENT_STATUS,
@@ -322,13 +322,13 @@ async def start_agent(agent_id: str, user_id: str):
         },
     )
     await send_to_user(user_id, message)
-    
+
     return {"status": "started"}
 
 @router.post("/progress/{run_id}/update")
 async def update_progress(run_id: str, percentage: float):
     # 更新进度...
-    
+
     # 广播到订阅该 run 的所有客户端
     message = WSMessage(
         type=MessageType.PROGRESS_UPDATED,
@@ -340,7 +340,7 @@ async def update_progress(run_id: str, percentage: float):
         },
     )
     await send_to_channel(f"progress:{run_id}", message)
-    
+
     return {"status": "updated"}
 ```
 
@@ -383,7 +383,7 @@ from app.main import app
 
 def test_websocket_handshake():
     client = TestClient(app)
-    
+
     with client.websocket_connect(
         "/api/v1/ws/user-123",
         subprotocols=["bearer.valid-token"],
@@ -399,19 +399,19 @@ def test_websocket_handshake():
 
 ### 常见问题
 
-**Q: 连接立即关闭，错误码 4401**  
+**Q: 连接立即关闭，错误码 4401**
 A: JWT token 无效或过期。检查 token 生成和传递。
 
-**Q: 连接立即关闭，错误码 4403**  
+**Q: 连接立即关闭，错误码 4403**
 A: URL 中的 user_id 与 token 中的 `sub` 不匹配。
 
-**Q: 连接建立后无消息**  
+**Q: 连接建立后无消息**
 A: 检查是否订阅了正确的 channel。确认后端是否推送消息。
 
-**Q: 频繁断线重连**  
+**Q: 频繁断线重连**
 A: 检查心跳间隔配置。确认网络稳定性。
 
-**Q: 前端收不到 welcome 消息**  
+**Q: 前端收不到 welcome 消息**
 A: 检查 `Sec-WebSocket-Protocol` 头格式：`bearer.<token>`（注意点号）。
 
 ---

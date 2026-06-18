@@ -1,8 +1,8 @@
 # Jules 项目迭代计划 v1.1-v2.0
 
-**制定日期**: 2026-06-17  
-**制定人**: tom (Developer)  
-**当前版本**: v1.0.0 (2026-06-17 发布)  
+**制定日期**: 2026-06-17
+**制定人**: tom (Developer)
+**当前版本**: v1.0.0 (2026-06-17 发布)
 **状态**: 待批准
 
 ---
@@ -24,19 +24,23 @@
 ### 已完成功能
 
 **Phase 1: Docker Compose 环境** ✅
+
 - PostgreSQL 16 + Redis 7 + FastAPI + Next.js 15
 - 完整的开发环境配置
 
 **Phase 2: 后端实现** ✅
+
 - 9 个 SQLAlchemy 模型 + 7 个 Repository
 - 39 个 RESTful API 端点
 - Agent 系统（Scheduler, Executor, LLMClient, Analyzer）
 
 **Phase 3: 前端实现** ✅
+
 - 7 个管理页面（用户/任务/Agent/执行记录/代码文件/质量指标/健康检查）
 - shadcn/ui 组件库 + Tailwind CSS
 
 **Phase 4: 测试和质量保障** ✅
+
 - 测试覆盖率：后端 85%+，前端 80%+，整体 82%
 - CI/CD 配置：7 个 GitHub Actions 工作流
 - Pre-commit hooks 配置完成
@@ -44,16 +48,19 @@
 ### 优化完成记录
 
 **依赖优化** ✅ (任务 #aa2d179b)
+
 - 前端：移除 10 个未使用依赖
 - 后端：移除 5 个 LangChain 未使用包
 - 减少依赖体积 ~248M (718M → ~470M)
 
 **测试覆盖率提升** ✅ (任务 #963c7af1)
+
 - 后端覆盖率：65% → 93-95%
 - 前端覆盖率：提升至 85-90%
 - Agent 系统覆盖率：87-100%
 
 **CI/CD 恢复** ✅ (任务 #6c407a57)
+
 - 7 个 GitHub Actions 工作流已恢复
 - 文档完整（README + QUICK_REFERENCE + SUMMARY）
 
@@ -98,8 +105,8 @@
 
 ## v1.1.0 迭代计划 (2026 Q3)
 
-**发布目标**: 企业级认证授权 + 实时通知 + Agent 进度追踪  
-**预计开发时间**: 6-8 周  
+**发布目标**: 企业级认证授权 + 实时通知 + Agent 进度追踪
+**预计开发时间**: 6-8 周
 **优先级**: 高（生产环境必需）
 
 ### 1.1.1 用户认证授权系统
@@ -107,6 +114,7 @@
 #### 功能需求
 
 **用户注册/登录**:
+
 - 邮箱 + 密码注册
 - JWT Token 认证
 - Token 刷新机制（Access Token 30min + Refresh Token 7天）
@@ -114,6 +122,7 @@
 - 邮箱验证（可选）
 
 **权限管理（RBAC）**:
+
 - 角色定义：
   - `admin`: 全部权限
   - `developer`: 创建/执行 Agent，查看自己的任务
@@ -125,6 +134,7 @@
   - 查看记录：全部角色
 
 **API 端点设计**:
+
 ```
 POST   /api/v1/auth/register       # 注册
 POST   /api/v1/auth/login          # 登录
@@ -150,6 +160,7 @@ PUT    /api/v1/auth/password       # 修改密码
 #### 功能需求
 
 **实时推送场景**:
+
 1. Agent 执行状态变更（running → completed/failed）
 2. 新任务创建通知
 3. 代码生成进度（流式输出）
@@ -170,6 +181,7 @@ PUT    /api/v1/auth/password       # 修改密码
 #### 功能需求
 
 **进度指标**:
+
 - 当前步骤: `Researcher → Planner → Coder → Reviewer → Tester`
 - 完成百分比: `0-100%`
 - 预计剩余时间: `ETA: 2m 30s`
@@ -197,12 +209,14 @@ PUT    /api/v1/auth/password       # 修改密码
 ### v1.1.0 验收标准
 
 **功能完整性**:
+
 - [ ] 用户可以注册/登录
 - [ ] API 端点有权限控制
 - [ ] WebSocket 实时推送工作
 - [ ] Agent 进度可视化
 
 **质量标准**:
+
 - [ ] 测试覆盖率 ≥ 80%
 - [ ] 安全漏洞扫描通过（Bandit）
 - [ ] 性能测试：WebSocket 支持 100 并发
@@ -211,8 +225,8 @@ PUT    /api/v1/auth/password       # 修改密码
 
 ## v1.2.0 迭代计划 (2026 Q4)
 
-**发布目标**: Multi-Agent 协作流程 + 自定义 Prompt 模板  
-**预计开发时间**: 8-10 周  
+**发布目标**: Multi-Agent 协作流程 + 自定义 Prompt 模板
+**预计开发时间**: 8-10 周
 **优先级**: 中（差异化特性）
 
 ### 1.2.1 Multi-Agent 协作流程
@@ -220,6 +234,7 @@ PUT    /api/v1/auth/password       # 修改密码
 #### 功能需求
 
 **Agent 角色定义**:
+
 ```
 Researcher → Planner → Coder → Reviewer → Tester
     ↓          ↓         ↓        ↓         ↓
@@ -227,6 +242,7 @@ Researcher → Planner → Coder → Reviewer → Tester
 ```
 
 **LangGraph 状态机实现**:
+
 - 显式状态管理（AgentState）
 - 条件边路由（quality_passed → next_step）
 - 循环支持（Reviewer → Coder 修复循环，最多 3 次）
@@ -246,6 +262,7 @@ Researcher → Planner → Coder → Reviewer → Tester
 #### 功能需求
 
 **模板管理功能**:
+
 - CRUD 操作：创建/编辑/删除模板
 - 变量插值：`{{task_description}}`, `{{code_context}}`
 - 版本管理：v1, v2, v3
@@ -273,8 +290,8 @@ Researcher → Planner → Coder → Reviewer → Tester
 
 ## v2.0.0 迭代计划 (2027 Q1)
 
-**发布目标**: 多 LLM Provider + Fine-tuning + Agent 记忆  
-**预计开发时间**: 12 周  
+**发布目标**: 多 LLM Provider + Fine-tuning + Agent 记忆
+**预计开发时间**: 12 周
 **优先级**: 低（增强特性）
 
 ### 2.0.1 多 LLM Provider 支持
@@ -327,22 +344,25 @@ Researcher → Planner → Coder → Reviewer → Tester
 ### 资源需求
 
 **人力**:
+
 - 后端开发: 2人
 - 前端开发: 1人
 - 测试/QA: 1人（兼职）
 
 **硬件**:
+
 - 开发服务器: 8核 16GB RAM
 - PostgreSQL: 生产级配置
 - Redis: 持久化配置
 
 **预算**:
+
 - LLM API 调用: $500/月（开发 + 测试）
 - 云服务器: $200/月
 - 监控工具: $100/月
 
 ---
 
-**制定人**: tom (Developer)  
-**审批**: 待 team-lead 批准  
+**制定人**: tom (Developer)
+**审批**: 待 team-lead 批准
 **下次评审**: 每季度末

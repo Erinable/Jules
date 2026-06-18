@@ -89,6 +89,7 @@ function getStatusBadge(status: RunStatus): { label, color, icon } {
 ```
 
 **UI 示例**:
+
 ```
 ┌─────────────────────────────────────────────┐
 │  ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░  65%                │
@@ -99,6 +100,7 @@ function getStatusBadge(status: RunStatus): { label, color, icon } {
 ```
 
 **交互**:
+
 - 点击百分比数字切换显示模式（百分比/剩余时间/总耗时）
 - 进度条支持悬停查看各步骤占比
 
@@ -118,6 +120,7 @@ interface StepPipelineProps {
 ```
 
 **UI 示例**:
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  ✓ ──── ✓ ──── ● ──── ○ ──── ○                          │
@@ -139,6 +142,7 @@ interface StepPipelineProps {
 | cancelled | ⊘ | 灰色 | 无 |
 
 **交互**:
+
 - 点击任意步骤切换详情面板显示该步骤的日志
 - 失败步骤悬停显示错误消息 tooltip
 - 重试次数 > 0 时显示徽章 `↻2`
@@ -164,6 +168,7 @@ interface LogPanelProps {
 ```
 
 **UI 示例**:
+
 ```
 ┌──────────────────────────────────────────┐
 │  日志 [搜索🔍] [级别▼] [自动滚动 ✓]      │
@@ -184,6 +189,7 @@ interface LogPanelProps {
 ```
 
 **特性**:
+
 - 按步骤分组（折叠面板）
 - 当前运行步骤自动展开
 - 日志级别颜色编码（info 蓝、warn 黄、error 红、debug 灰）
@@ -193,6 +199,7 @@ interface LogPanelProps {
 - 下载完整日志（.txt / .json）
 
 **性能优化**:
+
 - 虚拟滚动（react-virtual）支持 10k+ 日志
 - 日志批量更新（每 100ms 合并一次渲染）
 - 离屏日志暂停渲染
@@ -215,6 +222,7 @@ interface DetailPanelProps {
 ```
 
 **UI 示例**:
+
 ```
 ┌────────────────────────────────┐
 │  Coder 步骤                    │
@@ -354,6 +362,7 @@ function calculateDelay(attempt: number): number {
 ```
 
 **重连后处理**:
+
 1. 重新订阅之前的 channel
 2. 请求离线期间错过的事件（基于 lastEventId）
 3. 合并到本地状态
@@ -443,15 +452,18 @@ export default function ProgressPage({ params }: { params: { runId: string } }) 
 ## 10. 测试策略
 
 ### 10.1 单元测试
+
 - 每个 UI 组件渲染测试
 - 进度计算函数（与后端共享纯函数）
 - reducer 状态更新
 
 ### 10.2 集成测试
+
 - WebSocket 事件 → UI 更新流程
 - 暂停/取消操作 API 调用
 
 ### 10.3 E2E 测试
+
 - 完整 Agent 执行流程
 - 断线重连场景
 - 大量日志场景
@@ -470,4 +482,5 @@ export default function ProgressPage({ params }: { params: { runId: string } }) 
 ---
 
 **变更记录**:
+
 - 2026-06-17: v1.0 初版设计（tom）

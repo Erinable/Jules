@@ -75,6 +75,12 @@ repos:
   # Frontend TypeScript checks (only for frontend directory)
   - repo: local
     hooks:
+      - id: frontend-eslint
+        name: ESLint (frontend)
+        entry: bash -c 'cd frontend && npm run lint'
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
       - id: frontend-type-check
         name: TypeScript type check (frontend)
         entry: bash -c 'cd frontend && npm run type-check'

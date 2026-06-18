@@ -122,5 +122,7 @@ class ProgressCalculator:
             return int(eta_seconds)
 
         # Use static fallback
-        eta_seconds = sum(STATIC_FALLBACK_DURATION_SECONDS * factor for _, factor in remaining_steps)
+        eta_seconds = sum(
+            STATIC_FALLBACK_DURATION_SECONDS * factor for _, factor in remaining_steps
+        )
         return int(eta_seconds)

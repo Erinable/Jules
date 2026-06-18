@@ -1,7 +1,7 @@
 # WebSocket API 文档
 
-**版本**: v1.0  
-**Sprint**: Sprint 2  
+**版本**: v1.0
+**Sprint**: Sprint 2
 **状态**: 已实施
 
 ---

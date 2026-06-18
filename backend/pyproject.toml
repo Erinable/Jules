@@ -25,6 +25,7 @@ bcrypt = ">=4.0.0,<4.1.0"
 python-dotenv = "^1.0.1"
 httpx = "^0.26.0"
 aiofiles = "^23.2.1"
+email-validator = "^2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
@@ -95,7 +96,6 @@ ignore = [
     "S107",    # dev/test defaults contain placeholder passwords
     "S110",    # deliberate best-effort cleanup/pass blocks
     "S101",    # use of assert (allowed in tests)
-    "UP038",   # keep tuple isinstance checks; Ruff marks the rewrite unsafe
     "UP042",   # keep str Enum compatibility for API serialization
 ]
 

@@ -1,9 +1,9 @@
 # ============================================
-# Frontend Dockerfile - Node.js 18 Alpine
+# Frontend Dockerfile - Node.js 20 Alpine
 # ============================================
 
 # 构建阶段
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -25,7 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV development
 
 # 开发阶段
-FROM node:18-alpine AS development
+FROM node:20-alpine AS development
 
 WORKDIR /app
 
@@ -45,7 +45,7 @@ EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 # 生产构建阶段
-FROM node:18-alpine AS production-builder
+FROM node:20-alpine AS production-builder
 
 WORKDIR /app
 
@@ -63,7 +63,7 @@ ENV NODE_ENV production
 RUN npm run build
 
 # 生产运行阶段
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 

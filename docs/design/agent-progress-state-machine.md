@@ -34,6 +34,7 @@ Agent 执行采用线性流水线模型，包含 5 个固定步骤：
 | 5 | Tester | `tester` | 单元测试、集成测试 | 0.15 |
 
 **权重说明**:
+
 - 权重总和为 1.0，用于进度百分比计算
 - Coder 步骤权重最高（0.40），因为耗时最长
 - 权重可在运行时基于历史数据动态调整
@@ -100,6 +101,7 @@ class AgentStep(str, Enum):
 ```
 
 **触发条件**:
+
 - `pending → running`: 前置步骤全部 `completed`，或本步骤是第一步
 - `running → completed`: 步骤执行成功，记录 `completed_at` 和 `duration_ms`
 
@@ -118,6 +120,7 @@ class AgentStep(str, Enum):
 ```
 
 **重试规则**:
+
 - 最大重试次数: `MAX_RETRIES = 3`
 - 仅 Coder 步骤支持重试（Reviewer 反馈后修复）
 - 每次重试递增 `retry_count`
@@ -130,6 +133,7 @@ class AgentStep(str, Enum):
 ```
 
 **跳过场景**:
+
 - Tester 步骤在配置 `enable_tests=False` 时跳过
 - Reviewer 步骤在配置 `enable_review=False` 时跳过
 - 跳过不视为失败，进度百分比正常推进
@@ -141,6 +145,7 @@ class AgentStep(str, Enum):
 ```
 
 **取消规则**:
+
 - 用户主动调用 `POST /api/v1/progress/{run_id}/cancel`
 - 当前 RUNNING 步骤等待当前 LLM 请求完成后终止（避免浪费 token）
 - 未开始步骤标记为 `cancelled`
@@ -152,6 +157,7 @@ class AgentStep(str, Enum):
 ```
 
 **超时规则**:
+
 - 单步骤默认超时: 300 秒（可通过 Agent 配置覆盖）
 - 总执行超时: 1800 秒（30 分钟）
 - 超时后步骤标记为 FAILED，不可重试
@@ -220,6 +226,7 @@ class RunProgress(BaseModel):
 ```
 
 **不可变性实现**:
+
 - 状态变更通过 `dataclasses.replace()` 或 Pydantic `model_copy(update={...})` 生成新对象
 - 不允许直接修改字段（`frozen = True`）
 
@@ -461,4 +468,5 @@ def test_retry_transitions():
 ---
 
 **变更记录**:
+
 - 2026-06-17: v1.0 初版设计（tom）

@@ -9,11 +9,10 @@ Run: pytest tests/integration/test_websocket_integration.py -v
 from datetime import UTC, datetime
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app.core.jwt_handler import create_access_token
 from app.main import app
 from app.repositories.progress_repository import ProgressRepository
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture

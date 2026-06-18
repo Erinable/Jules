@@ -40,6 +40,7 @@ export function useWebSocket(config: WebSocketConfig): UseWebSocketReturn {
   const heartbeatIntervalRef = useRef<number | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const handlersRef = useRef<Map<MessageType, Set<MessageHandler>>>(new Map());
+  const connectRef = useRef<() => void>(() => {});
 
   const {
     url,
@@ -253,7 +254,7 @@ export function useWebSocket(config: WebSocketConfig): UseWebSocketReturn {
         setState("reconnecting");
         reconnectTimeoutRef.current = window.setTimeout(() => {
           reconnectAttemptsRef.current++;
-          connect();
+          connectRef.current();
         }, delay);
       } else {
         setState("disconnected");
@@ -296,6 +297,8 @@ export function useWebSocket(config: WebSocketConfig): UseWebSocketReturn {
       });
     }
   }, [url, token, handleMessage, handleError, handleClose]);
+
+  connectRef.current = connect;
 
   /**
    * Disconnect WebSocket

@@ -9,7 +9,6 @@ Run: pytest tests/unit/test_progress_calculator.py -v
 from datetime import UTC, datetime
 
 import pytest
-
 from app.core.progress_calculator import ProgressCalculator
 from app.schemas.agent_progress import (
     AgentStep,

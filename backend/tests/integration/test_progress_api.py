@@ -17,11 +17,10 @@ Tests all 10 REST API endpoints:
 import uuid
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from app.models.progress import ExecutionProgress
 from app.repositories.progress_repository import ProgressRepository
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 
 @pytest.fixture

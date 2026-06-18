@@ -4,13 +4,12 @@ from datetime import datetime
 from unittest.mock import Mock, patch
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.agent.executor import AgentExecutor
 from app.models.agent_execution import AgentExecution
 from app.models.code_file import CodeFile
 from app.models.quality_metric import QualityMetric
 from app.models.task import Task
+from sqlalchemy.orm import Session
 
 
 class TestAgentExecutor:

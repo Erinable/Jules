@@ -99,6 +99,7 @@
 **权限**: `viewer` + (只能查看自己的)；`admin` 可查看任意用户
 
 **响应 (200)**:
+
 ```json
 {
   "success": true,
@@ -166,6 +167,7 @@
 ```
 
 **错误**:
+
 - 404 `PROGRESS_NOT_FOUND` - run_id 不存在
 - 403 `FORBIDDEN` - viewer 查看他人进度
 
@@ -187,6 +189,7 @@
 | `order` | string | asc | 排序（asc/desc） |
 
 **响应 (200)**:
+
 ```json
 {
   "success": true,
@@ -236,6 +239,7 @@
 | `speed` | float | 1.0 | 回放速度（仅客户端提示） |
 
 **响应 (200)**:
+
 ```json
 {
   "success": true,
@@ -316,6 +320,7 @@
 **权限**: `developer` + (仅能取消自己的)；`admin` 可取消任意
 
 **请求体**:
+
 ```json
 {
   "reason": "user_requested",
@@ -327,6 +332,7 @@
 - `force: false`: 优雅终止（等待当前 LLM 请求完成）
 
 **响应 (202)**:
+
 ```json
 {
   "success": true,
@@ -341,6 +347,7 @@
 ```
 
 **错误**:
+
 - 409 `CONFLICT` - 已经是终态（completed/failed/cancelled）
 - 403 `FORBIDDEN` - developer 取消他人任务
 
@@ -353,6 +360,7 @@
 **权限**: `developer` +
 
 **请求体**:
+
 ```json
 {
   "duration_seconds": 300
@@ -372,6 +380,7 @@
 **权限**: `developer` +
 
 **响应 (200)**:
+
 ```json
 {
   "success": true,
@@ -385,6 +394,7 @@
 ```
 
 **错误**:
+
 - 409 `CONFLICT` - 不是暂停状态
 - 410 `GONE` - 暂停超时已自动取消
 
@@ -409,6 +419,7 @@
 **权限**: `developer` +
 
 **事件类型**（与进度追踪相关）:
+
 - `progress.step.started` - 步骤开始
 - `progress.step.completed` - 步骤完成
 - `progress.step.failed` - 步骤失败
@@ -504,6 +515,7 @@ class CancelResponse(BaseModel):
 ## 8. OpenAPI 文档集成
 
 所有端点需在 FastAPI 中通过装饰器声明：
+
 - 完整的 response_model
 - 错误响应示例
 - 权限依赖 (`Depends(require_role("developer"))`)
@@ -540,4 +552,5 @@ class CancelResponse(BaseModel):
 ---
 
 **变更记录**:
+
 - 2026-06-17: v1.0 初版设计（tom）

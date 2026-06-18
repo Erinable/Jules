@@ -100,7 +100,7 @@ jobs:
           sleep 30
 
           # Check backend health
-          curl -f ${{ secrets.BACKEND_URL }}/health || exit 1
+          curl -f ${{ secrets.BACKEND_URL }}/api/v1/health/ || exit 1
 
           # Check frontend health
           curl -f ${{ secrets.FRONTEND_URL }} || exit 1

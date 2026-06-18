@@ -76,7 +76,12 @@ class ProgressRepository:
         if status:
             q = q.filter(ExecutionProgress.status == status)
         total = q.count()
-        items = q.order_by(desc(ExecutionProgress.started_at)).offset((page - 1) * limit).limit(limit).all()
+        items = (
+            q.order_by(desc(ExecutionProgress.started_at))
+            .offset((page - 1) * limit)
+            .limit(limit)
+            .all()
+        )
         return items, total
 
     def list_all_progress(
@@ -89,11 +94,18 @@ class ProgressRepository:
         if status:
             q = q.filter(ExecutionProgress.status == status)
         total = q.count()
-        items = q.order_by(desc(ExecutionProgress.started_at)).offset((page - 1) * limit).limit(limit).all()
+        items = (
+            q.order_by(desc(ExecutionProgress.started_at))
+            .offset((page - 1) * limit)
+            .limit(limit)
+            .all()
+        )
         return items, total
 
     def delete_progress(self, run_id: str) -> bool:
-        result = self.db.query(ExecutionProgress).filter(ExecutionProgress.run_id == run_id).delete()
+        result = (
+            self.db.query(ExecutionProgress).filter(ExecutionProgress.run_id == run_id).delete()
+        )
         self.db.commit()
         return result > 0
 

@@ -10,10 +10,9 @@ from datetime import datetime
 from unittest.mock import MagicMock
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.models.progress import ExecutionLog, ExecutionProgress, ExecutionTransition
 from app.repositories.progress_repository import ProgressRepository
+from sqlalchemy.orm import Session
 
 pytestmark = pytest.mark.asyncio
 

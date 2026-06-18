@@ -1,4 +1,5 @@
 """Unit tests for CodeAnalyzer."""
+
 from app.agent.analyzer import CodeAnalyzer
 
 
@@ -142,19 +143,19 @@ def calculate(x, y):
 
     def test_detect_security_issues_pickle(self):
         """Test detection of pickle usage."""
-        code = 'import pickle\ndata = pickle.loads(bytes)'
+        code = "import pickle\ndata = pickle.loads(bytes)"
         issues = self.analyzer.detect_security_issues(code)
         assert issues >= 1
 
     def test_detect_security_issues_yaml_load(self):
         """Test detection of unsafe YAML loading."""
-        code = 'import yaml\ndata = yaml.load(file)'
+        code = "import yaml\ndata = yaml.load(file)"
         issues = self.analyzer.detect_security_issues(code)
         assert issues >= 1
 
     def test_detect_security_issues_assert(self):
         """Test detection of assert statements."""
-        code = 'assert user.is_admin'
+        code = "assert user.is_admin"
         issues = self.analyzer.detect_security_issues(code)
         assert issues >= 1
 
@@ -166,7 +167,7 @@ def loop_func():
         if i > 5:
             break
 """
-        tree = __import__('ast').parse(code)
+        tree = __import__("ast").parse(code)
         func_node = tree.body[0]
         complexity = self.analyzer._calculate_function_complexity(func_node)
         assert complexity >= 2
@@ -180,7 +181,7 @@ def error_handler():
     except ValueError:
         handle_error()
 """
-        tree = __import__('ast').parse(code)
+        tree = __import__("ast").parse(code)
         func_node = tree.body[0]
         complexity = self.analyzer._calculate_function_complexity(func_node)
         assert complexity >= 2
@@ -192,7 +193,7 @@ def logic_func(a, b, c):
     if a and b or c:
         return True
 """
-        tree = __import__('ast').parse(code)
+        tree = __import__("ast").parse(code)
         func_node = tree.body[0]
         complexity = self.analyzer._calculate_function_complexity(func_node)
         assert complexity >= 2

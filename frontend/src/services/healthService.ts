@@ -10,7 +10,7 @@ export const healthService = {
    * Get overall health status
    */
   async getHealth(): Promise<HealthStatus> {
-    const response = await apiClient.get<HealthStatus>("/health");
+    const response = await apiClient.get<HealthStatus>("/health/");
     return response.data;
   },
 

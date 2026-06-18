@@ -5,7 +5,6 @@ Maps to the 3 progress tracking tables created by 003_progress_tables.py migrati
 Based on docs/design/agent-progress-state-machine.md.
 """
 
-
 from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, Text
 
 from app.database.base import Base

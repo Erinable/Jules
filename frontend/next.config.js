@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
 
   // 环境变量
   env: {
     NEXT_PUBLIC_API_URL:
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
-    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000",
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
+    NEXT_PUBLIC_WS_URL:
+      process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/api/v1",
   },
 
   // 输出配置（用于生产部署）
@@ -20,6 +20,9 @@ const nextConfig = {
 
   // 禁用 X-Powered-By 头（安全性）
   poweredByHeader: false,
+
+  // Allow local development through either localhost or 127.0.0.1.
+  allowedDevOrigins: ["http://127.0.0.1:3000"],
 
   // 压缩配置
   compress: true,

@@ -81,7 +81,6 @@ env/
 .env
 
 # Poetry
-poetry.lock
 .poetry/
 
 # Pytest
@@ -133,6 +132,8 @@ dist/
 
 # Testing
 coverage/
+coverage.xml
+coverage.json
 
 # -------------------- 环境变量和配置 --------------------
 # 环境变量文件
@@ -168,7 +169,6 @@ secrets.json
 # -------------------- Docker --------------------
 # Docker 数据卷
 docker-compose.override.yml
-.dockerignore
 
 # -------------------- 日志和临时文件 --------------------
 # 日志文件

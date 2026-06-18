@@ -77,7 +77,7 @@ class CodeAnalyzer:
         complexities = []
 
         for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
                 complexity = self._calculate_function_complexity(node)
                 complexities.append(complexity)
 
@@ -86,7 +86,7 @@ class CodeAnalyzer:
 
         return sum(complexities) / len(complexities)
 
-    def _calculate_function_complexity(self, node: ast.FunctionDef) -> int:
+    def _calculate_function_complexity(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> int:
         """
         Calculate complexity for a single function.
 
@@ -100,11 +100,11 @@ class CodeAnalyzer:
 
         for child in ast.walk(node):
             # Count decision points
-            if isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor)):
+            if isinstance(child, ast.If | ast.While | ast.For | ast.AsyncFor):
                 complexity += 1
             elif isinstance(child, ast.ExceptHandler):
                 complexity += 1
-            elif isinstance(child, (ast.And, ast.Or)):
+            elif isinstance(child, ast.And | ast.Or):
                 complexity += 1
             elif isinstance(child, ast.comprehension):
                 complexity += 1

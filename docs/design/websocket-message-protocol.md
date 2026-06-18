@@ -358,6 +358,7 @@ export interface WSMessage<T = unknown> {
 ```
 
 **channel 命名规则**:
+
 - `progress:{run_id}` - 特定执行的进度
 - `agent:{agent_id}` - 特定 Agent 的状态
 - `task:{user_id}` - 用户的任务通知
@@ -398,6 +399,7 @@ export interface WSMessage<T = unknown> {
 JWT Token 通过 `Sec-WebSocket-Protocol` HTTP 头携带，避免暴露在 URL 或 access log 中。
 
 **客户端发起连接**:
+
 ```
 GET /api/v1/ws/{user_id} HTTP/1.1
 Host: api.jules-ai.dev
@@ -479,6 +481,7 @@ async def websocket_endpoint(
 ```
 
 **安全优势（Q2-b 决策理由）**:
+
 - ✅ Token 不出现在 URL（避免 access_log / Referer 泄漏）
 - ✅ 不在 query string（避免代理/CDN 日志记录）
 - ✅ 浏览器原生支持，无需自定义 header
@@ -580,6 +583,7 @@ class AckTracker:
 ```
 
 **重连后**:
+
 1. 重新发送订阅请求
 2. 请求离线消息（lastEventId 之后）
 3. 更新本地状态
@@ -656,4 +660,5 @@ def test_message_round_trip():
 ---
 
 **变更记录**:
+
 - 2026-06-17: v1.0 初版设计（tom）

@@ -10,7 +10,6 @@ import json
 from datetime import UTC, datetime
 
 import pytest
-
 from app.schemas.websocket import MessageType, WSMessage
 
 pytestmark = pytest.mark.asyncio

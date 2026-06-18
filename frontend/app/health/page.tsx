@@ -2,56 +2,66 @@
  * Health Check Page
  */
 
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { healthService } from '@/services'
-import type { HealthStatus } from '@/types'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import { useEffect, useState } from "react";
+import { healthService } from "@/services";
+import type { HealthStatus } from "@/types";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function HealthPage() {
-  const [health, setHealth] = useState<HealthStatus | null>(null)
-  const [ready, setReady] = useState<HealthStatus | null>(null)
-  const [live, setLive] = useState<HealthStatus | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [health, setHealth] = useState<HealthStatus | null>(null);
+  const [ready, setReady] = useState<HealthStatus | null>(null);
+  const [live, setLive] = useState<HealthStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const loadHealth = async () => {
     try {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       const [healthData, readyData, liveData] = await Promise.all([
         healthService.getHealth(),
         healthService.getReady(),
         healthService.getLive(),
-      ])
-      setHealth(healthData)
-      setReady(readyData)
-      setLive(liveData)
+      ]);
+      setHealth(healthData);
+      setReady(readyData);
+      setLive(liveData);
     } catch (err) {
-      setError('Failed to load health status')
+      setError("Failed to load health status");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadHealth()
+    loadHealth();
     // Refresh every 10 seconds
-    const interval = setInterval(loadHealth, 10000)
-    return () => clearInterval(interval)
-  }, [])
+    const interval = setInterval(loadHealth, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const StatusCard = ({ title, status }: { title: string; status: HealthStatus | null }) => {
-    const isHealthy = status?.status === 'healthy' || status?.status === 'ok'
+  const StatusCard = ({
+    title,
+    status,
+  }: {
+    title: string;
+    status: HealthStatus | null;
+  }) => {
+    const isHealthy = status?.status === "healthy" || status?.status === "ok";
     return (
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-3">{title}</h3>
         {status ? (
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <div className={`w-3 h-3 rounded-full ${isHealthy ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className={`text-xl font-bold ${isHealthy ? 'text-green-600' : 'text-red-600'}`}>
+              <div
+                className={`w-3 h-3 rounded-full ${isHealthy ? "bg-green-500" : "bg-red-500"}`}
+              />
+              <span
+                className={`text-xl font-bold ${isHealthy ? "text-green-600" : "text-red-600"}`}
+              >
                 {status.status}
               </span>
             </div>
@@ -62,7 +72,10 @@ export default function HealthPage() {
             )}
             {status.timestamp && (
               <p className="text-sm text-gray-600">
-                Timestamp: <span className="font-medium">{new Date(status.timestamp).toLocaleString()}</span>
+                Timestamp:{" "}
+                <span className="font-medium">
+                  {new Date(status.timestamp).toLocaleString()}
+                </span>
               </p>
             )}
           </div>
@@ -70,8 +83,8 @@ export default function HealthPage() {
           <p className="text-gray-500">No data</p>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -82,7 +95,7 @@ export default function HealthPage() {
           disabled={loading}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:bg-gray-400"
         >
-          {loading ? 'Refreshing...' : 'Refresh'}
+          {loading ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
@@ -106,18 +119,22 @@ export default function HealthPage() {
             <h2 className="text-xl font-semibold mb-4">API Connection</h2>
             <div className="space-y-2">
               <p className="text-sm">
-                <span className="font-medium">Backend URL:</span>{' '}
+                <span className="font-medium">Backend URL:</span>{" "}
                 <a
-                  href={process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}
+                  href={
+                    process.env.NEXT_PUBLIC_API_URL ||
+                    "http://localhost:8000/api/v1"
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"
                 >
-                  {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}
+                  {process.env.NEXT_PUBLIC_API_URL ||
+                    "http://localhost:8000/api/v1"}
                 </a>
               </p>
               <p className="text-sm">
-                <span className="font-medium">API Docs:</span>{' '}
+                <span className="font-medium">API Docs:</span>{" "}
                 <a
                   href="http://localhost:8000/docs"
                   target="_blank"
@@ -127,11 +144,13 @@ export default function HealthPage() {
                   http://localhost:8000/docs
                 </a>
               </p>
-              <p className="text-sm text-gray-600">Auto-refresh: Every 10 seconds</p>
+              <p className="text-sm text-gray-600">
+                Auto-refresh: Every 10 seconds
+              </p>
             </div>
           </div>
         </>
       )}
     </div>
-  )
+  );
 }

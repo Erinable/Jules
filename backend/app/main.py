@@ -1,6 +1,7 @@
 """
 Jules Backend - FastAPI Application Entry Point
 """
+
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,7 +30,9 @@ app.add_middleware(
 
 # 全局异常处理
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
     """
     处理请求验证错误
 

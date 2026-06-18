@@ -18,6 +18,7 @@
 **数据库系统**: PostgreSQL 16
 
 **连接信息**:
+
 ```bash
 Host: localhost
 Port: 5432
@@ -27,6 +28,7 @@ Password: postgres
 ```
 
 **环境变量**:
+
 ```bash
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/jules
 ```
@@ -34,6 +36,7 @@ DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/jules
 **表数量**: 9 张核心表
 
 **关系类型**:
+
 - 一对多关系：7 个
 - 自引用关系：0 个
 - 多对多关系：0 个
@@ -54,7 +57,7 @@ erDiagram
     AgentExecution ||--o{ CodeFile : "生成"
     CodeFile ||--o{ CodeVersion : "版本历史"
     CodeFile ||--o{ QualityMetric : "质量评估"
-    
+
     User {
         int id PK
         string email UK
@@ -62,7 +65,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     Task {
         int id PK
         string title
@@ -75,7 +78,7 @@ erDiagram
         timestamp started_at
         timestamp completed_at
     }
-    
+
     Agent {
         int id PK
         string name
@@ -86,7 +89,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     AgentExecution {
         int id PK
         int agent_id FK
@@ -99,7 +102,7 @@ erDiagram
         timestamp completed_at
         float execution_time_seconds
     }
-    
+
     LLMCall {
         int id PK
         int execution_id FK
@@ -112,7 +115,7 @@ erDiagram
         float cost
         timestamp created_at
     }
-    
+
     CodeFile {
         int id PK
         int project_id FK
@@ -124,7 +127,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     CodeVersion {
         int id PK
         int code_file_id FK
@@ -134,7 +137,7 @@ erDiagram
         int created_by FK
         timestamp created_at
     }
-    
+
     QualityMetric {
         int id PK
         int project_id FK
@@ -146,7 +149,7 @@ erDiagram
         int code_smells
         timestamp measured_at
     }
-    
+
     HealthCheck {
         int id PK
         string service_name
@@ -175,12 +178,14 @@ erDiagram
 | `updated_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 更新时间 |
 
 **索引**:
+
 ```sql
 CREATE UNIQUE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_created_at ON users(created_at);
 ```
 
 **示例数据**:
+
 ```sql
 INSERT INTO users (email, username) VALUES
 ('admin@jules.dev', 'admin'),
@@ -209,12 +214,14 @@ INSERT INTO users (email, username) VALUES
 | `completed_at` | TIMESTAMP | NULL | 完成时间 |
 
 **状态枚举**:
+
 - `pending`: 待处理
 - `in_progress`: 进行中
 - `completed`: 已完成
 - `failed`: 失败
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_tasks_status ON tasks(status);
 CREATE INDEX idx_tasks_priority ON tasks(priority DESC);
@@ -223,11 +230,12 @@ CREATE INDEX idx_tasks_created_at ON tasks(created_at DESC);
 ```
 
 **约束**:
+
 ```sql
-ALTER TABLE tasks ADD CONSTRAINT fk_tasks_assigned_to 
+ALTER TABLE tasks ADD CONSTRAINT fk_tasks_assigned_to
     FOREIGN KEY (assigned_to) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE tasks ADD CONSTRAINT chk_tasks_priority 
+ALTER TABLE tasks ADD CONSTRAINT chk_tasks_priority
     CHECK (priority >= 0 AND priority <= 10);
 ```
 
@@ -251,12 +259,14 @@ ALTER TABLE tasks ADD CONSTRAINT chk_tasks_priority
 | `updated_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 更新时间 |
 
 **类型枚举**:
+
 - `code_generator`: 代码生成器
 - `code_reviewer`: 代码审查器
 - `code_analyzer`: 代码分析器
 - `tester`: 测试生成器
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_agents_type ON agents(type);
 CREATE INDEX idx_agents_is_active ON agents(is_active);
@@ -264,6 +274,7 @@ CREATE INDEX idx_agents_created_by ON agents(created_by);
 ```
 
 **JSON 配置示例**:
+
 ```json
 {
   "model": "claude-3-5-sonnet-20241022",
@@ -296,12 +307,14 @@ CREATE INDEX idx_agents_created_by ON agents(created_by);
 | `execution_time_seconds` | FLOAT | NULL | 执行时长（秒） |
 
 **状态枚举**:
+
 - `pending`: 待执行
 - `running`: 执行中
 - `completed`: 已完成
 - `failed`: 失败
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_executions_agent_id ON agent_executions(agent_id);
 CREATE INDEX idx_executions_task_id ON agent_executions(task_id);
@@ -310,6 +323,7 @@ CREATE INDEX idx_executions_started_at ON agent_executions(started_at DESC);
 ```
 
 **约束**:
+
 ```sql
 ALTER TABLE agent_executions ADD CONSTRAINT fk_executions_agent_id
     FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE;
@@ -340,6 +354,7 @@ ALTER TABLE agent_executions ADD CONSTRAINT fk_executions_task_id
 | `created_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 调用时间 |
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_llm_calls_execution_id ON llm_calls(execution_id);
 CREATE INDEX idx_llm_calls_model ON llm_calls(model);
@@ -347,6 +362,7 @@ CREATE INDEX idx_llm_calls_created_at ON llm_calls(created_at DESC);
 ```
 
 **约束**:
+
 ```sql
 ALTER TABLE llm_calls ADD CONSTRAINT fk_llm_calls_execution_id
     FOREIGN KEY (execution_id) REFERENCES agent_executions(id) ON DELETE CASCADE;
@@ -373,6 +389,7 @@ ALTER TABLE llm_calls ADD CONSTRAINT fk_llm_calls_execution_id
 | `updated_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 更新时间 |
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_code_files_project_id ON code_files(project_id);
 CREATE INDEX idx_code_files_file_path ON code_files(file_path);
@@ -400,6 +417,7 @@ CREATE UNIQUE INDEX idx_code_files_project_path ON code_files(project_id, file_p
 | `created_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 创建时间 |
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_versions_code_file_id ON code_versions(code_file_id);
 CREATE INDEX idx_versions_created_at ON code_versions(created_at DESC);
@@ -407,6 +425,7 @@ CREATE UNIQUE INDEX idx_versions_file_version ON code_versions(code_file_id, ver
 ```
 
 **约束**:
+
 ```sql
 ALTER TABLE code_versions ADD CONSTRAINT fk_versions_code_file_id
     FOREIGN KEY (code_file_id) REFERENCES code_files(id) ON DELETE CASCADE;
@@ -433,6 +452,7 @@ ALTER TABLE code_versions ADD CONSTRAINT fk_versions_code_file_id
 | `measured_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 测量时间 |
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_quality_project_id ON quality_metrics(project_id);
 CREATE INDEX idx_quality_code_file_id ON quality_metrics(code_file_id);
@@ -440,6 +460,7 @@ CREATE INDEX idx_quality_measured_at ON quality_metrics(measured_at DESC);
 ```
 
 **质量标准**:
+
 - 圈复杂度：< 10（理想）
 - 可维护性指数：> 20（可接受）
 - 测试覆盖率：> 80%（目标）
@@ -462,11 +483,13 @@ CREATE INDEX idx_quality_measured_at ON quality_metrics(measured_at DESC);
 | `checked_at` | TIMESTAMP | NOT NULL, DEFAULT NOW() | 检查时间 |
 
 **状态枚举**:
+
 - `healthy`: 健康
 - `degraded`: 降级
 - `unhealthy`: 不健康
 
 **索引**:
+
 ```sql
 CREATE INDEX idx_health_service_name ON health_checks(service_name);
 CREATE INDEX idx_health_checked_at ON health_checks(checked_at DESC);

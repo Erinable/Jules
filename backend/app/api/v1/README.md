@@ -28,8 +28,9 @@
 **API 版本**: v1
 
 **交互式文档**:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+
+- Swagger UI: <http://localhost:8000/docs>
+- ReDoc: <http://localhost:8000/redoc>
 
 ### 请求头
 
@@ -131,6 +132,7 @@ GET /api/v1/users/
 ```
 
 **查询参数**:
+
 - `skip` (integer, 可选): 跳过的记录数，默认 0
 - `limit` (integer, 可选): 返回的最大记录数，默认 100
 
@@ -194,6 +196,7 @@ GET /api/v1/users/{user_id}
 ```
 
 **路径参数**:
+
 - `user_id` (integer, 必需): 用户ID
 
 **响应 200**:
@@ -274,6 +277,7 @@ GET /api/v1/tasks/
 ```
 
 **查询参数**:
+
 - `skip` (integer, 可选): 跳过的记录数，默认 0
 - `limit` (integer, 可选): 返回的最大记录数，默认 100
 - `status` (string, 可选): 任务状态筛选 (`pending`, `in_progress`, `completed`, `failed`)
@@ -315,6 +319,7 @@ POST /api/v1/tasks/
 ```
 
 **字段说明**:
+
 - `title` (string, 必需): 任务标题（1-200字符）
 - `description` (string, 可选): 任务描述
 - `priority` (integer, 必需): 优先级（0-10）
@@ -398,6 +403,7 @@ PATCH /api/v1/tasks/{task_id}/status
 ```
 
 **可用状态**:
+
 - `pending`: 待处理
 - `in_progress`: 进行中
 - `completed`: 已完成
@@ -434,6 +440,7 @@ GET /api/v1/agents/
 ```
 
 **查询参数**:
+
 - `skip` (integer, 可选)
 - `limit` (integer, 可选)
 
@@ -482,6 +489,7 @@ POST /api/v1/agents/
 ```
 
 **字段说明**:
+
 - `name` (string, 必需): Agent 名称
 - `type` (string, 必需): Agent 类型 (`code_generator`, `code_reviewer`, `code_analyzer`, `tester`)
 - `config` (object, 必需): Agent 配置（JSON 格式）
@@ -567,6 +575,7 @@ GET /api/v1/executions/
 ```
 
 **查询参数**:
+
 - `skip` (integer, 可选)
 - `limit` (integer, 可选)
 - `task_id` (integer, 可选): 按任务ID过滤
@@ -644,6 +653,7 @@ PATCH /api/v1/executions/{execution_id}/status
 ```
 
 **可用状态**:
+
 - `pending`: 待执行
 - `running`: 执行中
 - `completed`: 已完成
@@ -672,6 +682,7 @@ GET /api/v1/code-files/
 ```
 
 **查询参数**:
+
 - `skip` (integer, 可选)
 - `limit` (integer, 可选)
 - `project_id` (integer, 可选): 按项目ID过滤
@@ -788,6 +799,7 @@ GET /api/v1/quality/
 ```
 
 **查询参数**:
+
 - `skip` (integer, 可选)
 - `limit` (integer, 可选)
 
@@ -840,6 +852,7 @@ GET /api/v1/quality/latest
 ```
 
 **查询参数**:
+
 - `project_id` (integer, 可选): 按项目ID过滤
 
 **响应 200**: 返回最新的质量指标对象
@@ -967,7 +980,7 @@ async with httpx.AsyncClient() as client:
         params={"skip": 0, "limit": 10}
     )
     tasks = response.json()
-    
+
     # 创建新任务
     response = await client.post(
         "http://localhost:8000/api/v1/tasks/",
@@ -978,7 +991,7 @@ async with httpx.AsyncClient() as client:
         }
     )
     new_task = response.json()
-    
+
     # 执行 Agent
     response = await client.post(
         "http://localhost:8000/api/v1/agents/execute",
@@ -1030,6 +1043,7 @@ const execution = await apiClient.post('/agents/execute', {
 > **注意**: 当前版本暂未实现速率限制。未来版本将添加。
 
 **计划中的速率限制**:
+
 - 每分钟 60 次请求（未认证用户）
 - 每分钟 600 次请求（认证用户）
 
@@ -1040,6 +1054,7 @@ const execution = await apiClient.post('/agents/execute', {
 API 版本通过 URL 路径指定：`/api/v1/`
 
 **废弃策略**:
+
 - 新版本发布后，旧版本至少维护 6 个月
 - 废弃通知将在响应头中包含 `Deprecation` 和 `Sunset` 字段
 
@@ -1058,9 +1073,9 @@ API 版本通过 URL 路径指定：`/api/v1/`
 
 ## 支持和反馈
 
-- **问题反馈**: https://github.com/your-org/jules/issues
-- **API 文档**: http://localhost:8000/docs
-- **邮箱**: api-support@jules-ai.dev
+- **问题反馈**: <https://github.com/your-org/jules/issues>
+- **API 文档**: <http://localhost:8000/docs>
+- **邮箱**: <api-support@jules-ai.dev>
 
 ---
 

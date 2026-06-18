@@ -1,8 +1,8 @@
 """
 Tests for LLM Client
 """
-import pytest
-from unittest.mock import Mock, patch
+
+from unittest.mock import patch
 
 from app.agent.llm_client import LLMClient
 
@@ -89,7 +89,7 @@ class TestLLMClient:
             model="gpt-4",
             prompt_tokens=10,
             completion_tokens=20,
-            cost_cents=1
+            cost_cents=1,
         )
 
         assert log["model"] == "gpt-4"
@@ -99,7 +99,7 @@ class TestLLMClient:
         assert log["cost_cents"] == 1
         assert "timestamp" in log
 
-    @patch('app.agent.llm_client.config')
+    @patch("app.agent.llm_client.config")
     def test_init_uses_config(self, mock_config):
         """Test that client uses config values."""
         mock_config.USE_MOCK_LLM = True
@@ -134,10 +134,9 @@ class TestLLMClient:
         text = "Hello world this is a test"
 
         # Mock the import to raise ImportError
-        with patch('builtins.__import__', side_effect=ImportError("No module named 'tiktoken'")):
+        with patch("builtins.__import__", side_effect=ImportError("No module named 'tiktoken'")):
             tokens = client.count_tokens(text)
 
             # Fallback estimate: ~1.3 tokens per word
             expected = int(len(text.split()) * 1.3)
             assert tokens == expected
-

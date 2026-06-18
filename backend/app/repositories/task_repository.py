@@ -3,8 +3,9 @@ Task Repository
 
 任务仓储层，提供任务数据访问方法
 """
+
 import uuid
-from typing import Any, Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -23,7 +24,9 @@ class TaskRepository:
         """
         self.db = db
 
-    def create(self, project_id: uuid.UUID, title: str, description: str, priority: int = 0) -> Task:
+    def create(
+        self, project_id: uuid.UUID, title: str, description: str, priority: int = 0
+    ) -> Task:
         """
         创建新任务
 
@@ -36,13 +39,19 @@ class TaskRepository:
         Returns:
             Task: 创建的任务对象
         """
-        task = Task(project_id=project_id, title=title, description=description, status="pending", priority=priority)
+        task = Task(
+            project_id=project_id,
+            title=title,
+            description=description,
+            status="pending",
+            priority=priority,
+        )
         self.db.add(task)
         self.db.commit()
         self.db.refresh(task)
         return task
 
-    def get_by_id(self, task_id: uuid.UUID) -> Optional[Task]:
+    def get_by_id(self, task_id: uuid.UUID) -> Task | None:
         """
         根据 ID 获取任务
 
@@ -64,7 +73,12 @@ class TaskRepository:
         Returns:
             list[Task]: 任务列表
         """
-        return self.db.query(Task).filter(Task.project_id == project_id).order_by(Task.created_at.desc()).all()
+        return (
+            self.db.query(Task)
+            .filter(Task.project_id == project_id)
+            .order_by(Task.created_at.desc())
+            .all()
+        )
 
     def get_by_status(self, project_id: uuid.UUID, status: str) -> list[Task]:
         """
@@ -95,7 +109,9 @@ class TaskRepository:
         Returns:
             list[Task]: 任务列表
         """
-        return self.db.query(Task).order_by(Task.created_at.desc()).limit(limit).offset(offset).all()
+        return (
+            self.db.query(Task).order_by(Task.created_at.desc()).limit(limit).offset(offset).all()
+        )
 
     def update_status(self, task_id: uuid.UUID, status: str) -> bool:
         """
@@ -117,9 +133,9 @@ class TaskRepository:
     def update(
         self,
         task_id: uuid.UUID,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        priority: Optional[int] = None,
+        title: str | None = None,
+        description: str | None = None,
+        priority: int | None = None,
     ) -> bool:
         """
         更新任务字段（数据库操作）

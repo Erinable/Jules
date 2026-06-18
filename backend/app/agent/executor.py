@@ -1,21 +1,22 @@
 """
 Agent Executor for task execution and code generation.
 """
-from typing import Optional
+
 from datetime import datetime
+
 from sqlalchemy.orm import Session
 
-from app.models.task import Task
+from app.agent.analyzer import CodeAnalyzer
+from app.agent.config import config
+from app.agent.llm_client import LLMClient
 from app.models.agent_execution import AgentExecution
 from app.models.code_file import CodeFile
 from app.models.quality_metric import QualityMetric
+from app.models.task import Task
 from app.repositories.agent_execution_repository import AgentExecutionRepository
 from app.repositories.code_file_repository import CodeFileRepository
 from app.repositories.quality_metric_repository import QualityMetricRepository
 from app.repositories.task_repository import TaskRepository
-from app.agent.llm_client import LLMClient
-from app.agent.analyzer import CodeAnalyzer
-from app.agent.config import config
 
 
 class AgentExecutor:
@@ -128,7 +129,7 @@ class AgentExecutor:
 Generate Python code for the following task:
 
 Title: {task.title}
-Description: {task.description or 'No description provided'}
+Description: {task.description or "No description provided"}
 
 Requirements:
 - Write clean, well-documented Python code
@@ -169,12 +170,7 @@ Return only the Python code without explanations.
 
         return metric
 
-    def save_code_version(
-        self,
-        project_id: str,
-        content: str,
-        file_path: str
-    ) -> CodeFile:
+    def save_code_version(self, project_id: str, content: str, file_path: str) -> CodeFile:
         """
         Save code file version.
 

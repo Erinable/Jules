@@ -164,9 +164,9 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 服务启动后访问：
 
-- **API 文档（Swagger UI）**: http://localhost:8000/docs
-- **API 文档（ReDoc）**: http://localhost:8000/redoc
-- **健康检查**: http://localhost:8000/health
+- **API 文档（Swagger UI）**: <http://localhost:8000/docs>
+- **API 文档（ReDoc）**: <http://localhost:8000/redoc>
+- **健康检查**: <http://localhost:8000/health>
 
 ## API 端点
 
@@ -559,11 +559,11 @@ MIT License - 详见根目录 [LICENSE](../LICENSE) 文件
 
 ## 联系方式
 
-- **项目主页**: https://github.com/your-org/jules
-- **问题反馈**: https://github.com/your-org/jules/issues
-- **API 文档**: http://localhost:8000/docs
+- **项目主页**: <https://github.com/your-org/jules>
+- **问题反馈**: <https://github.com/your-org/jules/issues>
+- **API 文档**: <http://localhost:8000/docs>
 
 ---
 
-**版本**: 1.0.0  
+**版本**: 1.0.0
 **最后更新**: 2026-06-17

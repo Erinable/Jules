@@ -1,16 +1,16 @@
 """
 Tests for AgentExecutionRepository
 """
+
 import uuid
 from datetime import datetime
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.models.project import Project
 from app.models.task import Task
 from app.models.user import User
 from app.repositories.agent_execution_repository import AgentExecutionRepository
+from sqlalchemy.orm import Session
 
 
 class TestAgentExecutionRepository:
@@ -111,7 +111,9 @@ class TestAgentExecutionRepository:
         assert updated_execution.status == "completed"
         assert updated_execution.completed_at is not None
 
-    def test_update_status_with_state(self, db_session: Session, setup_task: Task, now: datetime) -> None:
+    def test_update_status_with_state(
+        self, db_session: Session, setup_task: Task, now: datetime
+    ) -> None:
         """Test updating execution status with state"""
         repo = AgentExecutionRepository(db_session)
         execution = repo.create(
@@ -120,7 +122,9 @@ class TestAgentExecutionRepository:
             state={"step": 1},
         )
 
-        result = repo.update_status(execution.id, status="completed", state={"step": 2, "result": "success"})
+        result = repo.update_status(
+            execution.id, status="completed", state={"step": 2, "result": "success"}
+        )
         assert result is True
 
         updated_execution = repo.get_by_id(execution.id)
@@ -128,7 +132,9 @@ class TestAgentExecutionRepository:
         assert updated_execution.status == "completed"
         assert updated_execution.state == {"step": 2, "result": "success"}
 
-    def test_update_status_not_found(self, db_session: Session, sample_execution_id: uuid.UUID) -> None:
+    def test_update_status_not_found(
+        self, db_session: Session, sample_execution_id: uuid.UUID
+    ) -> None:
         """Test updating non-existent execution returns False"""
         repo = AgentExecutionRepository(db_session)
         result = repo.update_status(sample_execution_id, status="completed")

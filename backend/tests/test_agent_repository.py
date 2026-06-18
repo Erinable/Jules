@@ -1,11 +1,11 @@
 """
 Tests for AgentRepository
 """
+
 import uuid
 
-from sqlalchemy.orm import Session
-
 from app.repositories.agent_repository import AgentRepository
+from sqlalchemy.orm import Session
 
 
 class TestAgentRepository:
@@ -105,7 +105,9 @@ class TestAgentRepository:
     def test_update_both_fields(self, db_session: Session, unique_agent_name: str) -> None:
         """Test updating both description and config"""
         repo = AgentRepository(db_session)
-        agent = repo.create(name=unique_agent_name, description="Original", config={"old": "config"})
+        agent = repo.create(
+            name=unique_agent_name, description="Original", config={"old": "config"}
+        )
 
         result = repo.update(agent.id, description="Updated", config={"new": "config"})
         assert result is True

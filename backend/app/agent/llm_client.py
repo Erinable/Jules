@@ -2,7 +2,7 @@
 LLM Client for code generation.
 Supports both real OpenAI API and Mock mode for testing.
 """
-from typing import Optional
+
 from datetime import datetime
 
 from app.agent.config import config
@@ -25,6 +25,7 @@ class LLMClient:
         if not use_mock:
             try:
                 import openai
+
                 openai.api_key = self.api_key
                 self.openai = openai
             except ImportError:
@@ -33,8 +34,8 @@ class LLMClient:
     def generate(
         self,
         prompt: str,
-        model: Optional[str] = None,
-        max_tokens: Optional[int] = None,
+        model: str | None = None,
+        max_tokens: int | None = None,
     ) -> str:
         """
         Generate code using LLM.
@@ -58,7 +59,7 @@ class LLMClient:
             model=model,
             messages=[
                 {"role": "system", "content": "You are an expert Python programmer."},
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": prompt},
             ],
             max_tokens=max_tokens,
             temperature=0.7,
@@ -78,7 +79,7 @@ class LLMClient:
         """
         # Simple mock: return a basic Python function
         if "web" in prompt.lower() or "flask" in prompt.lower():
-            return '''
+            return """
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -89,9 +90,9 @@ def health():
 
 if __name__ == '__main__':
     app.run(debug=True)
-'''
+"""
         elif "cli" in prompt.lower() or "command" in prompt.lower():
-            return '''
+            return """
 import argparse
 
 def main():
@@ -102,7 +103,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-'''
+"""
         else:
             return '''
 def process_data(data):
@@ -113,7 +114,7 @@ def process_data(data):
     return result
 '''
 
-    def count_tokens(self, text: str, model: Optional[str] = None) -> int:
+    def count_tokens(self, text: str, model: str | None = None) -> int:
         """
         Count tokens in text.
 
@@ -128,6 +129,7 @@ def process_data(data):
 
         try:
             import tiktoken
+
             encoding = tiktoken.encoding_for_model(model)
         except ImportError:
             # Fallback: rough estimate (1 token ~= 0.75 words)
@@ -135,13 +137,14 @@ def process_data(data):
         except KeyError:
             try:
                 import tiktoken
+
                 encoding = tiktoken.get_encoding("cl100k_base")
             except ImportError:
                 return int(len(text.split()) * 1.3)
 
         return len(encoding.encode(text))
 
-    def calculate_cost(self, tokens: int, model: Optional[str] = None) -> int:
+    def calculate_cost(self, tokens: int, model: str | None = None) -> int:
         """
         Calculate cost in cents for token usage.
 

@@ -3,9 +3,9 @@ CodeFile Repository
 
 代码文件仓储层，提供代码文件数据访问方法
 """
+
 import uuid
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -43,7 +43,7 @@ class CodeFileRepository:
         self.db.refresh(code_file)
         return code_file
 
-    def get_by_id(self, file_id: uuid.UUID) -> Optional[CodeFile]:
+    def get_by_id(self, file_id: uuid.UUID) -> CodeFile | None:
         """
         根据 ID 获取代码文件
 
@@ -55,7 +55,7 @@ class CodeFileRepository:
         """
         return self.db.query(CodeFile).filter(CodeFile.id == file_id).first()
 
-    def get_by_path(self, project_id: uuid.UUID, path: str) -> Optional[CodeFile]:
+    def get_by_path(self, project_id: uuid.UUID, path: str) -> CodeFile | None:
         """
         根据路径获取代码文件
 
@@ -66,7 +66,11 @@ class CodeFileRepository:
         Returns:
             Optional[CodeFile]: 代码文件对象，不存在则返回 None
         """
-        return self.db.query(CodeFile).filter(CodeFile.project_id == project_id, CodeFile.path == path).first()
+        return (
+            self.db.query(CodeFile)
+            .filter(CodeFile.project_id == project_id, CodeFile.path == path)
+            .first()
+        )
 
     def list_by_project(self, project_id: uuid.UUID) -> list[CodeFile]:
         """
@@ -78,7 +82,12 @@ class CodeFileRepository:
         Returns:
             list[CodeFile]: 代码文件列表
         """
-        return self.db.query(CodeFile).filter(CodeFile.project_id == project_id).order_by(CodeFile.path).all()
+        return (
+            self.db.query(CodeFile)
+            .filter(CodeFile.project_id == project_id)
+            .order_by(CodeFile.path)
+            .all()
+        )
 
     def get_all(self, limit: int = 100, offset: int = 0) -> list[CodeFile]:
         """
@@ -91,7 +100,13 @@ class CodeFileRepository:
         Returns:
             list[CodeFile]: 代码文件列表
         """
-        return self.db.query(CodeFile).order_by(CodeFile.updated_at.desc()).limit(limit).offset(offset).all()
+        return (
+            self.db.query(CodeFile)
+            .order_by(CodeFile.updated_at.desc())
+            .limit(limit)
+            .offset(offset)
+            .all()
+        )
 
     def update_content(self, file_id: uuid.UUID, content: str, file_hash: str) -> bool:
         """
@@ -107,7 +122,11 @@ class CodeFileRepository:
         Returns:
             bool: 操作是否成功
         """
-        result = self.db.query(CodeFile).filter(CodeFile.id == file_id).update({"content": content, "hash": file_hash, "updated_at": datetime.utcnow()})
+        result = (
+            self.db.query(CodeFile)
+            .filter(CodeFile.id == file_id)
+            .update({"content": content, "hash": file_hash, "updated_at": datetime.utcnow()})
+        )
         self.db.commit()
         return result > 0
 

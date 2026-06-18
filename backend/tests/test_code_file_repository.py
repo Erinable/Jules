@@ -1,15 +1,15 @@
 """
 Tests for CodeFileRepository
 """
+
 import uuid
 from datetime import datetime
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.models.project import Project
 from app.models.user import User
 from app.repositories.code_file_repository import CodeFileRepository
+from sqlalchemy.orm import Session
 
 
 class TestCodeFileRepository:
@@ -91,7 +91,9 @@ class TestCodeFileRepository:
         file = repo.get_by_path(setup_project.id, "nonexistent.py")
         assert file is None
 
-    def test_list_by_project(self, db_session: Session, setup_project: Project, now: datetime) -> None:
+    def test_list_by_project(
+        self, db_session: Session, setup_project: Project, now: datetime
+    ) -> None:
         """Test listing files by project"""
         repo = CodeFileRepository(db_session)
         repo.create(
@@ -111,7 +113,9 @@ class TestCodeFileRepository:
         assert len(files) == 2
         assert all(f.project_id == setup_project.id for f in files)
 
-    def test_update_content(self, db_session: Session, setup_project: Project, now: datetime) -> None:
+    def test_update_content(
+        self, db_session: Session, setup_project: Project, now: datetime
+    ) -> None:
         """Test updating file content"""
         repo = CodeFileRepository(db_session)
         file = repo.create(

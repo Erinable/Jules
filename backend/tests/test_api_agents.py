@@ -1,14 +1,13 @@
 """
 Integration tests for Agent API endpoints
 """
-from datetime import datetime
 
-import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
+from datetime import datetime
 
 from app.main import app
 from app.models.agent import Agent
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 client = TestClient(app)
 
@@ -33,7 +32,13 @@ class TestAgentAPI:
 
     def test_create_agent_duplicate_name(self, db_session: Session) -> None:
         """Test creating agent with duplicate name fails"""
-        agent = Agent(name="duplicate-agent", description="Agent 1", config={}, is_active="true", created_at=datetime.now())
+        agent = Agent(
+            name="duplicate-agent",
+            description="Agent 1",
+            config={},
+            is_active="true",
+            created_at=datetime.now(),
+        )
         db_session.add(agent)
         db_session.commit()
 
@@ -49,7 +54,13 @@ class TestAgentAPI:
 
     def test_get_agent(self, db_session: Session) -> None:
         """Test retrieving agent by ID"""
-        agent = Agent(name="get-agent", description="Get Agent", config={}, is_active="true", created_at=datetime.now())
+        agent = Agent(
+            name="get-agent",
+            description="Get Agent",
+            config={},
+            is_active="true",
+            created_at=datetime.now(),
+        )
         db_session.add(agent)
         db_session.commit()
 
@@ -61,7 +72,13 @@ class TestAgentAPI:
     def test_list_agents(self, db_session: Session) -> None:
         """Test listing agents"""
         for i in range(3):
-            agent = Agent(name=f"agent-{i}", description=f"Agent {i}", config={}, is_active="true", created_at=datetime.now())
+            agent = Agent(
+                name=f"agent-{i}",
+                description=f"Agent {i}",
+                config={},
+                is_active="true",
+                created_at=datetime.now(),
+            )
             db_session.add(agent)
         db_session.commit()
 
@@ -72,7 +89,13 @@ class TestAgentAPI:
 
     def test_list_active_agents(self, db_session: Session) -> None:
         """Test listing active agents"""
-        agent = Agent(name="active-agent", description="Active", config={}, is_active="true", created_at=datetime.now())
+        agent = Agent(
+            name="active-agent",
+            description="Active",
+            config={},
+            is_active="true",
+            created_at=datetime.now(),
+        )
         db_session.add(agent)
         db_session.commit()
 
@@ -83,7 +106,13 @@ class TestAgentAPI:
 
     def test_update_agent(self, db_session: Session) -> None:
         """Test updating agent"""
-        agent = Agent(name="update-agent", description="Original", config={}, is_active="true", created_at=datetime.now())
+        agent = Agent(
+            name="update-agent",
+            description="Original",
+            config={},
+            is_active="true",
+            created_at=datetime.now(),
+        )
         db_session.add(agent)
         db_session.commit()
 
@@ -97,7 +126,13 @@ class TestAgentAPI:
 
     def test_delete_agent(self, db_session: Session) -> None:
         """Test deleting agent"""
-        agent = Agent(name="delete-agent", description="Delete", config={}, is_active="true", created_at=datetime.now())
+        agent = Agent(
+            name="delete-agent",
+            description="Delete",
+            config={},
+            is_active="true",
+            created_at=datetime.now(),
+        )
         db_session.add(agent)
         db_session.commit()
 

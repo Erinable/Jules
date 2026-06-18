@@ -1,15 +1,17 @@
 """
 Background worker for processing agent tasks.
 """
+
 import asyncio
 import logging
+
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
-from app.agent.scheduler import scheduler
-from app.agent.executor import AgentExecutor
-from app.repositories.task_repository import TaskRepository
 from app.agent.config import config
+from app.agent.executor import AgentExecutor
+from app.agent.scheduler import scheduler
+from app.database import SessionLocal
+from app.repositories.task_repository import TaskRepository
 
 logger = logging.getLogger(__name__)
 

@@ -3,9 +3,9 @@ QualityMetric Repository
 
 质量指标仓储层，提供质量指标数据访问方法
 """
+
 import uuid
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -31,7 +31,7 @@ class QualityMetricRepository:
         maintainability_index: float = 0.0,
         security_issues: int = 0,
         test_coverage: float = 0.0,
-        measured_at: Optional[datetime] = None,
+        measured_at: datetime | None = None,
     ) -> QualityMetric:
         """
         创建新的质量指标记录
@@ -60,7 +60,7 @@ class QualityMetricRepository:
         self.db.refresh(metric)
         return metric
 
-    def get_by_id(self, metric_id: uuid.UUID) -> Optional[QualityMetric]:
+    def get_by_id(self, metric_id: uuid.UUID) -> QualityMetric | None:
         """
         根据 ID 获取质量指标
 
@@ -72,7 +72,7 @@ class QualityMetricRepository:
         """
         return self.db.query(QualityMetric).filter(QualityMetric.id == metric_id).first()
 
-    def get_latest(self, project_id: uuid.UUID) -> Optional[QualityMetric]:
+    def get_latest(self, project_id: uuid.UUID) -> QualityMetric | None:
         """
         获取项目的最新质量指标
 
@@ -82,7 +82,12 @@ class QualityMetricRepository:
         Returns:
             Optional[QualityMetric]: 最新质量指标对象，不存在则返回 None
         """
-        return self.db.query(QualityMetric).filter(QualityMetric.project_id == project_id).order_by(QualityMetric.measured_at.desc()).first()
+        return (
+            self.db.query(QualityMetric)
+            .filter(QualityMetric.project_id == project_id)
+            .order_by(QualityMetric.measured_at.desc())
+            .first()
+        )
 
     def get_history(self, project_id: uuid.UUID, limit: int = 10) -> list[QualityMetric]:
         """
@@ -95,7 +100,13 @@ class QualityMetricRepository:
         Returns:
             list[QualityMetric]: 质量指标历史列表
         """
-        return self.db.query(QualityMetric).filter(QualityMetric.project_id == project_id).order_by(QualityMetric.measured_at.desc()).limit(limit).all()
+        return (
+            self.db.query(QualityMetric)
+            .filter(QualityMetric.project_id == project_id)
+            .order_by(QualityMetric.measured_at.desc())
+            .limit(limit)
+            .all()
+        )
 
     def get_all(self, limit: int = 100, offset: int = 0) -> list[QualityMetric]:
         """
@@ -108,7 +119,13 @@ class QualityMetricRepository:
         Returns:
             list[QualityMetric]: 质量指标列表
         """
-        return self.db.query(QualityMetric).order_by(QualityMetric.measured_at.desc()).limit(limit).offset(offset).all()
+        return (
+            self.db.query(QualityMetric)
+            .order_by(QualityMetric.measured_at.desc())
+            .limit(limit)
+            .offset(offset)
+            .all()
+        )
 
     def delete(self, metric_id: uuid.UUID) -> bool:
         """

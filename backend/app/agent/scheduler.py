@@ -1,12 +1,11 @@
 """
 Agent Scheduler for managing task queue and execution.
 """
-from typing import Optional, List
-from datetime import datetime
-from collections import deque
-import asyncio
 
-from app.models.task import Task
+import asyncio
+from collections import deque
+from datetime import datetime
+
 from app.agent.config import config
 
 
@@ -53,7 +52,7 @@ class AgentScheduler:
 
         return task_id
 
-    def get_next_task(self) -> Optional[dict]:
+    def get_next_task(self) -> dict | None:
         """
         Get the next task to execute.
 
@@ -70,12 +69,7 @@ class AgentScheduler:
         self.running_tasks[task_entry["task_id"]] = task_entry
         return task_entry
 
-    def update_task_status(
-        self,
-        task_id: str,
-        status: str,
-        error: Optional[str] = None
-    ):
+    def update_task_status(self, task_id: str, status: str, error: str | None = None):
         """
         Update task execution status.
 
@@ -147,7 +141,7 @@ class AgentScheduler:
             "capacity_available": self.max_concurrent - len(self.running_tasks),
         }
 
-    def get_running_tasks(self) -> List[dict]:
+    def get_running_tasks(self) -> list[dict]:
         """
         Get list of currently running tasks.
 
@@ -156,7 +150,7 @@ class AgentScheduler:
         """
         return list(self.running_tasks.values())
 
-    def get_failed_tasks(self) -> List[dict]:
+    def get_failed_tasks(self) -> list[dict]:
         """
         Get list of failed tasks.
 
@@ -178,7 +172,9 @@ class AgentScheduler:
                 task_entry = self.failed_tasks[task_id]
                 retry_after = task_entry.get("retry_after")
 
-                if retry_after and (current_time - retry_after).total_seconds() >= task_entry.get("backoff_seconds", 0):
+                if retry_after and (current_time - retry_after).total_seconds() >= task_entry.get(
+                    "backoff_seconds", 0
+                ):
                     self.retry_failed_task(task_id)
 
             await asyncio.sleep(config.QUEUE_POLL_INTERVAL_SECONDS)

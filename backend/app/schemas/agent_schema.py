@@ -1,8 +1,9 @@
 """
 Agent Pydantic schemas for request/response validation
 """
+
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -12,7 +13,7 @@ class AgentBase(BaseModel):
     """Base agent schema with common fields"""
 
     name: str = Field(..., min_length=1, max_length=100, description="Agent name")
-    description: Optional[str] = Field(None, description="Agent description")
+    description: str | None = Field(None, description="Agent description")
     config: dict[str, Any] = Field(default_factory=dict, description="Agent configuration")
 
 
@@ -33,8 +34,8 @@ class AgentCreate(AgentBase):
 class AgentUpdate(BaseModel):
     """Schema for updating an agent"""
 
-    description: Optional[str] = Field(None, description="Agent description")
-    config: Optional[dict[str, Any]] = Field(None, description="Agent configuration")
+    description: str | None = Field(None, description="Agent description")
+    config: dict[str, Any] | None = Field(None, description="Agent configuration")
 
     model_config = ConfigDict(
         json_schema_extra={

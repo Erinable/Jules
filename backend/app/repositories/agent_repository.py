@@ -3,8 +3,9 @@ Agent Repository
 
 Agent 仓储层，提供 Agent 数据访问方法
 """
+
 import uuid
-from typing import Any, Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -41,7 +42,7 @@ class AgentRepository:
         self.db.refresh(agent)
         return agent
 
-    def get_by_id(self, agent_id: uuid.UUID) -> Optional[Agent]:
+    def get_by_id(self, agent_id: uuid.UUID) -> Agent | None:
         """
         根据 ID 获取 Agent
 
@@ -53,7 +54,7 @@ class AgentRepository:
         """
         return self.db.query(Agent).filter(Agent.id == agent_id).first()
 
-    def get_by_name(self, name: str) -> Optional[Agent]:
+    def get_by_name(self, name: str) -> Agent | None:
         """
         根据名称获取 Agent
 
@@ -87,7 +88,12 @@ class AgentRepository:
         """
         return self.db.query(Agent).order_by(Agent.name).limit(limit).offset(offset).all()
 
-    def update(self, agent_id: uuid.UUID, description: Optional[str] = None, config: Optional[dict[str, Any]] = None) -> bool:
+    def update(
+        self,
+        agent_id: uuid.UUID,
+        description: str | None = None,
+        config: dict[str, Any] | None = None,
+    ) -> bool:
         """
         更新 Agent 信息（数据库操作）
 

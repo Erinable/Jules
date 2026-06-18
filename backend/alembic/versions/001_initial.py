@@ -5,7 +5,8 @@ Revises:
 Create Date: 2026-06-16 14:00:00.000000
 
 """
-from typing import Sequence, Union
+
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
@@ -13,9 +14,9 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = "001_initial"
-down_revision: Union[str, None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -81,7 +82,9 @@ def upgrade() -> None:
     )
     op.create_index("idx_code_files_project_id", "code_files", ["project_id"], unique=False)
     op.create_index("idx_code_files_hash", "code_files", ["hash"], unique=False)
-    op.create_index("idx_code_files_project_path", "code_files", ["project_id", "path"], unique=True)
+    op.create_index(
+        "idx_code_files_project_path", "code_files", ["project_id", "path"], unique=True
+    )
 
     # Create quality_metrics table
     op.create_table(
@@ -96,8 +99,12 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["project_id"], ["projects.id"]),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index("idx_quality_metrics_project_id", "quality_metrics", ["project_id"], unique=False)
-    op.create_index("idx_quality_metrics_measured_at", "quality_metrics", ["measured_at"], unique=False)
+    op.create_index(
+        "idx_quality_metrics_project_id", "quality_metrics", ["project_id"], unique=False
+    )
+    op.create_index(
+        "idx_quality_metrics_measured_at", "quality_metrics", ["measured_at"], unique=False
+    )
 
     # Create agents table
     op.create_table(
@@ -130,7 +137,9 @@ def upgrade() -> None:
     )
     op.create_index("idx_agent_executions_task_id", "agent_executions", ["task_id"], unique=False)
     op.create_index("idx_agent_executions_status", "agent_executions", ["status"], unique=False)
-    op.create_index("idx_agent_executions_started_at", "agent_executions", ["started_at"], unique=False)
+    op.create_index(
+        "idx_agent_executions_started_at", "agent_executions", ["started_at"], unique=False
+    )
 
     # Create code_versions table
     op.create_table(
@@ -145,7 +154,12 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index("idx_code_versions_file_id", "code_versions", ["file_id"], unique=False)
-    op.create_index("idx_code_versions_file_version", "code_versions", ["file_id", "version_number"], unique=True)
+    op.create_index(
+        "idx_code_versions_file_version",
+        "code_versions",
+        ["file_id", "version_number"],
+        unique=True,
+    )
     op.create_index("idx_code_versions_commit_hash", "code_versions", ["commit_hash"], unique=False)
 
     # Create llm_calls table

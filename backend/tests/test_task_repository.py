@@ -1,15 +1,15 @@
 """
 Tests for TaskRepository
 """
+
 import uuid
 from datetime import datetime
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.models.project import Project
 from app.models.user import User
 from app.repositories.task_repository import TaskRepository
+from sqlalchemy.orm import Session
 
 
 class TestTaskRepository:

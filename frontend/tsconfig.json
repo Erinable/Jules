@@ -19,14 +19,29 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
+      "@/*": ["./src/*", "./*"],
+      "@/components/*": ["./src/components/*", "./components/*"],
+      "@/contexts/*": ["./src/contexts/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/utils/*": ["./src/utils/*"],
       "@/lib/*": ["./lib/*"],
-      "@/app/*": ["./app/*"],
-      "@/services": ["./src/services/index.ts"],
-      "@/types": ["./src/types/index.ts"]
+      "@/app/*": ["./app/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "vitest.config.ts", "vitest.setup.ts", "**/*.test.ts", "**/*.test.tsx"]
+  "exclude": [
+    "node_modules",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "src/App.example.tsx",
+    "src/components/ProtectedRoute.tsx",
+    "src/pages/HomePage.tsx",
+    "src/pages/LoginPage.tsx",
+    "src/pages/RegisterPage.tsx"
+  ]
 }

@@ -2,55 +2,63 @@
  * Quality Metrics Page
  */
 
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { qualityService } from '@/services'
-import type { QualityMetric } from '@/types'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import { useEffect, useState } from "react";
+import { qualityService } from "@/services";
+import type { QualityMetric } from "@/types";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function QualityPage() {
-  const [latestMetric, setLatestMetric] = useState<QualityMetric | null>(null)
-  const [history, setHistory] = useState<QualityMetric[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [projectId, setProjectId] = useState('')
+  const [latestMetric, setLatestMetric] = useState<QualityMetric | null>(null);
+  const [history, setHistory] = useState<QualityMetric[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState("");
 
   const loadLatestMetric = async (projectId: string) => {
     try {
-      setLoading(true)
-      setError(null)
-      const data = await qualityService.getLatest(projectId)
-      setLatestMetric(data)
+      setLoading(true);
+      setError(null);
+      const data = await qualityService.getLatest(projectId);
+      setLatestMetric(data);
     } catch (err) {
-      setError('Failed to load quality metric')
+      setError("Failed to load quality metric");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const loadHistory = async (projectId: string) => {
     try {
-      const data = await qualityService.getHistory(projectId, { limit: 10 })
-      setHistory(data)
+      const data = await qualityService.getHistory(projectId, { limit: 10 });
+      setHistory(data);
     } catch (err) {
-      setError('Failed to load history')
+      setError("Failed to load history");
     }
-  }
+  };
 
   const handleLoadMetrics = () => {
     if (projectId) {
-      loadLatestMetric(projectId)
-      loadHistory(projectId)
+      loadLatestMetric(projectId);
+      loadHistory(projectId);
     }
-  }
+  };
 
-  const MetricCard = ({ label, value, color }: { label: string; value: number; color: string }) => (
+  const MetricCard = ({
+    label,
+    value,
+    color,
+  }: {
+    label: string;
+    value: number;
+    color: string;
+  }) => (
     <div className="bg-white p-6 rounded-lg shadow">
       <h3 className="text-sm font-medium text-gray-600 mb-2">{label}</h3>
       <p className={`text-3xl font-bold ${color}`}>{value.toFixed(2)}</p>
     </div>
-  )
+  );
 
   return (
     <div className="space-y-6">
@@ -124,21 +132,41 @@ export default function QualityPage() {
                 <table className="min-w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Date</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Complexity</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Maintainability</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Security Issues</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Coverage (%)</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">
+                        Date
+                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">
+                        Complexity
+                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">
+                        Maintainability
+                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">
+                        Security Issues
+                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">
+                        Coverage (%)
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {history.map((metric) => (
                       <tr key={metric.id}>
-                        <td className="px-4 py-2 text-sm">{new Date(metric.measured_at).toLocaleDateString()}</td>
-                        <td className="px-4 py-2 text-sm">{metric.avg_complexity.toFixed(2)}</td>
-                        <td className="px-4 py-2 text-sm">{metric.maintainability_index.toFixed(2)}</td>
-                        <td className="px-4 py-2 text-sm">{metric.security_issues}</td>
-                        <td className="px-4 py-2 text-sm">{metric.test_coverage.toFixed(2)}</td>
+                        <td className="px-4 py-2 text-sm">
+                          {new Date(metric.measured_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          {metric.avg_complexity.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          {metric.maintainability_index.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          {metric.security_issues}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          {metric.test_coverage.toFixed(2)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -153,5 +181,5 @@ export default function QualityPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

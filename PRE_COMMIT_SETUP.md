@@ -5,6 +5,7 @@ This document provides instructions for setting up and using pre-commit hooks in
 ## Overview
 
 Pre-commit hooks automatically run checks before each commit to ensure code quality and prevent common issues. We use:
+
 - **Backend (Python)**: `pre-commit` framework
 - **Frontend (Node.js)**: `husky` + `lint-staged` + `commitlint`
 
@@ -40,33 +41,40 @@ poetry run pre-commit run --all-files
 The following hooks run automatically before each commit:
 
 #### Code Quality
+
 - **Ruff**: Fast Python linter and formatter (replaces flake8, isort, black)
 - **mypy**: Static type checking
 - **reorder-python-imports**: Import sorting
 
 #### Security
+
 - **Bandit**: Security vulnerability scanner
 - **Safety**: Dependency vulnerability checker
 - **detect-secrets**: Prevents committing secrets
 
 #### File Quality
+
 - **trailing-whitespace**: Removes trailing whitespace
 - **end-of-file-fixer**: Ensures files end with newline
 - **mixed-line-ending**: Ensures consistent line endings (LF)
 - **check-yaml/json/toml**: Validates file syntax
 
 #### Python Specific
+
 - **check-docstring-first**: Ensures docstrings come first
 - **debug-statements**: Catches debug statements
 - **name-tests-test**: Validates test file naming
 
 #### Documentation
+
 - **interrogate**: Checks docstring coverage (minimum 50%)
 
 #### SQL
+
 - **sqlfluff**: SQL linting and formatting for PostgreSQL
 
 #### Poetry
+
 - **poetry-check**: Validates pyproject.toml
 - **poetry-lock**: Ensures lock file is up to date
 
@@ -125,12 +133,15 @@ ls -la .husky/
 The following hooks run automatically:
 
 #### Pre-commit Hook (`.husky/pre-commit`)
+
 Runs on staged files using `lint-staged`:
+
 - **ESLint**: JavaScript/TypeScript linting with auto-fix
 - **Prettier**: Code formatting
 - **TypeScript**: Type checking
 
 #### Commit Message Hook (`.husky/commit-msg`)
+
 - **Commitlint**: Validates commit message format (Conventional Commits)
 
 ### Configuration Files
@@ -172,6 +183,7 @@ Both backend and frontend enforce Conventional Commits format:
 ### Type
 
 Must be one of:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -228,6 +240,7 @@ git commit -m "test(auth): add unit tests"
 ### When Hooks Fail
 
 #### Backend Example
+
 ```bash
 $ git commit -m "feat: add new feature"
 
@@ -239,12 +252,14 @@ app/main.py:10:1: E501 Line too long (120 > 100 characters)
 ```
 
 **Fix**: Edit the file, then:
+
 ```bash
 git add app/main.py
 git commit -m "feat: add new feature"
 ```
 
 #### Frontend Example
+
 ```bash
 $ git commit -m "add new feature"
 
@@ -255,6 +270,7 @@ Commitlint..............................Failed
 ```
 
 **Fix**: Use correct format:
+
 ```bash
 git commit -m "feat: add new feature"
 ```
@@ -266,20 +282,26 @@ git commit -m "feat: add new feature"
 ### Backend Issues
 
 #### Issue: "pre-commit command not found"
+
 **Solution**:
+
 ```bash
 poetry install
 poetry run pre-commit install
 ```
 
 #### Issue: "ModuleNotFoundError" in mypy
+
 **Solution**: Install additional dependencies
+
 ```bash
 poetry run pre-commit install --install-hooks
 ```
 
 #### Issue: Hooks take too long
+
 **Solution**: Skip slow hooks for local development (edit `.pre-commit-config.yaml`):
+
 ```yaml
 repos:
   - repo: ...
@@ -289,6 +311,7 @@ repos:
 ```
 
 Then run manually when needed:
+
 ```bash
 poetry run pre-commit run slow-hook --all-files
 ```
@@ -296,21 +319,27 @@ poetry run pre-commit run slow-hook --all-files
 ### Frontend Issues
 
 #### Issue: "husky command not found"
+
 **Solution**:
+
 ```bash
 npm install
 npm run prepare
 ```
 
 #### Issue: Hooks not executing
+
 **Solution**: Check if hooks are executable:
+
 ```bash
 ls -la .husky/
 chmod +x .husky/pre-commit .husky/commit-msg
 ```
 
 #### Issue: "lint-staged not found"
+
 **Solution**:
+
 ```bash
 npm install lint-staged --save-dev
 ```
@@ -322,17 +351,23 @@ npm install lint-staged --save-dev
 Pre-commit hooks are also configured to run in CI:
 
 ### Backend CI
+
 File: `.github/workflows/backend-ci.yml`
+
 - Runs same checks as pre-commit hooks
 - Enforces on all pull requests
 
 ### Frontend CI
+
 File: `.github/workflows/frontend-ci.yml`
+
 - Runs ESLint, Prettier, TypeScript checks
 - Enforces on all pull requests
 
 ### PR Checks
+
 File: `.github/workflows/pr-checks.yml`
+
 - Validates commit message format
 - Checks PR title and description
 
@@ -341,13 +376,17 @@ File: `.github/workflows/pr-checks.yml`
 ## Best Practices
 
 ### 1. Commit Often
+
 Pre-commit hooks run fast. Commit small, logical changes frequently.
 
 ### 2. Fix Issues Immediately
+
 Don't skip hooks to "fix later". Address issues before committing.
 
 ### 3. Run Manual Checks
+
 Before pushing, run full checks:
+
 ```bash
 # Backend
 cd backend
@@ -361,7 +400,9 @@ npm run test
 ```
 
 ### 4. Keep Hooks Updated
+
 Update hooks monthly:
+
 ```bash
 # Backend
 poetry run pre-commit autoupdate
@@ -371,7 +412,9 @@ npm update husky lint-staged @commitlint/cli
 ```
 
 ### 5. Document Exceptions
+
 If you must skip a hook, document why in the commit message:
+
 ```bash
 git commit -m "feat: emergency fix" --no-verify
 # Include explanation in PR description
@@ -429,7 +472,9 @@ module.exports = {
 ## FAQ
 
 ### Q: Do hooks run on `git commit --amend`?
+
 **A**: No, hooks don't run on amend by default. Run manually if needed:
+
 ```bash
 # Backend
 poetry run pre-commit run --all-files
@@ -438,7 +483,9 @@ git commit --amend
 ```
 
 ### Q: Can I run specific hooks only?
+
 **A**: Yes:
+
 ```bash
 # Backend
 poetry run pre-commit run ruff --all-files
@@ -450,7 +497,9 @@ npm run type-check
 ```
 
 ### Q: How do I test hooks without committing?
+
 **A**:
+
 ```bash
 # Backend
 poetry run pre-commit run --all-files
@@ -461,12 +510,15 @@ npm run type-check
 ```
 
 ### Q: What if hooks fail in CI but pass locally?
+
 **A**: Usually due to:
+
 1. Different versions of tools
 2. Unstaged changes committed
 3. Environment differences
 
 **Solution**: Update tools and run full checks locally:
+
 ```bash
 # Backend
 poetry update
@@ -482,6 +534,7 @@ npm run lint && npm run type-check
 ## Support
 
 For issues or questions:
+
 - Create an issue in the repository
 - Check GitHub Actions logs for CI failures
 - Review `.pre-commit-config.yaml` (backend) or `.husky/` (frontend)

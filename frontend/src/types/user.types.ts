@@ -3,20 +3,20 @@
  */
 
 export interface User {
-  id: string
-  email: string
-  name: string
-  created_at: string
-  [key: string]: unknown
+  id: string;
+  email: string;
+  name: string;
+  created_at: string;
+  [key: string]: unknown;
 }
 
 export interface UserCreate {
-  email: string
-  name: string
+  email: string;
+  name: string;
 }
 
 export interface UserUpdate {
-  name: string
+  name: string;
 }
 
 export interface UserResponse extends User {}

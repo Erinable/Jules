@@ -3,28 +3,28 @@
  */
 
 export interface Agent {
-  id: string
-  name: string
-  description?: string
-  config: Record<string, unknown>
-  is_active: string
-  created_at: string
-  updated_at?: string
-  [key: string]: unknown
+  id: string;
+  name: string;
+  description?: string;
+  config: Record<string, unknown>;
+  is_active: string;
+  created_at: string;
+  updated_at?: string;
+  [key: string]: unknown;
 }
 
 export interface AgentCreate {
-  name: string
-  description?: string
-  config?: Record<string, unknown>
-  is_active?: string
+  name: string;
+  description?: string;
+  config?: Record<string, unknown>;
+  is_active?: string;
 }
 
 export interface AgentUpdate {
-  name?: string
-  description?: string
-  config?: Record<string, unknown>
-  is_active?: string
+  name?: string;
+  description?: string;
+  config?: Record<string, unknown>;
+  is_active?: string;
 }
 
 export interface AgentResponse extends Agent {}

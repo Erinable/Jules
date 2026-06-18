@@ -1,16 +1,16 @@
 """
 Integration tests for Code File API endpoints
 """
+
 from datetime import datetime
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from app.main import app
 from app.models.code_file import CodeFile
 from app.models.project import Project
 from app.models.user import User
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 client = TestClient(app)
 
@@ -100,9 +100,7 @@ class TestCodeFileAPI:
         response = client.get(f"/api/v1/code-files/{sample_code_file_id}")
         assert response.status_code == 404
 
-    def test_list_code_files_by_project(
-        self, db_session: Session, setup_project: Project
-    ) -> None:
+    def test_list_code_files_by_project(self, db_session: Session, setup_project: Project) -> None:
         """Test listing code files filtered by project"""
         for i in range(3):
             code_file = CodeFile(
@@ -145,9 +143,7 @@ class TestCodeFileAPI:
         assert data["content"] == "updated content"
         assert data["hash"] == "updated_hash"
 
-    def test_update_code_file_not_found(
-        self, db_session: Session, sample_code_file_id
-    ) -> None:
+    def test_update_code_file_not_found(self, db_session: Session, sample_code_file_id) -> None:
         """Test updating non-existent code file returns 404"""
         response = client.put(
             f"/api/v1/code-files/{sample_code_file_id}",
@@ -170,9 +166,7 @@ class TestCodeFileAPI:
         response = client.delete(f"/api/v1/code-files/{code_file.id}")
         assert response.status_code == 204
 
-    def test_delete_code_file_not_found(
-        self, db_session: Session, sample_code_file_id
-    ) -> None:
+    def test_delete_code_file_not_found(self, db_session: Session, sample_code_file_id) -> None:
         """Test deleting non-existent code file returns 404"""
         response = client.delete(f"/api/v1/code-files/{sample_code_file_id}")
         assert response.status_code == 404

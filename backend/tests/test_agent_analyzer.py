@@ -1,7 +1,6 @@
 """
 Tests for Code Analyzer
 """
-import pytest
 
 from app.agent.analyzer import CodeAnalyzer
 

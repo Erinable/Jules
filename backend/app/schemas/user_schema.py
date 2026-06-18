@@ -1,8 +1,8 @@
 """
 User Pydantic schemas for request/response validation
 """
+
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
@@ -18,11 +18,21 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     """Schema for creating a new user"""
 
+    password: str | None = Field(
+        None,
+        min_length=8,
+        max_length=128,
+        description="Password (optional, only for auth registration)",
+    )
+    role: str = Field("viewer", description="User role")
+
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "email": "user@example.com",
                 "name": "John Doe",
+                "password": "StrongP@ss1",
+                "role": "viewer",
             }
         }
     )
@@ -31,8 +41,8 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     """Schema for updating a user"""
 
-    email: Optional[EmailStr] = Field(None, description="User email address")
-    name: Optional[str] = Field(None, min_length=1, max_length=255, description="User name")
+    email: EmailStr | None = Field(None, description="User email address")
+    name: str | None = Field(None, min_length=1, max_length=255, description="User name")
 
     model_config = ConfigDict(
         json_schema_extra={

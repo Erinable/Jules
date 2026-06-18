@@ -1,7 +1,7 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+set -e
 
 # Run lint-staged on pre-commit
+cd frontend || exit 1
 npx lint-staged
 
 # Run type check

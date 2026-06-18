@@ -1,6 +1,7 @@
 """
 Quality Metric Pydantic schemas for request/response validation
 """
+
 from datetime import datetime
 from uuid import UUID
 
@@ -12,7 +13,9 @@ class QualityMetricCreate(BaseModel):
 
     project_id: UUID = Field(..., description="Project ID this metric belongs to")
     avg_complexity: float = Field(..., ge=0, description="Average cyclomatic complexity")
-    maintainability_index: float = Field(0.0, ge=0, le=100, description="Maintainability index (0-100)")
+    maintainability_index: float = Field(
+        0.0, ge=0, le=100, description="Maintainability index (0-100)"
+    )
     security_issues: int = Field(0, ge=0, description="Number of security issues")
     test_coverage: float = Field(0.0, ge=0, le=100, description="Test coverage percentage (0-100)")
 

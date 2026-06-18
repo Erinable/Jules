@@ -2,84 +2,91 @@
  * Executions Management Page
  */
 
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { executionService } from '@/services'
-import type { Execution } from '@/types'
-import DataTable from '@/components/DataTable'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import { useEffect, useState } from "react";
+import { executionService } from "@/services";
+import type { Execution } from "@/types";
+import DataTable from "@/components/DataTable";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ExecutionsPage() {
-  const [executions, setExecutions] = useState<Execution[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [filterTaskId, setFilterTaskId] = useState('')
+  const [executions, setExecutions] = useState<Execution[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filterTaskId, setFilterTaskId] = useState("");
 
   const loadExecutions = async (taskId?: string) => {
     try {
-      setLoading(true)
-      setError(null)
-      const data = await executionService.getAll(taskId)
-      setExecutions(data)
+      setLoading(true);
+      setError(null);
+      const data = await executionService.getAll(taskId);
+      setExecutions(data);
     } catch (err) {
-      setError('Failed to load executions')
+      setError("Failed to load executions");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadExecutions()
-  }, [])
+    loadExecutions();
+  }, []);
 
   const handleFilter = () => {
-    loadExecutions(filterTaskId || undefined)
-  }
+    loadExecutions(filterTaskId || undefined);
+  };
 
   const handleClearFilter = () => {
-    setFilterTaskId('')
-    loadExecutions()
-  }
+    setFilterTaskId("");
+    loadExecutions();
+  };
 
   const columns = [
-    { key: 'agent_type', label: 'Agent Type' },
+    { key: "agent_type", label: "Agent Type" },
     {
-      key: 'status',
-      label: 'Status',
+      key: "status",
+      label: "Status",
       render: (execution: Execution) => {
         const statusColors = {
-          pending: 'bg-yellow-100 text-yellow-800',
-          running: 'bg-blue-100 text-blue-800',
-          completed: 'bg-green-100 text-green-800',
-          failed: 'bg-red-100 text-red-800',
-        }
+          pending: "bg-yellow-100 text-yellow-800",
+          running: "bg-blue-100 text-blue-800",
+          completed: "bg-green-100 text-green-800",
+          failed: "bg-red-100 text-red-800",
+        };
         return (
-          <span className={`px-2 py-1 rounded text-sm font-medium ${statusColors[execution.status]}`}>
+          <span
+            className={`px-2 py-1 rounded text-sm font-medium ${statusColors[execution.status]}`}
+          >
             {execution.status}
           </span>
-        )
+        );
       },
     },
     {
-      key: 'task_id',
-      label: 'Task ID',
+      key: "task_id",
+      label: "Task ID",
       render: (execution: Execution) => (
-        <span className="font-mono text-xs">{execution.task_id.substring(0, 8)}</span>
+        <span className="font-mono text-xs">
+          {execution.task_id.substring(0, 8)}
+        </span>
       ),
     },
     {
-      key: 'started_at',
-      label: 'Started At',
-      render: (execution: Execution) => new Date(execution.started_at).toLocaleString(),
+      key: "started_at",
+      label: "Started At",
+      render: (execution: Execution) =>
+        new Date(execution.started_at).toLocaleString(),
     },
     {
-      key: 'completed_at',
-      label: 'Completed At',
+      key: "completed_at",
+      label: "Completed At",
       render: (execution: Execution) =>
-        execution.completed_at ? new Date(execution.completed_at).toLocaleString() : '-',
+        execution.completed_at
+          ? new Date(execution.completed_at).toLocaleString()
+          : "-",
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -126,5 +133,5 @@ export default function ExecutionsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

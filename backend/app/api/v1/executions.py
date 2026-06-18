@@ -1,6 +1,7 @@
 """
 Agent Execution API routes
 """
+
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -14,7 +15,9 @@ router = APIRouter(prefix="/executions", tags=["executions"])
 
 
 @router.post("/", response_model=ExecutionResponse, status_code=status.HTTP_201_CREATED)
-def create_execution(execution: ExecutionCreate, db: Session = Depends(get_db)) -> ExecutionResponse:
+def create_execution(
+    execution: ExecutionCreate, db: Session = Depends(get_db)
+) -> ExecutionResponse:
     """
     Create a new agent execution
 
@@ -60,7 +63,9 @@ def get_execution(execution_id: UUID, db: Session = Depends(get_db)) -> Executio
 
 
 @router.get("/", response_model=list[ExecutionResponse])
-def list_executions(pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)) -> list[ExecutionResponse]:
+def list_executions(
+    pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)
+) -> list[ExecutionResponse]:
     """
     List all executions with pagination
 

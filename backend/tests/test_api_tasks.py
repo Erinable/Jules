@@ -1,16 +1,16 @@
 """
 Integration tests for Task API endpoints
 """
+
 from datetime import datetime
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from app.main import app
 from app.models.project import Project
 from app.models.task import Task
 from app.models.user import User
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 client = TestClient(app)
 

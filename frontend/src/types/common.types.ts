@@ -3,16 +3,16 @@
  */
 
 export interface ApiError {
-  detail: string
+  detail: string;
 }
 
 export interface PaginationParams {
-  limit?: number
-  offset?: number
+  limit?: number;
+  offset?: number;
 }
 
 export interface HealthStatus {
-  status: string
-  database?: string
-  timestamp?: string
+  status: string;
+  database?: string;
+  timestamp?: string;
 }

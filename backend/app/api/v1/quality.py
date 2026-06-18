@@ -1,6 +1,7 @@
 """
 Quality Metric API routes
 """
+
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -14,7 +15,9 @@ router = APIRouter(prefix="/quality", tags=["quality"])
 
 
 @router.post("/", response_model=QualityMetricResponse, status_code=status.HTTP_201_CREATED)
-def create_quality_metric(metric: QualityMetricCreate, db: Session = Depends(get_db)) -> QualityMetricResponse:
+def create_quality_metric(
+    metric: QualityMetricCreate, db: Session = Depends(get_db)
+) -> QualityMetricResponse:
     """
     Create a new quality metric
 
@@ -62,7 +65,9 @@ def get_quality_metric(metric_id: UUID, db: Session = Depends(get_db)) -> Qualit
 
 
 @router.get("/project/{project_id}/latest", response_model=QualityMetricResponse)
-def get_latest_quality_metric(project_id: UUID, db: Session = Depends(get_db)) -> QualityMetricResponse:
+def get_latest_quality_metric(
+    project_id: UUID, db: Session = Depends(get_db)
+) -> QualityMetricResponse:
     """
     Get latest quality metric for a project
 

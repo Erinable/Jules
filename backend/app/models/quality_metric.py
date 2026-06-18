@@ -3,6 +3,7 @@ QualityMetric Entity Model
 
 质量指标实体模型
 """
+
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING

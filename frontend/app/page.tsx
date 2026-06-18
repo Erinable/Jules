@@ -2,7 +2,9 @@ export default function HomePage() {
   return (
     <div className="space-y-6">
       <h1 className="text-4xl font-bold mb-4">Jules AI 代码生成平台</h1>
-      <p className="text-xl mb-8 text-gray-700">生产级代码质量 | Multi-Agent 协作 | 质量优先</p>
+      <p className="text-xl mb-8 text-gray-700">
+        生产级代码质量 | Multi-Agent 协作 | 质量优先
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
@@ -33,7 +35,7 @@ export default function HomePage() {
 
       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
         <p className="text-sm text-gray-700">
-          <strong>Backend API:</strong>{' '}
+          <strong>Backend API:</strong>{" "}
           <a
             href="http://localhost:8000/docs"
             className="text-blue-600 hover:underline"
@@ -45,5 +47,5 @@ export default function HomePage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

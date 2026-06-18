@@ -15,6 +15,7 @@
 ## Common Commands
 
 ### Testing Workflows Locally
+
 ```bash
 # Install act
 brew install act  # macOS
@@ -32,6 +33,7 @@ act -W .github/workflows/backend-ci.yml -s GITHUB_TOKEN=xxx
 ```
 
 ### Manual Deployment
+
 ```bash
 # Via GitHub CLI
 gh workflow run deploy.yml -f environment=staging
@@ -41,6 +43,7 @@ Actions > Deploy to Production > Run workflow > Select environment
 ```
 
 ### Viewing Workflow Status
+
 ```bash
 # Install GitHub CLI
 brew install gh
@@ -58,6 +61,7 @@ gh run watch <run-id>
 ## Workflow Status Checks
 
 ### Required for PR Merge (main branch)
+
 - ✅ Backend CI: lint-and-format
 - ✅ Backend CI: security-check
 - ✅ Backend CI: test
@@ -68,6 +72,7 @@ gh run watch <run-id>
 - ✅ PR Checks: conflict-check
 
 ### Optional but Recommended
+
 - Docker Build: build-backend
 - Docker Build: build-frontend
 - DB Migration: validate-migrations (if migrations changed)
@@ -76,6 +81,7 @@ gh run watch <run-id>
 ## Environment Variables
 
 ### Backend CI/CD
+
 ```bash
 # Required
 DATABASE_URL=postgresql://user:pass@host:5432/db
@@ -89,6 +95,7 @@ LANGSMITH_API_KEY=xxx
 ```
 
 ### Frontend CI/CD
+
 ```bash
 # Build-time
 NEXT_PUBLIC_API_URL=https://api.example.com
@@ -100,6 +107,7 @@ API_URL=http://backend:8000
 ## Secrets Configuration
 
 ### Deployment Secrets
+
 ```bash
 DEPLOY_SSH_KEY        # SSH private key (RSA 4096)
 DEPLOY_USER           # SSH username
@@ -110,6 +118,7 @@ FRONTEND_URL          # https://jules.dev
 ```
 
 ### Optional Secrets
+
 ```bash
 SONAR_TOKEN           # SonarQube authentication
 SONAR_HOST_URL        # https://sonarqube.example.com
@@ -129,6 +138,7 @@ NEXT_PUBLIC_API_URL   # Frontend API URL
 ## Troubleshooting Quick Fixes
 
 ### Problem: Workflow not triggering
+
 ```yaml
 # Check path filters - make sure changes match
 paths:
@@ -137,6 +147,7 @@ paths:
 ```
 
 ### Problem: PostgreSQL connection failed
+
 ```bash
 # Check service health configuration
 --health-cmd pg_isready
@@ -146,18 +157,21 @@ paths:
 ```
 
 ### Problem: Poetry dependencies not cached
+
 ```bash
 # Verify cache key matches poetry.lock
 key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 ```
 
 ### Problem: Docker build out of memory
+
 ```yaml
 # Add resource limits or use smaller base image
 FROM python:3.11-slim  # instead of python:3.11
 ```
 
 ### Problem: Deployment health check fails
+
 ```bash
 # Increase wait time before health check
 sleep 60  # increase from 30
@@ -166,6 +180,7 @@ sleep 60  # increase from 30
 ## Performance Optimization
 
 ### Cache Strategy
+
 ```yaml
 # 1. Dependencies cache
 - uses: actions/cache@v4
@@ -184,6 +199,7 @@ cache-to: type=gha,mode=max
 ```
 
 ### Parallel Jobs
+
 ```yaml
 # Run tests in parallel
 strategy:
@@ -194,6 +210,7 @@ steps:
 ```
 
 ### Skip Unnecessary Runs
+
 ```yaml
 # Only run on relevant changes
 paths:
@@ -204,6 +221,7 @@ paths:
 ## Deployment Checklist
 
 ### Pre-deployment
+
 - [ ] All CI checks passing
 - [ ] Code review approved
 - [ ] Version tag created (`git tag -a v1.0.0 -m "Release 1.0.0"`)
@@ -212,18 +230,21 @@ paths:
 - [ ] Secrets configured in GitHub
 
 ### During deployment
+
 - [ ] Monitor workflow run
 - [ ] Check health checks pass
 - [ ] Verify services are running
 - [ ] Check logs for errors
 
 ### Post-deployment
+
 - [ ] Smoke test critical paths
 - [ ] Monitor error rates
 - [ ] Check database migrations applied
 - [ ] Verify application metrics
 
 ### Rollback (if needed)
+
 ```bash
 # Manual rollback
 ssh deploy@server
@@ -235,24 +256,29 @@ docker compose up -d
 ## Monitoring URLs
 
 ### GitHub Actions
+
 - Workflow runs: `https://github.com/[owner]/[repo]/actions`
 - Specific workflow: `https://github.com/[owner]/[repo]/actions/workflows/[workflow].yml`
 
 ### Container Registry
+
 - Packages: `https://github.com/[owner]/[repo]/pkgs/container/[package]`
 
 ### Security
+
 - Security tab: `https://github.com/[owner]/[repo]/security`
 - Dependabot alerts: `https://github.com/[owner]/[repo]/security/dependabot`
 
 ## Release Process
 
 ### 1. Create Release Branch
+
 ```bash
 git checkout -b release/v1.0.0
 ```
 
 ### 2. Update Version
+
 ```bash
 # Backend
 poetry version 1.0.0
@@ -262,6 +288,7 @@ npm version 1.0.0
 ```
 
 ### 3. Update CHANGELOG
+
 ```markdown
 ## [1.0.0] - 2026-06-17
 ### Added
@@ -271,6 +298,7 @@ npm version 1.0.0
 ```
 
 ### 4. Create PR and Merge
+
 ```bash
 gh pr create --title "Release v1.0.0" --body "Release notes..."
 # After approval and CI passes
@@ -278,6 +306,7 @@ gh pr merge
 ```
 
 ### 5. Tag Release
+
 ```bash
 git checkout main
 git pull
@@ -286,6 +315,7 @@ git push origin v1.0.0
 ```
 
 ### 6. Monitor Deployment
+
 ```bash
 gh run watch
 # Or visit: https://github.com/[owner]/[repo]/actions
@@ -294,12 +324,14 @@ gh run watch
 ## Emergency Procedures
 
 ### Stop Running Workflow
+
 ```bash
 gh run cancel <run-id>
 # Or via UI: Actions > [workflow run] > Cancel workflow
 ```
 
 ### Emergency Rollback
+
 ```bash
 # Trigger deployment with previous tag
 gh workflow run deploy.yml -f environment=production
@@ -309,6 +341,7 @@ ssh deploy@server "cd /opt/jules && git checkout v1.0.0 && docker compose up -d"
 ```
 
 ### Disable Workflow Temporarily
+
 ```bash
 gh workflow disable <workflow-name>
 # Re-enable: gh workflow enable <workflow-name>

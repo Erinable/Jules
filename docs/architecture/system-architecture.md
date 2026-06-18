@@ -1,8 +1,8 @@
 # 系统架构设计
 
-**版本**: v1.0  
-**日期**: 2026-06-16  
-**状态**: 设计阶段  
+**版本**: v1.0
+**日期**: 2026-06-16
+**状态**: 设计阶段
 
 ---
 
@@ -77,6 +77,7 @@ graph TB
 ### 2.2 层级说明
 
 #### 前端层（Frontend Layer）
+
 - **技术栈**：Next.js 15 + React 18 + shadcn/ui + Tailwind CSS
 - **职责**：
   - 用户交互界面
@@ -89,6 +90,7 @@ graph TB
   - WebSocket（聊天交互）
 
 #### API 层（API Gateway）
+
 - **技术栈**：FastAPI + Pydantic + SQLAlchemy
 - **职责**：
   - 请求路由和鉴权
@@ -101,6 +103,7 @@ graph TB
   - SSE Endpoint（流式推送）
 
 #### Agent 编排层（Agent Orchestration Layer）
+
 - **技术栈**：LangGraph + LangChain + Python 3.11+
 - **职责**：
   - Multi-Agent 工作流编排
@@ -113,6 +116,7 @@ graph TB
   - MessageBus（消息传递）
 
 #### 代码质量层（Quality Assurance Layer）
+
 - **技术栈**：Ruff + mypy + Bandit + Radon + Complexipy
 - **职责**：
   - 静态代码分析
@@ -126,6 +130,7 @@ graph TB
   - CI/CD 流水线
 
 #### 数据持久化层（Data Layer）
+
 - **PostgreSQL**：
   - 项目元数据
   - 任务状态
@@ -159,22 +164,22 @@ sequenceDiagram
     User->>Frontend: 提交需求
     Frontend->>API: POST /api/projects/generate
     API->>AgentOrch: 启动工作流
-    
+
     AgentOrch->>LLM: Researcher 调研
     LLM-->>AgentOrch: 返回调研结果
-    
+
     AgentOrch->>LLM: Planner 规划
     LLM-->>AgentOrch: 返回架构设计
-    
+
     AgentOrch->>LLM: Coder 生成代码
     LLM-->>AgentOrch: 返回代码
-    
+
     AgentOrch->>QualityGate: 质量检查
     QualityGate->>QualityGate: Ruff Lint
     QualityGate->>QualityGate: mypy Type Check
     QualityGate->>QualityGate: Bandit Security Scan
     QualityGate->>QualityGate: Radon Complexity
-    
+
     alt 质量通过
         QualityGate-->>AgentOrch: ✅ Pass
         AgentOrch->>Git: Commit 代码
@@ -201,13 +206,13 @@ sequenceDiagram
 
     Frontend->>SSE Endpoint: 建立 SSE 连接
     SSE Endpoint->>Redis: 订阅任务通道
-    
+
     loop 工作流执行
         AgentOrch->>Redis: 发布状态更新
         Redis->>SSE Endpoint: 推送事件
         SSE Endpoint->>Frontend: data: {status, progress}
     end
-    
+
     AgentOrch->>Redis: 发布完成事件
     Redis->>SSE Endpoint: 推送完成
     SSE Endpoint->>Frontend: data: {status: "completed"}
@@ -223,12 +228,14 @@ sequenceDiagram
 **决策**：使用 LangGraph 而非 CrewAI
 
 **理由**：
+
 1. 生产就绪度高（3450万月下载）
 2. 显式状态机管理（可追溯、可调试）
 3. 持久化检查点支持（恢复机制）
 4. LangChain 生态集成
 
 **影响**：
+
 - 学习曲线中等
 - 需要编写更多样板代码
 - 灵活性和可控性更高
@@ -238,12 +245,14 @@ sequenceDiagram
 **决策**：初期采用单体分层架构，预留微服务演进路径
 
 **理由**：
+
 1. 初期团队规模小（3-5人）
 2. 降低运维复杂度
 3. 快速迭代优先
 4. 模块边界清晰，便于后续拆分
 
 **影响**：
+
 - 部署简单（Docker Compose）
 - 模块耦合风险需通过接口隔离
 - 单点故障风险需监控和备份
@@ -253,12 +262,14 @@ sequenceDiagram
 **决策**：使用 PostgreSQL 作为主数据库
 
 **理由**：
+
 1. 项目元数据需要事务支持
 2. 质量指标历史需要复杂查询
 3. 关系型数据占主导
 4. JSONB 支持灵活扩展
 
 **影响**：
+
 - 强一致性保障
 - 需要设计规范化数据模型
 - 性能优化依赖索引和查询优化
@@ -268,11 +279,13 @@ sequenceDiagram
 **决策**：代码生成后同步执行质量检查
 
 **理由**：
+
 1. 用户需要即时反馈
 2. 质量检查耗时可控（<5秒）
 3. 避免异步带来的状态复杂性
 
 **影响**：
+
 - 响应时间稍长（可接受）
 - 简化错误处理
 - 流式输出友好
@@ -282,12 +295,14 @@ sequenceDiagram
 **决策**：代码生成流式输出使用 SSE，聊天使用 WebSocket
 
 **理由**：
+
 1. SSE 更简单（单向推送）
 2. 自动重连机制
 3. 基于 HTTP（无需额外协议）
 4. WebSocket 保留用于双向交互场景
 
 **影响**：
+
 - SSE 适用于大部分场景
 - WebSocket 仅用于聊天模块
 - 降低前端复杂度
@@ -318,11 +333,13 @@ sequenceDiagram
 ### 5.3 可扩展性
 
 **水平扩展**：
+
 - API 层：无状态设计，支持负载均衡
 - Agent 编排层：任务队列 + 多 Worker
 - 数据库：读写分离 + 主从复制
 
 **垂直扩展**：
+
 - 初期 4C8G 满足 100+ 并发
 - Agent 节点可独立扩容
 
@@ -351,6 +368,7 @@ graph LR
 ```
 
 **配置**：
+
 ```yaml
 # docker-compose.yml
 services:
@@ -374,23 +392,24 @@ services:
 graph TB
     LB[Load Balancer] --> FE1[Frontend Pod 1]
     LB --> FE2[Frontend Pod 2]
-    
+
     FE1 --> APILB[API Load Balancer]
     FE2 --> APILB
-    
+
     APILB --> API1[API Pod 1]
     APILB --> API2[API Pod 2]
-    
+
     API1 --> PG[(PostgreSQL<br/>Primary)]
     API2 --> PG
-    
+
     API1 --> RD[(Redis Cluster)]
     API2 --> RD
-    
+
     PG --> PGREP[(PostgreSQL<br/>Replica)]
 ```
 
 **技术栈**：
+
 - 容器编排：Kubernetes（可选）或 Docker Swarm
 - 负载均衡：Nginx / Traefik
 - 数据库：托管 PostgreSQL（AWS RDS / GCP Cloud SQL）
@@ -431,5 +450,3 @@ graph TB
 3. **数据模型设计**（data-model.md）
 4. **API 设计**（api-design.md）
 5. **部署架构详细设计**（deployment.md）
-
-

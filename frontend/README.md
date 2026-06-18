@@ -13,7 +13,7 @@ Next.js frontend application for the Jules AI Code Generation Platform.
 
 ## Project Structure
 
-```
+````
 frontend/
 ├── app/                      # Next.js App Router pages
 │   ├── layout.tsx           # Root layout with navigation
@@ -56,24 +56,27 @@ frontend/
 1. **Install dependencies**:
    ```bash
    npm install
-   ```
+````
 
 2. **Configure environment**:
+
    ```bash
    cp .env.example .env.local
    ```
-   
+
    Update `.env.local`:
+
    ```
    NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
    ```
 
 3. **Start development server**:
+
    ```bash
    npm run dev
    ```
-   
-   The app will be available at http://localhost:3000
+
+   The app will be available at <http://localhost:3000>
 
 ## Available Scripts
 
@@ -90,36 +93,42 @@ frontend/
 ## Features
 
 ### 1. User Management (`/users`)
+
 - View all users
 - Create new users
 - Delete users
 - Email validation
 
 ### 2. Task Management (`/tasks`)
+
 - View all tasks with filters
 - Create tasks with priority (0-10)
 - Update task status (pending, in_progress, completed, failed)
 - Delete tasks
 
 ### 3. Agent Configuration (`/agents`)
+
 - View all agents
 - Create agents with JSON config
 - Toggle active/inactive status
 - Delete agents
 
 ### 4. Execution Records (`/executions`)
+
 - View execution history
 - Filter by task ID
 - See execution status and timestamps
 - Monitor agent performance
 
 ### 5. Code File Browser (`/code-files`)
+
 - Load files by project ID
 - View file content
 - See file hashes and update times
 - Access version history
 
 ### 6. Quality Metrics (`/quality`)
+
 - View latest quality metrics
 - Track avg complexity
 - Monitor maintainability index
@@ -128,6 +137,7 @@ frontend/
 - View historical trends
 
 ### 7. Health Check (`/health`)
+
 - Overall system health
 - Readiness status
 - Liveness status
@@ -167,6 +177,7 @@ All API responses are typed using TypeScript interfaces based on backend Pydanti
 ## Testing
 
 Tests should cover:
+
 - Component rendering
 - User interactions
 - API calls (mocked)
@@ -174,6 +185,7 @@ Tests should cover:
 - Loading states
 
 Example test structure:
+
 ```typescript
 import { render, screen, waitFor } from '@testing-library/react'
 import UsersPage from './page'
@@ -189,16 +201,19 @@ test('loads and displays users', async () => {
 ## Production Deployment
 
 1. Build the application:
+
    ```bash
    npm run build
    ```
 
 2. Start production server:
+
    ```bash
    npm run start
    ```
 
 3. Or use Docker:
+
    ```bash
    docker build -t jules-frontend .
    docker run -p 3000:3000 jules-frontend
@@ -209,6 +224,7 @@ test('loads and displays users', async () => {
 ### Backend Connection Issues
 
 If you see API errors:
+
 1. Ensure backend is running: `http://localhost:8000/docs`
 2. Check CORS configuration in backend
 3. Verify `NEXT_PUBLIC_API_URL` in `.env.local`
@@ -216,6 +232,7 @@ If you see API errors:
 ### Type Errors
 
 Run type checking:
+
 ```bash
 npm run type-check
 ```
@@ -223,6 +240,7 @@ npm run type-check
 ### Build Errors
 
 Clear cache and reinstall:
+
 ```bash
 rm -rf .next node_modules
 npm install

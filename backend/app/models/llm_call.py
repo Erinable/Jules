@@ -3,6 +3,7 @@ LLMCall Entity Model
 
 LLM 调用实体模型
 """
+
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -24,7 +25,9 @@ class LLMCall(Base):
     __allow_unmapped__ = True
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    execution_id = Column(UUID(as_uuid=True), ForeignKey("agent_executions.id"), nullable=False, index=True)
+    execution_id = Column(
+        UUID(as_uuid=True), ForeignKey("agent_executions.id"), nullable=False, index=True
+    )
     model = Column(String(100), nullable=False)  # claude-opus-4-7/gpt-4o
     prompt_tokens = Column(Integer, nullable=False)
     completion_tokens = Column(Integer, nullable=False)

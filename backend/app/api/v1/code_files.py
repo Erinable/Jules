@@ -1,6 +1,7 @@
 """
 Code File API routes
 """
+
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -90,7 +91,9 @@ def list_project_files(project_id: UUID, db: Session = Depends(get_db)) -> list[
 
 
 @router.put("/{file_id}", response_model=CodeFileResponse)
-def update_code_file(file_id: UUID, file: CodeFileUpdate, db: Session = Depends(get_db)) -> CodeFileResponse:
+def update_code_file(
+    file_id: UUID, file: CodeFileUpdate, db: Session = Depends(get_db)
+) -> CodeFileResponse:
     """
     Update code file content
 

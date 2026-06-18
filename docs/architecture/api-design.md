@@ -1,7 +1,7 @@
 # API 设计
 
-**版本**: v1.0  
-**日期**: 2026-06-16  
+**版本**: v1.0
+**日期**: 2026-06-16
 
 ---
 
@@ -27,6 +27,7 @@
 ### 2.1 项目管理
 
 #### 创建项目
+
 ```http
 POST /api/v1/projects
 Content-Type: application/json
@@ -48,6 +49,7 @@ Response 201:
 ```
 
 #### 获取项目列表
+
 ```http
 GET /api/v1/projects?limit=10&offset=0
 
@@ -69,6 +71,7 @@ Response 200:
 ```
 
 #### 获取项目详情
+
 ```http
 GET /api/v1/projects/{project_id}
 
@@ -94,6 +97,7 @@ Response 200:
 ### 2.2 代码生成
 
 #### 启动代码生成
+
 ```http
 POST /api/v1/projects/{project_id}/generate
 Content-Type: application/json
@@ -113,6 +117,7 @@ Response 202:
 ### 2.3 质量检查
 
 #### 执行质量检查
+
 ```http
 POST /api/v1/quality/check
 Content-Type: application/json
@@ -147,6 +152,7 @@ Response 200:
 ### 2.4 Agent 工作流
 
 #### 获取工作流状态
+
 ```http
 GET /api/v1/agents/workflow/{task_id}
 
@@ -208,12 +214,12 @@ async def stream_generate(project_id: str):
         # 订阅 Redis 发布/订阅
         pubsub = redis_client.pubsub()
         await pubsub.subscribe(f"project:{project_id}:events")
-        
+
         async for message in pubsub.listen():
             if message["type"] == "message":
                 data = message["data"]
                 yield f"data: {data}\n\n"
-    
+
     return StreamingResponse(
         event_generator(),
         media_type="text/event-stream"
@@ -251,15 +257,15 @@ from fastapi import WebSocket
 @app.websocket("/api/v1/ws/chat/{project_id}")
 async def chat_endpoint(websocket: WebSocket, project_id: str):
     await websocket.accept()
-    
+
     try:
         while True:
             # 接收用户消息
             data = await websocket.receive_json()
-            
+
             # 调用 LLM
             response = await call_llm(data["content"])
-            
+
             # 发送响应
             await websocket.send_json({
                 "type": "ai_response",
@@ -346,13 +352,13 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
     token = credentials.credentials
     payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     user_id = payload.get("sub")
-    
+
     if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token"
         )
-    
+
     return get_user_by_id(user_id)
 
 @app.get("/api/v1/projects")
@@ -367,6 +373,7 @@ def list_projects(current_user: User = Depends(get_current_user)):
 ### 7.1 自动生成（OpenAPI）
 
 FastAPI 自动生成 OpenAPI 文档：
+
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 - OpenAPI JSON: `http://localhost:8000/openapi.json`

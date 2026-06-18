@@ -3,6 +3,7 @@ Project Entity Model
 
 项目实体模型
 """
+
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -31,14 +32,22 @@ class Project(Base):
     name = Column(String(200), nullable=False)
     type = Column(String(50))  # web/cli/data
     config = Column(JSON)
-    status = Column(String(50), default="pending", index=True)  # pending/in_progress/completed/failed
+    status = Column(
+        String(50), default="pending", index=True
+    )  # pending/in_progress/completed/failed
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
 
     # 关系
     user: "User" = relationship("User", back_populates="projects")
-    tasks: list["Task"] = relationship("Task", back_populates="project", cascade="all, delete-orphan")
-    code_files: list["CodeFile"] = relationship("CodeFile", back_populates="project", cascade="all, delete-orphan")
-    quality_metrics: list["QualityMetric"] = relationship("QualityMetric", back_populates="project", cascade="all, delete-orphan")
+    tasks: list["Task"] = relationship(
+        "Task", back_populates="project", cascade="all, delete-orphan"
+    )
+    code_files: list["CodeFile"] = relationship(
+        "CodeFile", back_populates="project", cascade="all, delete-orphan"
+    )
+    quality_metrics: list["QualityMetric"] = relationship(
+        "QualityMetric", back_populates="project", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"<Project(id={self.id}, name='{self.name}', type='{self.type}', status='{self.status}')>"

@@ -2,88 +2,90 @@
  * ErrorBoundary Component Tests
  */
 
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-import ErrorBoundary from '@/components/ErrorBoundary'
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Component that throws an error
 function ThrowError() {
-  throw new Error('Test error')
+  throw new Error("Test error");
 }
 
 // Component that works fine
 function WorkingComponent() {
-  return <div>Working content</div>
+  return <div>Working content</div>;
 }
 
-describe('ErrorBoundary', () => {
+describe("ErrorBoundary", () => {
   // Suppress console.error for these tests
-  const originalError = console.error
+  const originalError = console.error;
   beforeAll(() => {
-    console.error = vi.fn()
-  })
+    console.error = vi.fn();
+  });
 
   afterAll(() => {
-    console.error = originalError
-  })
+    console.error = originalError;
+  });
 
-  it('renders children when there is no error', () => {
+  it("renders children when there is no error", () => {
     render(
       <ErrorBoundary>
         <WorkingComponent />
-      </ErrorBoundary>
-    )
+      </ErrorBoundary>,
+    );
 
-    expect(screen.getByText('Working content')).toBeInTheDocument()
-  })
+    expect(screen.getByText("Working content")).toBeInTheDocument();
+  });
 
-  it('renders error UI when child component throws', () => {
+  it("renders error UI when child component throws", () => {
     render(
       <ErrorBoundary>
         <ThrowError />
-      </ErrorBoundary>
-    )
+      </ErrorBoundary>,
+    );
 
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument()
-    expect(screen.getByText(/An unexpected error occurred/)).toBeInTheDocument()
-  })
+    expect(screen.getByText("Something went wrong")).toBeInTheDocument();
+    expect(
+      screen.getByText(/An unexpected error occurred/),
+    ).toBeInTheDocument();
+  });
 
-  it('displays error message in error UI', () => {
+  it("displays error message in error UI", () => {
     render(
       <ErrorBoundary>
         <ThrowError />
-      </ErrorBoundary>
-    )
+      </ErrorBoundary>,
+    );
 
-    expect(screen.getByText('Test error')).toBeInTheDocument()
-  })
+    expect(screen.getByText("Test error")).toBeInTheDocument();
+  });
 
-  it('renders refresh button in error UI', () => {
+  it("renders refresh button in error UI", () => {
     render(
       <ErrorBoundary>
         <ThrowError />
-      </ErrorBoundary>
-    )
+      </ErrorBoundary>,
+    );
 
-    expect(screen.getByText('Refresh Page')).toBeInTheDocument()
-  })
+    expect(screen.getByText("Refresh Page")).toBeInTheDocument();
+  });
 
-  it('calls window.location.reload when refresh button is clicked', () => {
-    const reloadMock = vi.fn()
-    Object.defineProperty(window, 'location', {
+  it("calls window.location.reload when refresh button is clicked", () => {
+    const reloadMock = vi.fn();
+    Object.defineProperty(window, "location", {
       value: { reload: reloadMock },
       writable: true,
-    })
+    });
 
     render(
       <ErrorBoundary>
         <ThrowError />
-      </ErrorBoundary>
-    )
+      </ErrorBoundary>,
+    );
 
-    const refreshButton = screen.getByText('Refresh Page')
-    refreshButton.click()
+    const refreshButton = screen.getByText("Refresh Page");
+    refreshButton.click();
 
-    expect(reloadMock).toHaveBeenCalled()
-  })
-})
+    expect(reloadMock).toHaveBeenCalled();
+  });
+});

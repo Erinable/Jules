@@ -1,8 +1,8 @@
 # Agent 编排架构
 
-**版本**: v1.0  
-**日期**: 2026-06-16  
-**关联文档**: system-architecture.md  
+**版本**: v1.0
+**日期**: 2026-06-16
+**关联文档**: system-architecture.md
 
 ---
 
@@ -18,7 +18,7 @@ graph LR
     Reviewer[👀 Reviewer<br/>代码审查]
     Tester[🧪 Tester<br/>测试生成]
     Optimizer[⚡ Optimizer<br/>重构优化]
-    
+
     Researcher -->|调研报告| Planner
     Planner -->|架构设计| Coder
     Coder -->|代码| Reviewer
@@ -54,7 +54,7 @@ class WorkflowState(TypedDict):
     # 用户输入
     user_requirement: str
     project_type: str  # web/cli/data
-    
+
     # Agent 输出
     research_report: Optional[str]
     architecture_design: Optional[str]
@@ -62,13 +62,13 @@ class WorkflowState(TypedDict):
     review_result: Optional[dict]
     test_code: Optional[dict]
     quality_metrics: Optional[dict]
-    
+
     # 控制流
     current_agent: str
     iteration_count: int
     max_iterations: int
     errors: List[str]
-    
+
     # 质量门禁
     quality_passed: bool
     complexity_score: float
@@ -80,24 +80,24 @@ class WorkflowState(TypedDict):
 ```mermaid
 stateDiagram-v2
     [*] --> Researcher: 用户提交需求
-    
+
     Researcher --> Planner: 调研完成
     Planner --> Coder: 架构设计完成
-    
+
     Coder --> QualityGate: 代码生成完成
-    
+
     QualityGate --> Reviewer: 质量检查通过
     QualityGate --> Coder: 质量检查失败<br/>(重新生成)
-    
+
     Reviewer --> Tester: 代码审查通过
     Reviewer --> Coder: 发现问题<br/>(修复代码)
-    
+
     Tester --> Optimizer: 测试通过
     Tester --> Coder: 测试失败<br/>(修复代码)
-    
+
     Optimizer --> [*]: 优化完成
     Optimizer --> Coder: 需要重构
-    
+
     note right of QualityGate
         静态分析门禁:
         - Ruff Lint
@@ -190,7 +190,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 class ResearcherAgent:
     """技术调研 Agent"""
-    
+
     def __init__(self):
         self.llm = ChatAnthropic(
             model="claude-3-5-haiku-20241022",  # 成本低，速度快
@@ -208,12 +208,12 @@ class ResearcherAgent:
 """),
             ("user", "{requirement}")
         ])
-    
+
     def __call__(self, state: WorkflowState) -> WorkflowState:
         """执行调研"""
         chain = self.prompt | self.llm
         result = chain.invoke({"requirement": state["user_requirement"]})
-        
+
         state["research_report"] = result.content
         state["current_agent"] = "researcher"
         return state
@@ -224,7 +224,7 @@ class ResearcherAgent:
 ```python
 class PlannerAgent:
     """架构设计 Agent"""
-    
+
     def __init__(self):
         self.llm = ChatAnthropic(
             model="claude-opus-4-7",  # 深度推理
@@ -242,14 +242,14 @@ class PlannerAgent:
 """),
             ("user", "调研报告：\n{research_report}\n\n需求：{requirement}")
         ])
-    
+
     def __call__(self, state: WorkflowState) -> WorkflowState:
         chain = self.prompt | self.llm
         result = chain.invoke({
             "research_report": state["research_report"],
             "requirement": state["user_requirement"]
         })
-        
+
         state["architecture_design"] = result.content
         state["current_agent"] = "planner"
         return state
@@ -260,7 +260,7 @@ class PlannerAgent:
 ```python
 class CoderAgent:
     """代码生成 Agent"""
-    
+
     def __init__(self):
         self.llm = ChatAnthropic(
             model="claude-sonnet-4-6",  # 平衡性能和成本
@@ -287,22 +287,22 @@ class CoderAgent:
 """),
             ("user", "架构设计：\n{architecture}\n\n{additional_context}")
         ])
-    
+
     def __call__(self, state: WorkflowState) -> WorkflowState:
         additional_context = ""
         if state.get("review_result"):
             additional_context = f"需要修复的问题：\n{state['review_result']['issues']}"
-        
+
         chain = self.prompt | self.llm
         result = chain.invoke({
             "architecture": state["architecture_design"],
             "additional_context": additional_context
         })
-        
+
         # 解析 JSON
         import json
         code_files = json.loads(result.content)
-        
+
         state["generated_code"] = code_files["files"]
         state["current_agent"] = "coder"
         state["iteration_count"] += 1
@@ -314,7 +314,7 @@ class CoderAgent:
 ```python
 class ReviewerAgent:
     """代码审查 Agent"""
-    
+
     def __init__(self):
         self.llm = ChatAnthropic(
             model="claude-3-5-haiku-20241022",
@@ -343,19 +343,19 @@ class ReviewerAgent:
 """),
             ("user", "代码：\n{code}\n\n质量指标：\n{metrics}")
         ])
-    
+
     def __call__(self, state: WorkflowState) -> WorkflowState:
         code_str = "\n\n".join([
-            f"# {path}\n{content}" 
+            f"# {path}\n{content}"
             for path, content in state["generated_code"].items()
         ])
-        
+
         chain = self.prompt | self.llm
         result = chain.invoke({
             "code": code_str,
             "metrics": json.dumps(state["quality_metrics"])
         })
-        
+
         state["review_result"] = json.loads(result.content)
         state["current_agent"] = "reviewer"
         return state
@@ -380,16 +380,16 @@ class Message(TypedDict):
 
 class MessageBus:
     """消息总线"""
-    
+
     def __init__(self):
         self.subscribers: dict[str, list[callable]] = {}
-    
+
     def subscribe(self, agent_name: str, handler: callable):
         """订阅消息"""
         if agent_name not in self.subscribers:
             self.subscribers[agent_name] = []
         self.subscribers[agent_name].append(handler)
-    
+
     def publish(self, message: Message):
         """发布消息"""
         receiver = message["receiver"]
@@ -437,10 +437,10 @@ def run_agent_workflow(project_id: str, requirement: str):
         max_iterations=3,
         quality_passed=False
     )
-    
+
     config = {"configurable": {"thread_id": project_id}}
     result = app.invoke(initial_state, config)
-    
+
     return result
 ```
 
@@ -544,12 +544,12 @@ def parallel_analysis(code: str):
             executor.submit(run_bandit, code): "bandit",
             executor.submit(run_radon, code): "radon"
         }
-        
+
         results = {}
         for future in as_completed(futures):
             tool_name = futures[future]
             results[tool_name] = future.result()
-        
+
         return results
 ```
 
@@ -617,11 +617,13 @@ result = app.invoke(None, config)  # None 表示从检查点恢复
 **决策**：使用 LangGraph 显式定义状态转换
 
 **理由**：
+
 1. 可追溯性：每个状态转换有明确记录
 2. 可调试性：容易定位问题节点
 3. 可扩展性：新增 Agent 只需添加节点和边
 
 **影响**：
+
 - 需要编写更多样板代码
 - 状态定义需要仔细设计
 - 灵活性高，可处理复杂场景
@@ -631,11 +633,13 @@ result = app.invoke(None, config)  # None 表示从检查点恢复
 **决策**：质量检查作为 LangGraph 独立节点，而非 Reviewer Agent 内部逻辑
 
 **理由**：
+
 1. 分离关注点：静态分析与人工审查解耦
 2. 快速失败：避免调用 LLM 审查低质量代码
 3. 成本控制：静态分析成本低
 
 **影响**：
+
 - 状态机更复杂（多一个节点）
 - 用户体验更好（实时质量反馈）
 
@@ -644,13 +648,13 @@ result = app.invoke(None, config)  # None 表示从检查点恢复
 **决策**：Reviewer/Tester Agent 使用 Haiku 3.5
 
 **理由**：
+
 1. 成本低（Haiku 便宜 10 倍）
 2. 速度快（响应时间 < 1s）
 3. 能力足够（审查不需要深度推理）
 
 **影响**：
+
 - 审查深度可能不如 Opus
 - 通过静态分析补充
 - 总体成本大幅降低
-
-

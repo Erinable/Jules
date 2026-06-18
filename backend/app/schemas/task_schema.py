@@ -1,8 +1,8 @@
 """
 Task Pydantic schemas for request/response validation
 """
+
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -12,7 +12,7 @@ class TaskBase(BaseModel):
     """Base task schema with common fields"""
 
     title: str = Field(..., min_length=1, max_length=500, description="Task title")
-    description: Optional[str] = Field(None, description="Task description")
+    description: str | None = Field(None, description="Task description")
     priority: int = Field(0, ge=0, le=10, description="Task priority (0-10)")
 
 
@@ -36,9 +36,9 @@ class TaskCreate(TaskBase):
 class TaskUpdate(BaseModel):
     """Schema for updating a task"""
 
-    title: Optional[str] = Field(None, min_length=1, max_length=500, description="Task title")
-    description: Optional[str] = Field(None, description="Task description")
-    priority: Optional[int] = Field(None, ge=0, le=10, description="Task priority (0-10)")
+    title: str | None = Field(None, min_length=1, max_length=500, description="Task title")
+    description: str | None = Field(None, description="Task description")
+    priority: int | None = Field(None, ge=0, le=10, description="Task priority (0-10)")
 
     model_config = ConfigDict(
         json_schema_extra={

@@ -1,6 +1,7 @@
 # 依赖优化执行报告
 
 ## 执行时间
+
 2026-06-17
 
 ## 优化前状态
@@ -16,6 +17,7 @@
 ### 1. 前端依赖清理
 
 **移除的未使用依赖**：
+
 - ❌ `@radix-ui/react-dialog` - 未在代码中使用
 - ❌ `@radix-ui/react-dropdown-menu` - 未在代码中使用
 - ❌ `@radix-ui/react-label` - 未在代码中使用
@@ -28,6 +30,7 @@
 - ❌ `@xyflow/react` - 未在代码中使用
 
 **保留的依赖**（确认使用）：
+
 - ✅ `axios` - apiClient.ts 中使用
 - ✅ `clsx` - lib/utils.ts 和 DataTable.tsx 中使用
 - ✅ `tailwind-merge` - lib/utils.ts 中使用
@@ -38,6 +41,7 @@
 ### 2. 后端依赖清理
 
 **移除的未使用依赖**：
+
 - ❌ `langchain` - 代码中未找到使用
 - ❌ `langchain-anthropic` - 代码中未找到使用
 - ❌ `langchain-openai` - 代码中未找到使用
@@ -45,6 +49,7 @@
 - ❌ `langsmith` - 代码中未找到使用
 
 **发现**：
+
 - LLM 功能在 `app/agent/llm_client.py` 中实现，但使用的是 `openai` 包（通过动态导入）
 - pyproject.toml 中未声明 `openai` 依赖，可能需要添加
 
@@ -85,18 +90,21 @@ docker-compose ps
 ### 后续优化（可选）
 
 1. **修复 lucide-react 缺失**（如果需要）：
+
    ```bash
    cd frontend
    npm install lucide-react
    ```
 
 2. **添加 openai 依赖到后端**（如果使用真实 API）：
+
    ```bash
    cd backend
    poetry add openai
    ```
 
 3. **替换 Dockerfile**（验证通过后）：
+
    ```bash
    mv frontend/Dockerfile.optimized frontend/Dockerfile
    mv backend/Dockerfile.optimized backend/Dockerfile
@@ -116,7 +124,7 @@ docker-compose ps
 
 1. ✅ **lucide-react 被移除** - 需要确认是否在未检测到的地方使用
    - 缓解：运行测试和手动验证
-   
+
 2. ⚠️ **LangChain 依赖链** - 虽然代码中未直接使用，但可能被其他依赖间接引用
    - 缓解：运行完整测试套件
 
@@ -131,16 +139,19 @@ docker-compose ps
 ## 文件修改清单
 
 ### 已修改
+
 - ✅ `frontend/package.json` - 移除 10 个未使用依赖
 - ✅ `backend/pyproject.toml` - 移除 5 个 LangChain 依赖
 
 ### 已创建
+
 - ✅ `DEPENDENCY_OPTIMIZATION.md` - 优化方案文档
 - ✅ `frontend/Dockerfile.optimized` - 优化的前端 Dockerfile
 - ✅ `backend/Dockerfile.optimized` - 优化的后端 Dockerfile
 - ✅ `DEPENDENCY_OPTIMIZATION_REPORT.md` - 本执行报告
 
 ### 待验证
+
 - ⏳ `frontend/package-lock.json` - 自动更新
 - ⏳ `backend/poetry.lock` - 需要重新生成
 
@@ -170,6 +181,6 @@ poetry install
 
 ---
 
-**执行人员**: bob (Developer)  
-**审核状态**: 待验证  
+**执行人员**: bob (Developer)
+**审核状态**: 待验证
 **风险级别**: 中等（需要充分测试）

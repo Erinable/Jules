@@ -11,11 +11,13 @@
 ### 前端依赖 (563M)
 
 **package.json 统计**：
+
 - dependencies: 18 个
 - devDependencies: 20 个
 - 总计：38 个包
 
 **主要依赖**：
+
 - Next.js 15 + React 18 生态
 - shadcn/ui (Radix UI 组件库)
 - Tailwind CSS
@@ -24,6 +26,7 @@
 - Vitest + Testing Library (测试)
 
 **问题分析**：
+
 1. ⚠️ **未使用的 Radix UI 组件**：package.json 中声明了 6 个 Radix UI 包，但代码中未发现实际使用
 2. ⚠️ **未使用的状态管理库**：Zustand 已安装但代码中未找到使用痕迹
 3. ⚠️ **未使用的可视化库**：React Flow 已安装但代码中未找到使用痕迹
@@ -33,12 +36,14 @@
 ### 后端依赖 (181M)
 
 **pyproject.toml 统计**：
+
 - 生产依赖：22 个
 - 开发依赖：11 个
 - 测试依赖：3 个
 - 总计：36 个包
 
 **主要依赖**：
+
 - FastAPI + Uvicorn (Web 框架)
 - SQLAlchemy + Alembic (数据库 ORM)
 - PostgreSQL + Redis 客户端
@@ -46,6 +51,7 @@
 - LangChain 生态系统
 
 **问题分析**：
+
 1. ⚠️ **LangChain 未使用**：pyproject.toml 声明了 langchain, langchain-anthropic, langchain-openai, langgraph, langsmith 共 5 个包，但 .venv 中未找到安装痕迹，app/ 代码中也未发现使用
 2. ⚠️ **开发依赖占用生产空间**：mypy (50M)、pytest 等开发依赖安装在了 .venv 中
 3. ✅ **大型依赖合理**：SQLAlchemy (18M)、psycopg2 (9.5M) 为实际使用
@@ -83,6 +89,7 @@ npm uninstall class-variance-authority tailwind-merge
 #### 1.2 优化 package.json
 
 **当前 dependencies（需保留）**：
+
 ```json
 {
   "dependencies": {
@@ -96,6 +103,7 @@ npm uninstall class-variance-authority tailwind-merge
 ```
 
 **当前 devDependencies（需保留）**：
+
 ```json
 {
   "devDependencies": {
@@ -140,12 +148,14 @@ pnpm install
 ```
 
 **预期效果**：
+
 - node_modules: 563M → 350-400M
 - pnpm 使用符号链接和内容寻址存储，节省 30-40% 磁盘空间
 
 #### 1.4 Docker 多阶段构建优化
 
 **frontend/Dockerfile**：
+
 ```dockerfile
 # Build stage
 FROM node:18-alpine AS builder
@@ -173,6 +183,7 @@ CMD ["npm", "start"]
 ```
 
 **预期效果**：
+
 - Docker 镜像：生产镜像不包含 devDependencies，减少 150-200M
 
 ### Phase 2: 后端依赖清理（预计减少 50-80M）
@@ -180,10 +191,12 @@ CMD ["npm", "start"]
 #### 2.1 移除 LangChain 依赖
 
 **分析**：
+
 - pyproject.toml 声明了 LangChain 相关包，但代码中未使用
 - 这些包的依赖链很长，可能引入 numpy/pandas 等大型库
 
 **操作**：
+
 ```bash
 cd backend
 
@@ -195,6 +208,7 @@ poetry remove langchain langchain-anthropic langchain-openai langgraph langsmith
 ```
 
 **pyproject.toml 优化后**：
+
 ```toml
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -221,10 +235,12 @@ aiofiles = "^23.2.1"
 #### 2.2 生产环境排除开发依赖
 
 **当前问题**：
+
 - mypy (50M) 是开发工具，不应出现在生产 .venv 中
 - pytest、bandit 等也是开发工具
 
 **解决方案**：
+
 ```bash
 # 仅安装生产依赖（不安装 dev、test 组）
 poetry install --only main
@@ -239,6 +255,7 @@ pip install -r requirements.txt
 #### 2.3 Docker 多阶段构建优化
 
 **backend/Dockerfile**：
+
 ```dockerfile
 # Build stage
 FROM python:3.11-slim AS builder
@@ -275,6 +292,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 **预期效果**：
+
 - Docker 镜像从 ~400M 减少到 ~200M
 - 不包含 poetry、开发依赖、编译工具
 
@@ -283,12 +301,14 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 #### 3.1 使用 Alpine 基础镜像
 
 **前端 Dockerfile**：
+
 ```dockerfile
 FROM node:18-alpine AS runner
 # 体积：~100M vs node:18 (~900M)
 ```
 
 **后端 Dockerfile**：
+
 ```dockerfile
 FROM python:3.11-alpine AS runner
 # 需要安装编译依赖（gcc、musl-dev）用于 psycopg2
@@ -296,16 +316,19 @@ RUN apk add --no-cache gcc musl-dev postgresql-dev
 ```
 
 **预期效果**：
+
 - 前端镜像：~300M → ~150M
 - 后端镜像：~400M → ~250M
 
 #### 3.2 使用轻量级替代品
 
 **后端**：
+
 - `psycopg2-binary` (9.5M) → `psycopg` (3M，纯 Python 实现，性能略低)
 - 仅在性能不是瓶颈时考虑
 
 **前端**：
+
 - 已使用轻量级方案（clsx + tailwind-merge 替代完整 UI 库）
 
 ## 实施计划
@@ -313,11 +336,13 @@ RUN apk add --no-cache gcc musl-dev postgresql-dev
 ### 短期（1 天内）
 
 **优先级 P0**：
+
 1. ✅ 移除前端未使用依赖（Radix UI、Zustand、React Flow、axios）
 2. ✅ 移除后端 LangChain 依赖（如果确认未使用）
 3. ✅ 验证应用仍然可以正常运行
 
 **验证步骤**：
+
 ```bash
 # 前端
 cd frontend
@@ -339,6 +364,7 @@ docker-compose ps
 ### 中期（1 周内）
 
 **优先级 P1**：
+
 1. ✅ 实现 Docker 多阶段构建
 2. ✅ 配置生产环境仅安装生产依赖
 3. ✅ 更新 CI/CD 流程
@@ -346,6 +372,7 @@ docker-compose ps
 ### 长期（1 个月内）
 
 **优先级 P2**：
+
 1. 🔄 考虑迁移到 pnpm
 2. 🔄 评估 Alpine 镜像的兼容性
 3. 🔄 建立依赖审计机制
@@ -415,7 +442,7 @@ docker-compose ps
 
 ---
 
-**文档版本**: v1.0  
-**创建时间**: 2026-06-17  
-**作者**: bob (Developer)  
+**文档版本**: v1.0
+**创建时间**: 2026-06-17
+**作者**: bob (Developer)
 **状态**: 待实施

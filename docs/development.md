@@ -144,15 +144,15 @@ def execute_agent_task(
     context: Dict[str, Any]
 ) -> Dict[str, Any]:
     """执行 Agent 任务
-    
+
     Args:
         task_id: 任务ID
         prompt: 输入 Prompt
         context: 上下文信息
-        
+
     Returns:
         包含执行结果的字典
-        
+
     Raises:
         ValueError: 如果 task_id 无效
         ExecutionError: 如果执行失败
@@ -193,7 +193,7 @@ function getUserById(userId: number): User {
 
 // 类和接口：PascalCase
 class UserService {}
-interface UserData 
+interface UserData
 
 // 常量：UPPER_SNAKE_CASE
 const MAX_RETRY_COUNT = 3;
@@ -276,6 +276,7 @@ docs/add-deployment-guide
 ```
 
 **类型 (type)**:
+
 - `feat`: 新功能
 - `fix`: Bug 修复
 - `docs`: 文档更新
@@ -355,10 +356,10 @@ async def test_create_user(user_repository):
     # Arrange
     email = "test@example.com"
     username = "testuser"
-    
+
     # Act
     user = await user_repository.create(email=email, username=username)
-    
+
     # Assert
     assert user.id is not None
     assert user.email == email
@@ -379,7 +380,7 @@ async def test_create_user_api():
             "/api/v1/users/",
             json={"email": "new@example.com", "username": "newuser"}
         )
-        
+
         assert response.status_code == 201
         data = response.json()
         assert data["email"] == "new@example.com"
@@ -414,7 +415,7 @@ import UsersPage from '../page';
 
 test('loads and displays users', async () => {
   render(<UsersPage />);
-  
+
   await waitFor(() => {
     expect(screen.getByText(/Users/i)).toBeInTheDocument();
   });
@@ -422,15 +423,15 @@ test('loads and displays users', async () => {
 
 test('creates a new user', async () => {
   const { getByLabelText, getByText } = render(<UsersPage />);
-  
+
   // Fill form
   fireEvent.change(getByLabelText(/Email/i), {
     target: { value: 'test@example.com' }
   });
-  
+
   // Submit
   fireEvent.click(getByText(/Create/i));
-  
+
   // Verify
   await waitFor(() => {
     expect(screen.getByText('test@example.com')).toBeInTheDocument();
@@ -481,6 +482,7 @@ gh pr create \
 ### 3. 代码审查
 
 **审查者关注点**:
+
 - 代码质量和可读性
 - 测试覆盖率
 - 安全问题（SQL 注入、XSS、硬编码密钥）
@@ -488,6 +490,7 @@ gh pr create \
 - 错误处理
 
 **审查意见分类**:
+
 - 🔴 **Blocker**: 必须修复才能合并
 - 🟡 **Suggestion**: 建议修改
 - 🟢 **Nitpick**: 可选改进
@@ -626,7 +629,7 @@ docker system prune -a --volumes
   - ESLint
   - Prettier
   - GitLens
-  
+
 - **PyCharm**: 专业 Python IDE
 - **WebStorm**: 专业前端 IDE
 

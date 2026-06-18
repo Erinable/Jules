@@ -1,7 +1,7 @@
 """
 Code quality analyzer using static analysis tools.
 """
-from typing import Dict
+
 import ast
 import re
 
@@ -9,7 +9,7 @@ import re
 class CodeAnalyzer:
     """Analyzer for code quality metrics."""
 
-    def analyze(self, code: str, language: str = "python") -> Dict:
+    def analyze(self, code: str, language: str = "python") -> dict:
         """
         Analyze code quality.
 
@@ -30,7 +30,7 @@ class CodeAnalyzer:
                 "security_issues": 0,
             }
 
-    def _analyze_python(self, code: str) -> Dict:
+    def _analyze_python(self, code: str) -> dict:
         """
         Analyze Python code.
 
@@ -131,7 +131,9 @@ class CodeAnalyzer:
         """
         import math
 
-        lines = [line for line in code.split('\n') if line.strip() and not line.strip().startswith('#')]
+        lines = [
+            line for line in code.split("\n") if line.strip() and not line.strip().startswith("#")
+        ]
         loc = len(lines)
 
         if loc == 0:
@@ -141,13 +143,18 @@ class CodeAnalyzer:
 
         # Simplified Halstead volume approximation
         # Count operators and operands
-        operators = len(re.findall(r'[\+\-\*\/\=\<\>\!]', code))
-        operands = len(re.findall(r'\b\w+\b', code))
+        operators = len(re.findall(r"[\+\-\*\/\=\<\>\!]", code))
+        operands = len(re.findall(r"\b\w+\b", code))
         volume = (operators + operands) * math.log2(operators + operands + 1)
 
         # Calculate MI
         try:
-            mi = max(0, (171 - 5.2 * math.log(volume) - 0.23 * complexity - 16.2 * math.log(loc)) * 100 / 171)
+            mi = max(
+                0,
+                (171 - 5.2 * math.log(volume) - 0.23 * complexity - 16.2 * math.log(loc))
+                * 100
+                / 171,
+            )
         except (ValueError, ZeroDivisionError):
             mi = 50.0  # Default mid-range value
 
@@ -167,14 +174,14 @@ class CodeAnalyzer:
 
         # Check for dangerous patterns
         dangerous_patterns = [
-            r'eval\(',  # eval() usage
-            r'exec\(',  # exec() usage
-            r'__import__\(',  # dynamic imports
-            r'os\.system\(',  # shell command execution
-            r'subprocess\.call\(',  # subprocess without shell=False
-            r'pickle\.loads?\(',  # pickle deserialization
-            r'yaml\.load\(',  # unsafe YAML loading
-            r'assert\s',  # assertions in production code
+            r"eval\(",  # eval() usage
+            r"exec\(",  # exec() usage
+            r"__import__\(",  # dynamic imports
+            r"os\.system\(",  # shell command execution
+            r"subprocess\.call\(",  # subprocess without shell=False
+            r"pickle\.loads?\(",  # pickle deserialization
+            r"yaml\.load\(",  # unsafe YAML loading
+            r"assert\s",  # assertions in production code
         ]
 
         for pattern in dangerous_patterns:

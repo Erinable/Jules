@@ -1,5 +1,7 @@
 # ============================================
+
 # Jules - AI 代码生成平台
+
 # ============================================
 
 ## 项目简介
@@ -19,6 +21,7 @@ Jules 是一个专注于**生产级代码质量**的 AI 代码生成平台，通
 ## 技术栈
 
 ### 后端
+
 - **语言**：Python 3.11+
 - **框架**：FastAPI 0.115+
 - **Agent 编排**：LangGraph 0.2+ / LangChain 0.3+
@@ -27,12 +30,14 @@ Jules 是一个专注于**生产级代码质量**的 AI 代码生成平台，通
 - **任务队列**：Celery 5.4+
 
 ### 前端
+
 - **框架**：Next.js 15 + React 18
 - **UI 组件**：shadcn/ui + Tailwind CSS 3.4+
 - **状态管理**：Zustand 4.5+
 - **可视化**：React Flow 12+
 
 ### 代码质量工具
+
 - **Linting**：Ruff
 - **Type Checking**：mypy
 - **Security**：Bandit
@@ -85,10 +90,10 @@ docker-compose logs -f
 
 ### 4. 访问应用
 
-- **前端界面**：http://localhost:3000
-- **后端 API**：http://localhost:8000
-- **API 文档**：http://localhost:8000/docs
-- **ReDoc 文档**：http://localhost:8000/redoc
+- **前端界面**：<http://localhost:3000>
+- **后端 API**：<http://localhost:8000>
+- **API 文档**：<http://localhost:8000/docs>
+- **ReDoc 文档**：<http://localhost:8000/redoc>
 
 ### 5. 初始化数据库
 
@@ -403,10 +408,10 @@ docker-compose restart celery-worker
 
 ## 联系方式
 
-- **项目主页**：https://github.com/your-org/jules
-- **问题反馈**：https://github.com/your-org/jules/issues
-- **文档**：https://jules-ai.dev/docs
-- **邮箱**：team@jules-ai.dev
+- **项目主页**：<https://github.com/your-org/jules>
+- **问题反馈**：<https://github.com/your-org/jules/issues>
+- **文档**：<https://jules-ai.dev/docs>
+- **邮箱**：<team@jules-ai.dev>
 
 ---
 

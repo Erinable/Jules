@@ -1,10 +1,10 @@
 """
 Tests for Agent Executor
 """
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime
 
+from unittest.mock import Mock, patch
+
+import pytest
 from app.agent.executor import AgentExecutor
 from app.models.task import Task
 
@@ -23,7 +23,7 @@ class TestAgentExecutor:
         assert self.executor.llm_client is not None
         assert self.executor.analyzer is not None
 
-    @patch('app.agent.executor.AgentExecution')
+    @patch("app.agent.executor.AgentExecution")
     def test_execute_task_success(self, mock_execution_class):
         """Test successful task execution."""
         # Create mock task
@@ -43,11 +43,13 @@ class TestAgentExecutor:
         self.executor.llm_client.generate = Mock(return_value="def test():\n    pass")
 
         # Mock analyzer
-        self.executor.analyzer.analyze = Mock(return_value={
-            "avg_complexity": 1.0,
-            "maintainability_index": 90.0,
-            "security_issues": 0
-        })
+        self.executor.analyzer.analyze = Mock(
+            return_value={
+                "avg_complexity": 1.0,
+                "maintainability_index": 90.0,
+                "security_issues": 0,
+            }
+        )
 
         # Execute
         result = self.executor.execute_task(mock_task, "code-gen")
@@ -57,7 +59,7 @@ class TestAgentExecutor:
         assert mock_execution.status == "completed"
         assert mock_task.status == "completed"
 
-    @patch('app.agent.executor.AgentExecution')
+    @patch("app.agent.executor.AgentExecution")
     def test_execute_task_failure(self, mock_execution_class):
         """Test task execution failure."""
         mock_task = Mock(spec=Task)
@@ -118,7 +120,7 @@ class TestAgentExecutor:
         assert "Test Task" in prompt
         assert "No description provided" in prompt
 
-    @patch('app.agent.executor.QualityMetric')
+    @patch("app.agent.executor.QualityMetric")
     def test_analyze_quality(self, mock_metric_class):
         """Test quality analysis."""
         code = "def test():\n    pass"
@@ -127,11 +129,13 @@ class TestAgentExecutor:
         mock_metric = Mock()
         mock_metric_class.return_value = mock_metric
 
-        self.executor.analyzer.analyze = Mock(return_value={
-            "avg_complexity": 1.5,
-            "maintainability_index": 85.0,
-            "security_issues": 0
-        })
+        self.executor.analyzer.analyze = Mock(
+            return_value={
+                "avg_complexity": 1.5,
+                "maintainability_index": 85.0,
+                "security_issues": 0,
+            }
+        )
 
         result = self.executor.analyze_quality(code, project_id)
 
@@ -139,7 +143,7 @@ class TestAgentExecutor:
         self.mock_db.add.assert_called_with(mock_metric)
         self.mock_db.commit.assert_called()
 
-    @patch('app.agent.executor.CodeFile')
+    @patch("app.agent.executor.CodeFile")
     def test_save_code_version(self, mock_codefile_class):
         """Test saving code version."""
         project_id = "proj-1"
@@ -163,7 +167,7 @@ class TestAgentExecutor:
         content = "test content"
         file_path = "test.py"
 
-        with patch('app.agent.executor.CodeFile') as mock_codefile_class:
+        with patch("app.agent.executor.CodeFile") as mock_codefile_class:
             mock_file = Mock()
             mock_codefile_class.return_value = mock_file
 

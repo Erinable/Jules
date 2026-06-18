@@ -27,6 +27,7 @@
 ### 我们的标准
 
 **积极行为示例**:
+
 - ✅ 使用友好和包容的语言
 - ✅ 尊重不同的观点和经验
 - ✅ 优雅地接受建设性批评
@@ -34,6 +35,7 @@
 - ✅ 对其他社区成员表示同理心
 
 **不可接受的行为**:
+
 - ❌ 使用性化的语言或图像
 - ❌ 侮辱性/贬损性评论，人身或政治攻击
 - ❌ 公开或私下骚扰
@@ -88,6 +90,7 @@ git checkout -b fix/bug-description
 ```
 
 **分支命名规范**:
+
 - `feature/` - 新功能
 - `fix/` - Bug 修复
 - `docs/` - 文档更新
@@ -103,6 +106,7 @@ git checkout -b fix/bug-description
 遵循项目的代码规范（详见 [docs/development.md](docs/development.md)）：
 
 **Python**:
+
 ```bash
 # 运行代码检查
 cd backend
@@ -112,6 +116,7 @@ poetry run bandit -r app/
 ```
 
 **TypeScript**:
+
 ```bash
 # 运行代码检查
 cd frontend
@@ -160,6 +165,7 @@ npm run test:coverage
 ```
 
 **类型 (type)**:
+
 - `feat`: 新功能
 - `fix`: Bug 修复
 - `docs`: 文档更新
@@ -358,7 +364,9 @@ PR 合并需要：
 ## 日志/错误信息
 
 ```
+
 粘贴相关的错误日志
+
 ```
 
 ## 截图（如适用）
@@ -403,6 +411,7 @@ PR 合并需要：
 - **PATCH** (补丁版本): 向后兼容的 Bug 修复
 
 示例：`1.2.3`
+
 - `1` - 主版本
 - `2` - 次版本
 - `3` - 补丁版本
@@ -438,7 +447,7 @@ PR 合并需要：
 
 - **Slack**: [jules-dev.slack.com](https://jules-dev.slack.com)
 - **Discord**: [discord.gg/jules](https://discord.gg/jules)
-- **邮件列表**: dev@jules-ai.dev
+- **邮件列表**: <dev@jules-ai.dev>
 
 ---
 
@@ -458,8 +467,8 @@ PR 合并需要：
 
 如果您有任何问题，请通过以下方式联系我们：
 
-- **GitHub Issues**: https://github.com/your-org/jules/issues
-- **邮箱**: team@jules-ai.dev
+- **GitHub Issues**: <https://github.com/your-org/jules/issues>
+- **邮箱**: <team@jules-ai.dev>
 - **Slack**: [jules-dev.slack.com](https://jules-dev.slack.com)
 
 ---

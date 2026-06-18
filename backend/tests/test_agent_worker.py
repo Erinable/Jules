@@ -1,10 +1,11 @@
 """
 Tests for Agent Worker
 """
-import pytest
-from unittest.mock import Mock, patch, AsyncMock
-import asyncio
 
+import asyncio
+from unittest.mock import AsyncMock, Mock, patch
+
+import pytest
 from app.agent.worker import AgentWorker
 
 
@@ -22,13 +23,14 @@ class TestAgentWorker:
     @pytest.mark.asyncio
     async def test_start_sets_running(self):
         """Test that start sets running flag."""
+
         # Mock the process methods to avoid infinite loop
         async def mock_process():
             await asyncio.sleep(0.1)
             self.worker.running = False
 
-        with patch.object(self.worker, 'process_tasks', mock_process):
-            with patch('app.agent.worker.scheduler') as mock_scheduler:
+        with patch.object(self.worker, "process_tasks", mock_process):
+            with patch("app.agent.worker.scheduler") as mock_scheduler:
                 mock_scheduler.auto_retry_failed_tasks = AsyncMock(return_value=None)
                 await self.worker.start()
 
@@ -50,10 +52,10 @@ class TestAgentWorker:
         }
 
         # Mock dependencies
-        with patch('app.agent.worker.SessionLocal') as mock_session:
-            with patch('app.agent.worker.TaskRepository') as mock_task_repo_class:
-                with patch('app.agent.worker.AgentExecutor') as mock_executor_class:
-                    with patch('app.agent.worker.scheduler') as mock_scheduler:
+        with patch("app.agent.worker.SessionLocal") as mock_session:
+            with patch("app.agent.worker.TaskRepository") as mock_task_repo_class:
+                with patch("app.agent.worker.AgentExecutor") as mock_executor_class:
+                    with patch("app.agent.worker.scheduler") as mock_scheduler:
                         # Setup mocks
                         mock_db = Mock()
                         mock_session.return_value = mock_db
@@ -74,7 +76,9 @@ class TestAgentWorker:
 
                         # Verify
                         mock_executor.execute_task.assert_called_once_with(mock_task, "code-gen")
-                        mock_scheduler.update_task_status.assert_called_once_with("task-123", "completed")
+                        mock_scheduler.update_task_status.assert_called_once_with(
+                            "task-123", "completed"
+                        )
 
     @pytest.mark.asyncio
     async def test_execute_task_not_found(self):
@@ -84,9 +88,9 @@ class TestAgentWorker:
             "agent_type": "code-gen",
         }
 
-        with patch('app.agent.worker.SessionLocal') as mock_session:
-            with patch('app.agent.worker.TaskRepository') as mock_task_repo_class:
-                with patch('app.agent.worker.scheduler') as mock_scheduler:
+        with patch("app.agent.worker.SessionLocal") as mock_session:
+            with patch("app.agent.worker.TaskRepository") as mock_task_repo_class:
+                with patch("app.agent.worker.scheduler") as mock_scheduler:
                     mock_db = Mock()
                     mock_session.return_value = mock_db
 
@@ -108,10 +112,10 @@ class TestAgentWorker:
             "agent_type": "code-gen",
         }
 
-        with patch('app.agent.worker.SessionLocal') as mock_session:
-            with patch('app.agent.worker.TaskRepository') as mock_task_repo_class:
-                with patch('app.agent.worker.AgentExecutor') as mock_executor_class:
-                    with patch('app.agent.worker.scheduler') as mock_scheduler:
+        with patch("app.agent.worker.SessionLocal") as mock_session:
+            with patch("app.agent.worker.TaskRepository") as mock_task_repo_class:
+                with patch("app.agent.worker.AgentExecutor") as mock_executor_class:
+                    with patch("app.agent.worker.scheduler") as mock_scheduler:
                         mock_db = Mock()
                         mock_session.return_value = mock_db
 

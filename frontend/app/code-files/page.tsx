@@ -2,61 +2,61 @@
  * Code Files Management Page
  */
 
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { codeFileService } from '@/services'
-import type { CodeFile } from '@/types'
-import DataTable from '@/components/DataTable'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import { useEffect, useState } from "react";
+import { codeFileService } from "@/services";
+import type { CodeFile } from "@/types";
+import DataTable from "@/components/DataTable";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function CodeFilesPage() {
-  const [codeFiles, setCodeFiles] = useState<CodeFile[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [projectId, setProjectId] = useState('')
-  const [selectedFile, setSelectedFile] = useState<CodeFile | null>(null)
+  const [codeFiles, setCodeFiles] = useState<CodeFile[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState("");
+  const [selectedFile, setSelectedFile] = useState<CodeFile | null>(null);
 
   const loadCodeFiles = async (projectId: string) => {
     try {
-      setLoading(true)
-      setError(null)
-      const data = await codeFileService.getByProject(projectId)
-      setCodeFiles(data)
+      setLoading(true);
+      setError(null);
+      const data = await codeFileService.getByProject(projectId);
+      setCodeFiles(data);
     } catch (err) {
-      setError('Failed to load code files')
+      setError("Failed to load code files");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleLoadFiles = () => {
     if (projectId) {
-      loadCodeFiles(projectId)
+      loadCodeFiles(projectId);
     }
-  }
+  };
 
   const handleViewFile = (file: CodeFile) => {
-    setSelectedFile(file)
-  }
+    setSelectedFile(file);
+  };
 
   const columns = [
-    { key: 'path', label: 'Path' },
+    { key: "path", label: "Path" },
     {
-      key: 'hash',
-      label: 'Hash',
+      key: "hash",
+      label: "Hash",
       render: (file: CodeFile) => (
         <span className="font-mono text-xs">{file.hash.substring(0, 8)}</span>
       ),
     },
     {
-      key: 'updated_at',
-      label: 'Updated At',
+      key: "updated_at",
+      label: "Updated At",
       render: (file: CodeFile) => new Date(file.updated_at).toLocaleString(),
     },
     {
-      key: 'actions',
-      label: 'Actions',
+      key: "actions",
+      label: "Actions",
       render: (file: CodeFile) => (
         <button
           onClick={() => handleViewFile(file)}
@@ -66,7 +66,7 @@ export default function CodeFilesPage() {
         </button>
       ),
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -105,7 +105,9 @@ export default function CodeFilesPage() {
           <div className="flex justify-between items-start mb-4">
             <div>
               <h2 className="text-xl font-semibold">{selectedFile.path}</h2>
-              <p className="text-sm text-gray-600 font-mono mt-1">Hash: {selectedFile.hash}</p>
+              <p className="text-sm text-gray-600 font-mono mt-1">
+                Hash: {selectedFile.hash}
+              </p>
             </div>
             <button
               onClick={() => setSelectedFile(null)}
@@ -132,5 +134,5 @@ export default function CodeFilesPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

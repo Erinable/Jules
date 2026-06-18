@@ -3,6 +3,7 @@ CodeFile Entity Model
 
 代码文件实体模型
 """
+
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -33,7 +34,9 @@ class CodeFile(Base):
 
     # 关系
     project: "Project" = relationship("Project", back_populates="code_files")
-    versions: list["CodeVersion"] = relationship("CodeVersion", back_populates="file", cascade="all, delete-orphan")
+    versions: list["CodeVersion"] = relationship(
+        "CodeVersion", back_populates="file", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"<CodeFile(id={self.id}, path='{self.path}', hash='{self.hash}')>"

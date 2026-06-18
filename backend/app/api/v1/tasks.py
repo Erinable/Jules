@@ -1,6 +1,7 @@
 """
 Task API routes
 """
+
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -61,7 +62,9 @@ def get_task(task_id: UUID, db: Session = Depends(get_db)) -> TaskResponse:
 
 
 @router.get("/", response_model=list[TaskResponse])
-def list_tasks(pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)) -> list[TaskResponse]:
+def list_tasks(
+    pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)
+) -> list[TaskResponse]:
     """
     List all tasks with pagination
 
@@ -122,7 +125,9 @@ def update_task(task_id: UUID, task: TaskUpdate, db: Session = Depends(get_db)) 
 
 
 @router.put("/{task_id}/status", response_model=TaskResponse)
-def update_task_status(task_id: UUID, status_update: TaskStatusUpdate, db: Session = Depends(get_db)) -> TaskResponse:
+def update_task_status(
+    task_id: UUID, status_update: TaskStatusUpdate, db: Session = Depends(get_db)
+) -> TaskResponse:
     """
     Update task status
 

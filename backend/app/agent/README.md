@@ -69,6 +69,7 @@ Jules Agent 系统采用模块化设计，各组件职责清晰：
 **文件**: `scheduler.py`
 
 **职责**:
+
 - 管理任务队列
 - 控制并发执行（最多 5 个并发 Agent）
 - 按优先级调度任务
@@ -80,10 +81,10 @@ Jules Agent 系统采用模块化设计，各组件职责清晰：
 class AgentScheduler:
     async def schedule_task(self, task_id: int, priority: int) -> str:
         """调度新任务"""
-        
+
     async def get_queue_status(self) -> dict:
         """获取队列状态"""
-        
+
     async def cancel_task(self, task_id: int) -> bool:
         """取消任务"""
 ```
@@ -113,6 +114,7 @@ status = await scheduler.get_queue_status()
 **文件**: `executor.py`
 
 **职责**:
+
 - 协调 Agent 执行流程
 - 管理执行状态（pending, running, completed, failed）
 - 实现重试机制（最多 3 次，指数退避）
@@ -129,10 +131,10 @@ class AgentExecutor:
         context: dict
     ) -> dict:
         """执行 Agent 任务"""
-        
+
     async def get_execution_status(self, execution_id: int) -> dict:
         """获取执行状态"""
-        
+
     async def stop_execution(self, execution_id: int) -> bool:
         """停止执行"""
 ```
@@ -186,6 +188,7 @@ result = await executor.execute(
 **文件**: `llm_client.py`
 
 **职责**:
+
 - 统一的 LLM 接口（支持多个 Provider）
 - 支持 OpenAI、Anthropic Claude
 - 自动重试和错误处理
@@ -212,14 +215,14 @@ class LLMClient:
         max_tokens: int = 4000
     ) -> dict:
         """生成代码"""
-        
+
     async def chat(
         self,
         messages: list,
         model: str = None
     ) -> dict:
         """对话式生成"""
-        
+
     def get_token_usage(self) -> dict:
         """获取 Token 使用统计"""
 ```
@@ -266,6 +269,7 @@ result = await llm_client.generate(
 **文件**: `analyzer.py`
 
 **职责**:
+
 - 静态代码分析
 - 代码质量评估
 - 安全漏洞扫描
@@ -290,10 +294,10 @@ class CodeAnalyzer:
         language: str = "python"
     ) -> dict:
         """分析代码"""
-        
+
     async def calculate_metrics(self, code: str) -> dict:
         """计算质量指标"""
-        
+
     async def check_security(self, code: str) -> list:
         """安全检查"""
 ```
@@ -333,6 +337,7 @@ analysis = await analyzer.analyze(
 **文件**: `worker.py`
 
 **职责**:
+
 - 异步执行长时间运行的任务
 - 批量代码生成
 - 定期质量分析
@@ -361,30 +366,30 @@ def generate_code_async(task_id: int, prompt: str):
 ```
 1. 用户提交任务
    POST /api/v1/agents/execute
-   
+
 2. Scheduler 接收任务
    - 检查并发限制
    - 加入优先级队列
-   
+
 3. Executor 开始执行
    - 初始化 LLM Client
    - 加载 Prompt 模板
-   
+
 4. LLM Client 生成代码
    - 调用 OpenAI/Anthropic API
    - 流式响应（可选）
-   
+
 5. Analyzer 分析代码
    - Ruff linting
    - mypy type check
    - Bandit security scan
    - Radon complexity
-   
+
 6. 保存结果
    - 代码存储到 code_files 表
    - 质量指标存储到 quality_metrics 表
    - 执行记录存储到 agent_executions 表
-   
+
 7. 返回结果给用户
 ```
 
@@ -394,19 +399,19 @@ def generate_code_async(task_id: int, prompt: str):
 1. Researcher Agent
    - 收集需求和上下文
    - 搜索相关代码示例
-   
+
 2. Planner Agent
    - 生成实现计划
    - 拆分子任务
-   
+
 3. Coder Agent
    - 生成代码
    - 实现功能
-   
+
 4. Reviewer Agent
    - 代码审查
    - 提出改进建议
-   
+
 5. Tester Agent
    - 生成测试用例
    - 验证功能正确性
@@ -516,15 +521,15 @@ LANGSMITH_PROJECT=jules
 class AgentConfig:
     # 并发设置
     MAX_CONCURRENT_AGENTS: int = 5
-    
+
     # 重试设置
     MAX_RETRY_ATTEMPTS: int = 3
     RETRY_BACKOFF_SECONDS: List[int] = [1, 5, 15]
-    
+
     # LLM 设置
     DEFAULT_LLM_MODEL: str = "gpt-4"
     MAX_TOKENS_PER_REQUEST: int = 4000
-    
+
     # 任务设置
     TASK_TIMEOUT_SECONDS: int = 300
 ```
@@ -587,6 +592,7 @@ result = await llm_client.generate(prompt=prompt)
 ### Mock 模式（开发/测试）
 
 **优点**:
+
 - ✅ 无需 API Key
 - ✅ 不消耗 Token
 - ✅ 响应速度快
@@ -618,6 +624,7 @@ AGENT_MODE=mock
 ### 真实 API 模式（生产）
 
 **优点**:
+
 - ✅ 真实 LLM 生成
 - ✅ 高质量输出
 - ✅ 支持复杂任务
@@ -744,22 +751,26 @@ poetry run bandit -r app/
 **优化建议**:
 
 1. **使用更小的模型**:
+
    ```python
    # 从 gpt-4 切换到 gpt-3.5-turbo
    llm_client = LLMClient(model="gpt-3.5-turbo")
    ```
 
 2. **减少 Prompt 长度**:
+
    ```python
    # 精简 Prompt，去除不必要的上下文
    ```
 
 3. **启用缓存**:
+
    ```python
    # 相同 Prompt 使用缓存结果
    ```
 
 4. **批量处理**:
+
    ```python
    # 批量生成多个函数，而不是逐个生成
    ```

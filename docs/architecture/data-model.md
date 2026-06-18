@@ -1,13 +1,14 @@
 # 数据模型设计
 
-**版本**: v1.0  
-**日期**: 2026-06-16  
+**版本**: v1.0
+**日期**: 2026-06-16
 
 ---
 
 ## 1. 数据库选择：PostgreSQL 16+
 
 ### 选择理由
+
 - 事务支持（ACID）
 - 复杂查询性能优异
 - JSONB 支持灵活扩展
@@ -28,14 +29,14 @@ erDiagram
     Task ||--o{ AgentExecution : executes
     AgentExecution ||--o{ LLMCall : makes
     CodeFile ||--o{ CodeVersion : versions
-    
+
     User {
         uuid id PK
         string email
         string name
         timestamp created_at
     }
-    
+
     Project {
         uuid id PK
         uuid user_id FK
@@ -45,7 +46,7 @@ erDiagram
         string status
         timestamp created_at
     }
-    
+
     Task {
         uuid id PK
         uuid project_id FK
@@ -55,7 +56,7 @@ erDiagram
         int priority
         timestamp created_at
     }
-    
+
     AgentExecution {
         uuid id PK
         uuid task_id FK
@@ -65,7 +66,7 @@ erDiagram
         timestamp started_at
         timestamp completed_at
     }
-    
+
     CodeFile {
         uuid id PK
         uuid project_id FK
@@ -74,7 +75,7 @@ erDiagram
         string hash
         timestamp updated_at
     }
-    
+
     CodeVersion {
         uuid id PK
         uuid file_id FK
@@ -82,7 +83,7 @@ erDiagram
         string commit_hash
         timestamp created_at
     }
-    
+
     QualityMetric {
         uuid id PK
         uuid project_id FK
@@ -104,17 +105,17 @@ from datetime import datetime
 
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String(255), unique=True, nullable=False)
     name = Column(String(100), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     projects = relationship("Project", back_populates="user")
 
 class Project(Base):
     __tablename__ = "projects"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     name = Column(String(200), nullable=False)
@@ -122,7 +123,7 @@ class Project(Base):
     config = Column(JSON)
     status = Column(String(50))  # pending/in_progress/completed/failed
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     user = relationship("User", back_populates="projects")
     tasks = relationship("Task", back_populates="project")
     code_files = relationship("CodeFile", back_populates="project")
@@ -130,20 +131,20 @@ class Project(Base):
 
 class CodeFile(Base):
     __tablename__ = "code_files"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"))
     path = Column(String(500), nullable=False)
     content = Column(Text)
     hash = Column(String(64))  # SHA256
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     project = relationship("Project", back_populates="code_files")
     versions = relationship("CodeVersion", back_populates="file")
 
 class QualityMetric(Base):
     __tablename__ = "quality_metrics"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"))
     avg_complexity = Column(Float)
@@ -151,12 +152,12 @@ class QualityMetric(Base):
     security_issues = Column(Integer)
     test_coverage = Column(Float)
     measured_at = Column(DateTime, default=datetime.utcnow)
-    
+
     project = relationship("Project", back_populates="quality_metrics")
 
 class Task(Base):
     __tablename__ = "tasks"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"))
     title = Column(String(200), nullable=False)
@@ -164,13 +165,13 @@ class Task(Base):
     status = Column(String(50), default="pending")
     priority = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     project = relationship("Project", back_populates="tasks")
     executions = relationship("AgentExecution", back_populates="task")
 
 class AgentExecution(Base):
     __tablename__ = "agent_executions"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     task_id = Column(UUID(as_uuid=True), ForeignKey("tasks.id"))
     agent_type = Column(String(50), nullable=False)
@@ -178,32 +179,32 @@ class AgentExecution(Base):
     status = Column(String(50), default="running")
     started_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime)
-    
+
     task = relationship("Task", back_populates="executions")
     llm_calls = relationship("LLMCall", back_populates="execution")
 
 class CodeVersion(Base):
     __tablename__ = "code_versions"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     file_id = Column(UUID(as_uuid=True), ForeignKey("code_files.id"))
     content = Column(Text)
     version_number = Column(Integer, nullable=False)
     commit_hash = Column(String(64))
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     file = relationship("CodeFile", back_populates="versions")
 
 class LLMCall(Base):
     __tablename__ = "llm_calls"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     execution_id = Column(UUID(as_uuid=True), ForeignKey("agent_executions.id"))
     model = Column(String(100))
     prompt_tokens = Column(Integer)
     completion_tokens = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     execution = relationship("AgentExecution", back_populates="llm_calls")
 ```
 
@@ -242,10 +243,10 @@ from sqlalchemy.orm import Session
 
 class ProjectRepository:
     """项目仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create(self, user_id: uuid.UUID, name: str, project_type: str) -> Project:
         project = Project(
             user_id=user_id,
@@ -257,10 +258,10 @@ class ProjectRepository:
         self.db.commit()
         self.db.refresh(project)
         return project
-    
+
     def get_by_id(self, project_id: uuid.UUID) -> Optional[Project]:
         return self.db.query(Project).filter(Project.id == project_id).first()
-    
+
     def list_by_user(self, user_id: uuid.UUID, limit: int = 10) -> List[Project]:
         return self.db.query(Project)\
             .filter(Project.user_id == user_id)\
@@ -270,26 +271,26 @@ class ProjectRepository:
 
 class UserRepository:
     """用户仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create(self, email: str, name: str) -> User:
         user = User(email=email, name=name)
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)
         return user
-    
+
     def get_by_id(self, user_id: uuid.UUID) -> Optional[User]:
         return self.db.query(User).filter(User.id == user_id).first()
-    
+
     def get_by_email(self, email: str) -> Optional[User]:
         return self.db.query(User).filter(User.email == email).first()
-    
+
     def update(self, user_id: uuid.UUID, name: str) -> bool:
         """更新用户信息（数据库操作）
-        
+
         返回：操作是否成功
         注意：此方法修改数据库状态，调用方应重新查询获取最新对象
         """
@@ -299,35 +300,35 @@ class UserRepository:
 
 class TaskRepository:
     """任务仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create(self, project_id: uuid.UUID, title: str, description: str) -> Task:
         task = Task(project_id=project_id, title=title, description=description, status="pending", priority=0)
         self.db.add(task)
         self.db.commit()
         self.db.refresh(task)
         return task
-    
+
     def get_by_id(self, task_id: uuid.UUID) -> Optional[Task]:
         return self.db.query(Task).filter(Task.id == task_id).first()
-    
+
     def get_by_project(self, project_id: uuid.UUID) -> List[Task]:
         return self.db.query(Task)\
             .filter(Task.project_id == project_id)\
             .order_by(Task.created_at.desc())\
             .all()
-    
+
     def get_by_status(self, project_id: uuid.UUID, status: str) -> List[Task]:
         return self.db.query(Task)\
             .filter(Task.project_id == project_id, Task.status == status)\
             .order_by(Task.priority.desc(), Task.created_at.asc())\
             .all()
-    
+
     def update_status(self, task_id: uuid.UUID, status: str) -> bool:
         """更新任务状态（数据库操作）
-        
+
         返回：操作是否成功
         注意：此方法修改数据库状态，调用方应重新查询获取最新对象
         """
@@ -337,10 +338,10 @@ class TaskRepository:
 
 class AgentExecutionRepository:
     """Agent 执行仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create(self, task_id: uuid.UUID, agent_type: str, state: dict) -> AgentExecution:
         execution = AgentExecution(
             task_id=task_id,
@@ -353,19 +354,19 @@ class AgentExecutionRepository:
         self.db.commit()
         self.db.refresh(execution)
         return execution
-    
+
     def get_by_id(self, execution_id: uuid.UUID) -> Optional[AgentExecution]:
         return self.db.query(AgentExecution).filter(AgentExecution.id == execution_id).first()
-    
+
     def get_by_task(self, task_id: uuid.UUID) -> List[AgentExecution]:
         return self.db.query(AgentExecution)\
             .filter(AgentExecution.task_id == task_id)\
             .order_by(AgentExecution.started_at.desc())\
             .all()
-    
+
     def update_status(self, execution_id: uuid.UUID, status: str, state: dict = None) -> bool:
         """更新执行状态（数据库操作）
-        
+
         返回：操作是否成功
         注意：此方法修改数据库状态，调用方应重新查询获取最新对象
         """
@@ -374,17 +375,17 @@ class AgentExecutionRepository:
             update_data["state"] = state
         if status in ["completed", "failed"]:
             update_data["completed_at"] = datetime.utcnow()
-        
+
         result = self.db.query(AgentExecution).filter(AgentExecution.id == execution_id).update(update_data)
         self.db.commit()
         return result > 0
 
 class CodeFileRepository:
     """代码文件仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create(self, project_id: uuid.UUID, path: str, content: str, file_hash: str) -> CodeFile:
         code_file = CodeFile(
             project_id=project_id,
@@ -396,24 +397,24 @@ class CodeFileRepository:
         self.db.commit()
         self.db.refresh(code_file)
         return code_file
-    
+
     def get_by_id(self, file_id: uuid.UUID) -> Optional[CodeFile]:
         return self.db.query(CodeFile).filter(CodeFile.id == file_id).first()
-    
+
     def get_by_path(self, project_id: uuid.UUID, path: str) -> Optional[CodeFile]:
         return self.db.query(CodeFile)\
             .filter(CodeFile.project_id == project_id, CodeFile.path == path)\
             .first()
-    
+
     def list_by_project(self, project_id: uuid.UUID) -> List[CodeFile]:
         return self.db.query(CodeFile)\
             .filter(CodeFile.project_id == project_id)\
             .order_by(CodeFile.path)\
             .all()
-    
+
     def update_content(self, file_id: uuid.UUID, content: str, file_hash: str) -> bool:
         """更新文件内容（数据库操作）
-        
+
         返回：操作是否成功
         注意：此方法修改数据库状态，调用方应重新查询获取最新对象
         """
@@ -427,12 +428,12 @@ class CodeFileRepository:
 
 class QualityMetricRepository:
     """质量指标仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
-    def create(self, project_id: uuid.UUID, avg_complexity: float, 
-               maintainability_index: float, security_issues: int, 
+
+    def create(self, project_id: uuid.UUID, avg_complexity: float,
+               maintainability_index: float, security_issues: int,
                test_coverage: float) -> QualityMetric:
         metric = QualityMetric(
             project_id=project_id,
@@ -445,13 +446,13 @@ class QualityMetricRepository:
         self.db.commit()
         self.db.refresh(metric)
         return metric
-    
+
     def get_latest(self, project_id: uuid.UUID) -> Optional[QualityMetric]:
         return self.db.query(QualityMetric)\
             .filter(QualityMetric.project_id == project_id)\
             .order_by(QualityMetric.measured_at.desc())\
             .first()
-    
+
     def get_history(self, project_id: uuid.UUID, limit: int = 10) -> List[QualityMetric]:
         return self.db.query(QualityMetric)\
             .filter(QualityMetric.project_id == project_id)\
@@ -461,10 +462,10 @@ class QualityMetricRepository:
 
 class CodeVersionRepository:
     """代码版本仓储"""
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create(self, file_id: uuid.UUID, content: str, version_number: int, commit_hash: str = None) -> CodeVersion:
         """创建代码版本记录"""
         version = CodeVersion(
@@ -477,18 +478,18 @@ class CodeVersionRepository:
         self.db.commit()
         self.db.refresh(version)
         return version
-    
+
     def get_by_id(self, version_id: uuid.UUID) -> Optional[CodeVersion]:
         """根据 ID 获取版本"""
         return self.db.query(CodeVersion).filter(CodeVersion.id == version_id).first()
-    
+
     def get_latest(self, file_id: uuid.UUID) -> Optional[CodeVersion]:
         """获取文件的最新版本"""
         return self.db.query(CodeVersion)\
             .filter(CodeVersion.file_id == file_id)\
             .order_by(CodeVersion.version_number.desc())\
             .first()
-    
+
     def get_history(self, file_id: uuid.UUID, limit: int = 10) -> List[CodeVersion]:
         """获取文件的版本历史"""
         return self.db.query(CodeVersion)\
@@ -496,7 +497,7 @@ class CodeVersionRepository:
             .order_by(CodeVersion.version_number.desc())\
             .limit(limit)\
             .all()
-    
+
     def get_by_version_number(self, file_id: uuid.UUID, version_number: int) -> Optional[CodeVersion]:
         """根据版本号获取特定版本"""
         return self.db.query(CodeVersion)\
@@ -561,6 +562,7 @@ CREATE TABLE quality_metrics_2026_02 PARTITION OF quality_metrics
 ### 5.3 查询优化
 
 **使用 EXPLAIN ANALYZE**：
+
 ```sql
 EXPLAIN ANALYZE
 SELECT * FROM tasks
@@ -569,6 +571,7 @@ ORDER BY priority DESC, created_at ASC;
 ```
 
 **使用连接池**：
+
 ```python
 from sqlalchemy import create_engine
 from sqlalchemy.pool import QueuePool
@@ -583,6 +586,7 @@ engine = create_engine(
 ```
 
 **批量插入优化**：
+
 ```python
 def bulk_create_tasks(tasks_data: List[dict]):
     """批量创建任务"""
@@ -594,6 +598,7 @@ def bulk_create_tasks(tasks_data: List[dict]):
 ### 5.4 数据归档策略
 
 **归档旧数据**：
+
 ```python
 def archive_old_metrics(days: int = 90):
     """归档 90 天前的质量指标数据"""
@@ -601,11 +606,11 @@ def archive_old_metrics(days: int = 90):
     old_metrics = db.query(QualityMetric)\
         .filter(QualityMetric.measured_at < cutoff_date)\
         .all()
-    
+
     # 导出到归档表或文件
     for metric in old_metrics:
         archive_metric(metric)
-    
+
     # 删除原数据
     db.query(QualityMetric)\
         .filter(QualityMetric.measured_at < cutoff_date)\
@@ -616,6 +621,7 @@ def archive_old_metrics(days: int = 90):
 ### 5.5 监控与维护
 
 **定期 VACUUM**：
+
 ```sql
 -- 自动 VACUUM 配置
 ALTER TABLE tasks SET (autovacuum_vacuum_scale_factor = 0.1);
@@ -623,6 +629,7 @@ ALTER TABLE agent_executions SET (autovacuum_vacuum_scale_factor = 0.1);
 ```
 
 **慢查询监控**：
+
 ```sql
 -- 开启慢查询日志
 ALTER SYSTEM SET log_min_duration_statement = 1000;  -- 1秒以上的查询
@@ -630,6 +637,7 @@ ALTER SYSTEM SET log_statement = 'all';
 ```
 
 **连接池监控**：
+
 ```python
 from prometheus_client import Gauge
 
@@ -645,6 +653,7 @@ def monitor_pool():
 ### 5.6 数据迁移策略（Alembic）
 
 **Alembic 初始化**：
+
 ```bash
 # 安装 Alembic
 pip install alembic
@@ -659,6 +668,7 @@ sqlalchemy.url = postgresql://user:password@localhost/dbname
 **版本管理流程**：
 
 1. **生成迁移脚本**（模型变更后）：
+
 ```bash
 alembic revision --autogenerate -m "add code_version table"
 ```
@@ -669,6 +679,7 @@ alembic revision --autogenerate -m "add code_version table"
    - 手动调整自动生成的脚本（如有必要）
 
 3. **应用迁移**：
+
 ```bash
 # 升级到最新版本
 alembic upgrade head
@@ -681,6 +692,7 @@ alembic upgrade +1
 ```
 
 4. **回滚迁移**：
+
 ```bash
 # 回滚一个版本
 alembic downgrade -1
@@ -693,6 +705,7 @@ alembic downgrade base
 ```
 
 **迁移脚本示例**：
+
 ```python
 """add code_version table
 
@@ -739,6 +752,7 @@ def downgrade():
 - ✅ **顺序执行**：团队成员按顺序应用迁移，避免冲突
 
 **生产环境迁移检查清单**：
+
 ```bash
 # 1. 备份数据库
 pg_dump dbname > backup_$(date +%Y%m%d_%H%M%S).sql
@@ -813,7 +827,7 @@ def transaction_scope():
 with transaction_scope() as session:
     project_repo = ProjectRepository(session)
     task_repo = TaskRepository(session)
-    
+
     project = project_repo.create(user_id, "New Project", "web")
     task_repo.create(project.id, "Initial Task", "Setup project")
 ```
@@ -823,26 +837,26 @@ with transaction_scope() as session:
 ```python
 class Project(Base):
     __tablename__ = "projects"
-    
+
     # ... 其他字段
     version = Column(Integer, default=1, nullable=False)
-    
+
     def update_with_version(self, **kwargs):
         """使用版本号更新，防止并发冲突"""
         current_version = self.version
         self.version += 1
-        
+
         for key, value in kwargs.items():
             setattr(self, key, value)
-        
+
         # 检查版本号是否匹配
         result = db.query(Project)\
             .filter(Project.id == self.id, Project.version == current_version)\
             .update({**kwargs, "version": self.version})
-        
+
         if result == 0:
             raise ConcurrentUpdateError("Project was modified by another process")
-        
+
         db.commit()
 ```
 
@@ -861,6 +875,7 @@ class Project(Base):
 7. ✅ **监控与维护**：慢查询监控、连接池监控、数据归档
 
 **Repository 清单**：
+
 - `ProjectRepository` - 项目管理
 - `UserRepository` - 用户管理（update 方法返回 bool）
 - `TaskRepository` - 任务管理（update_status 方法返回 bool）
@@ -870,8 +885,10 @@ class Project(Base):
 - `QualityMetricRepository` - 质量指标跟踪
 
 **下一步行动**：
+
 - 使用 Alembic 创建初始迁移脚本
 - 编写单元测试覆盖所有 Repository 方法（目标 80%+ 覆盖率）
 - 配置生产环境的数据库连接池和监控
 - 实施数据归档策略
+
 ```

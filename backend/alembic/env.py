@@ -1,12 +1,12 @@
 """
 Alembic Environment Configuration
 """
+
 import os
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object
 config = context.config
@@ -21,7 +21,9 @@ from app.database.base import Base
 target_metadata = Base.metadata
 
 # Get database URL from environment variable
-database_url = os.getenv("DATABASE_URL", "postgresql://jules:jules_password@localhost:5432/jules_db")
+database_url = os.getenv(
+    "DATABASE_URL", "postgresql://jules:jules_password@localhost:5432/jules_db"
+)
 config.set_main_option("sqlalchemy.url", database_url)
 
 

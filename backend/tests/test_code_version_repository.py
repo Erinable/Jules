@@ -1,16 +1,16 @@
 """
 Tests for CodeVersionRepository
 """
+
 import uuid
 from datetime import datetime
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.models.code_file import CodeFile
 from app.models.project import Project
 from app.models.user import User
 from app.repositories.code_version_repository import CodeVersionRepository
+from sqlalchemy.orm import Session
 
 
 class TestCodeVersionRepository:
@@ -134,7 +134,9 @@ class TestCodeVersionRepository:
         assert history[1].version_number == 2
         assert history[2].version_number == 1
 
-    def test_get_history_with_limit(self, db_session: Session, setup_file: CodeFile, now: datetime) -> None:
+    def test_get_history_with_limit(
+        self, db_session: Session, setup_file: CodeFile, now: datetime
+    ) -> None:
         """Test retrieving version history with limit"""
         repo = CodeVersionRepository(db_session)
         repo.create(
@@ -158,7 +160,9 @@ class TestCodeVersionRepository:
         assert history[0].version_number == 3
         assert history[1].version_number == 2
 
-    def test_get_by_version_number(self, db_session: Session, setup_file: CodeFile, now: datetime) -> None:
+    def test_get_by_version_number(
+        self, db_session: Session, setup_file: CodeFile, now: datetime
+    ) -> None:
         """Test retrieving version by version number"""
         repo = CodeVersionRepository(db_session)
         repo.create(
@@ -177,7 +181,9 @@ class TestCodeVersionRepository:
         assert retrieved.id == v2.id
         assert retrieved.version_number == 2
 
-    def test_get_by_version_number_not_found(self, db_session: Session, setup_file: CodeFile) -> None:
+    def test_get_by_version_number_not_found(
+        self, db_session: Session, setup_file: CodeFile
+    ) -> None:
         """Test retrieving non-existent version number returns None"""
         repo = CodeVersionRepository(db_session)
         version = repo.get_by_version_number(setup_file.id, 999)

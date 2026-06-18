@@ -1,6 +1,7 @@
 """
 Pagination dependencies for list endpoints
 """
+
 from typing import Annotated
 
 from fastapi import Query

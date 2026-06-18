@@ -1,12 +1,12 @@
 """
 Tests for UserRepository
 """
+
 import uuid
 from datetime import datetime
 
-from sqlalchemy.orm import Session
-
 from app.repositories.user_repository import UserRepository
+from sqlalchemy.orm import Session
 
 
 class TestUserRepository:

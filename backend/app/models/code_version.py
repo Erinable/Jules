@@ -3,6 +3,7 @@ CodeVersion Entity Model
 
 代码版本实体模型
 """
+
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING

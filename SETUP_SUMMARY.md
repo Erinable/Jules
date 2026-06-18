@@ -55,6 +55,7 @@ Jules/
 ### 3. 核心配置亮点
 
 #### Docker Compose 特性
+
 - ✅ 健康检查（postgres, redis, backend）
 - ✅ 服务依赖管理（depends_on + condition）
 - ✅ 数据卷持久化（postgres_data, redis_data）
@@ -62,12 +63,14 @@ Jules/
 - ✅ 自动重启策略（unless-stopped）
 
 #### 安全性配置
+
 - ✅ 非 root 用户运行（生产镜像）
 - ✅ 环境变量隔离（.env.example）
 - ✅ CORS 限制配置
 - ✅ 速率限制配置
 
 #### 开发体验
+
 - ✅ 热重载（frontend + backend）
 - ✅ 卷挂载（代码实时同步）
 - ✅ 详细日志配置

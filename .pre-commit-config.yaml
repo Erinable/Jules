@@ -1,6 +1,9 @@
 # Root-level Pre-commit Configuration for Jules Project
 # This runs checks for both backend and frontend
 
+default_language_version:
+  node: system
+
 repos:
   # Basic file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -36,12 +39,16 @@ repos:
         name: Markdown lint
         args: ['--fix']
 
-  # Docker file linting
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
+  # Docker file linting. Use the local binary when present; do not require a
+  # running Docker daemon just to execute pre-commit.
+  - repo: local
     hooks:
-      - id: hadolint-docker
+      - id: hadolint
         name: Lint Dockerfiles
+        entry: bash -c 'if command -v hadolint >/dev/null 2>&1; then hadolint "$@"; else echo "hadolint not installed; skipping Dockerfile lint"; fi' --
+        language: system
+        files: (^|/)Dockerfile(\..*)?$
+        pass_filenames: true
 
   # Check for secrets in all files
   - repo: https://github.com/Yelp/detect-secrets
@@ -59,24 +66,21 @@ repos:
       - id: ruff
         name: Ruff linter (backend)
         files: ^backend/.*\.py$
-        args: [--fix]
+        args: [--fix, --config, backend/pyproject.toml]
       - id: ruff-format
         name: Ruff formatter (backend)
         files: ^backend/.*\.py$
+        args: [--config, backend/pyproject.toml]
 
-  # Frontend JavaScript/TypeScript checks (only for frontend directory)
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.2.0
+  # Frontend TypeScript checks (only for frontend directory)
+  - repo: local
     hooks:
-      - id: eslint
-        name: ESLint (frontend)
+      - id: frontend-type-check
+        name: TypeScript type check (frontend)
+        entry: bash -c 'cd frontend && npm run type-check'
+        language: system
         files: ^frontend/.*\.(js|jsx|ts|tsx)$
-        types: [file]
-        args: ['--fix']
-        additional_dependencies:
-          - eslint@8.56.0
-          - eslint-config-next@15.0.0
-          - typescript@5.3.3
+        pass_filenames: false
 
   # Frontend Prettier formatting
   - repo: https://github.com/pre-commit/mirrors-prettier

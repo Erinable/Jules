@@ -1,6 +1,7 @@
 """
 FastAPI dependencies for database session, pagination, etc.
 """
+
 from collections.abc import Generator
 
 from sqlalchemy.orm import Session

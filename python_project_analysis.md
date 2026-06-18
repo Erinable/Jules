@@ -11,6 +11,7 @@
 ### 1.1 典型文件结构
 
 #### FastAPI 项目结构
+
 ```
 fastapi-app/
 ├── app/
@@ -55,6 +56,7 @@ fastapi-app/
 ```
 
 #### Flask 项目结构
+
 ```
 flask-app/
 ├── app/
@@ -74,6 +76,7 @@ flask-app/
 ```
 
 #### Django 项目结构
+
 ```
 django-project/
 ├── project_name/
@@ -100,21 +103,25 @@ django-project/
 ### 1.2 常用依赖
 
 #### 核心框架
+
 - **FastAPI**: `fastapi`, `uvicorn`, `pydantic`
 - **Flask**: `flask`, `flask-sqlalchemy`, `flask-migrate`
 - **Django**: `django`, `djangorestframework`, `django-cors-headers`
 
 #### 数据库 & ORM
+
 - **ORM**: `sqlalchemy`, `alembic`, `tortoise-orm`
 - **数据库驱动**: `psycopg2-binary` (PostgreSQL), `pymysql` (MySQL)
 - **连接池**: `asyncpg` (异步 PostgreSQL)
 
 #### 认证 & 安全
+
 - `python-jose[cryptography]`, `passlib[bcrypt]`
 - `python-multipart` (文件上传)
 - `pyjwt`
 
 #### 中间件 & 工具
+
 - `python-dotenv` (环境变量)
 - `loguru` (日志)
 - `httpx` (HTTP 客户端)
@@ -124,11 +131,13 @@ django-project/
 ### 1.3 测试策略
 
 #### 测试框架
+
 - **单元测试**: `pytest`, `pytest-asyncio`, `pytest-cov`
 - **集成测试**: `pytest-django`, `flask-testing`
 - **E2E 测试**: `playwright`, `selenium`
 
 #### 测试模式
+
 ```python
 # FastAPI 测试示例
 from fastapi.testclient import TestClient
@@ -140,6 +149,7 @@ def test_create_user(client: TestClient):
 ```
 
 #### 覆盖率目标
+
 - 单元测试: 80%+
 - 集成测试: 关键业务流程
 - E2E 测试: 核心用户路径
@@ -147,6 +157,7 @@ def test_create_user(client: TestClient):
 ### 1.4 部署方式
 
 #### 容器化部署
+
 ```dockerfile
 # Dockerfile
 FROM python:3.11-slim
@@ -158,12 +169,14 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 #### 部署选项
+
 - **ASGI 服务器**: Uvicorn, Gunicorn + Uvicorn workers
 - **WSGI 服务器**: Gunicorn, uWSGI
 - **容器编排**: Docker Compose, Kubernetes
 - **云平台**: AWS (ECS, Lambda), GCP (Cloud Run), Azure
 
 #### 配置管理
+
 - 环境变量 + `.env` 文件
 - 分层配置: `config/base.py`, `config/production.py`
 - 密钥管理: AWS Secrets Manager, HashiCorp Vault
@@ -175,6 +188,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ### 2.1 典型文件结构
 
 #### Click/Typer 项目结构
+
 ```
 cli-tool/
 ├── cli_tool/
@@ -199,23 +213,27 @@ cli-tool/
 ### 2.2 常用依赖
 
 #### CLI 框架
+
 - **Click**: 成熟稳定，装饰器风格
 - **Typer**: 基于类型注解，现代化
 - **argparse**: 标准库，适合简单场景
 
 #### 配置管理
+
 - `pydantic` (配置验证)
 - `pydantic-settings` (环境变量)
 - `toml`, `pyyaml` (配置文件)
 - `python-dotenv`
 
 #### 输出 & 交互
+
 - `rich` (美化输出、进度条)
 - `colorama` (跨平台颜色)
 - `questionary` (交互式提示)
 - `tabulate` (表格输出)
 
 #### 其他工具
+
 - `pathlib` (路径处理)
 - `loguru` (日志)
 - `requests` (HTTP)
@@ -223,11 +241,13 @@ cli-tool/
 ### 2.3 测试策略
 
 #### 测试工具
+
 - `pytest`
 - `click.testing.CliRunner` (Click)
 - `typer.testing.CliRunner` (Typer)
 
 #### 测试示例
+
 ```python
 from click.testing import CliRunner
 from cli_tool.cli import cli
@@ -241,6 +261,7 @@ def test_init_command():
 ```
 
 #### 测试覆盖
+
 - 命令解析正确性
 - 错误处理
 - 边界条件
@@ -249,11 +270,13 @@ def test_init_command():
 ### 2.4 部署方式
 
 #### 打包分发
+
 - **PyPI**: `poetry publish`, `twine upload`
 - **可执行文件**: `PyInstaller`, `cx_Freeze`
 - **系统包**: `fpm` (deb, rpm)
 
 #### 安装方式
+
 ```bash
 # pip 安装
 pip install cli-tool
@@ -266,6 +289,7 @@ pip install -e .
 ```
 
 #### 配置文件位置
+
 - Linux/macOS: `~/.config/cli-tool/config.yaml`
 - Windows: `%APPDATA%\cli-tool\config.yaml`
 - 使用 `platformdirs` 库自动处理跨平台路径
@@ -310,39 +334,46 @@ data-analysis-project/
 ### 3.2 常用依赖
 
 #### 数据处理
+
 - `pandas` (数据框操作)
 - `numpy` (数值计算)
 - `polars` (高性能替代 pandas)
 - `dask` (大数据并行处理)
 
 #### 可视化
+
 - `matplotlib` (基础绘图)
 - `seaborn` (统计可视化)
 - `plotly` (交互式图表)
 - `altair` (声明式可视化)
 
 #### 机器学习
+
 - `scikit-learn` (经典 ML)
 - `xgboost`, `lightgbm` (梯度提升)
 - `statsmodels` (统计建模)
 
 #### Notebook 工具
+
 - `jupyter`, `jupyterlab`
 - `ipywidgets` (交互式组件)
 - `papermill` (Notebook 自动化)
 
 #### 数据管道
+
 - `prefect`, `dagster` (工作流编排)
 - `great_expectations` (数据质量)
 
 ### 3.3 测试策略
 
 #### 测试框架
+
 - `pytest`
 - `pytest-dataframe` (DataFrame 断言)
 - `hypothesis` (基于属性的测试)
 
 #### 测试示例
+
 ```python
 import pandas as pd
 from src.data.preprocessor import clean_data
@@ -354,6 +385,7 @@ def test_clean_data_removes_nulls():
 ```
 
 #### 测试覆盖
+
 - 数据加载和验证
 - 预处理逻辑
 - 特征工程函数
@@ -362,11 +394,13 @@ def test_clean_data_removes_nulls():
 ### 3.4 部署方式
 
 #### Notebook 部署
+
 - **Voilà**: 将 Notebook 转为 Web 应用
 - **Streamlit**: 快速构建数据应用
 - **Dash**: Plotly 生态的仪表盘框架
 
 #### 自动化执行
+
 ```bash
 # Papermill 执行 Notebook
 papermill input.ipynb output.ipynb -p param1 value1
@@ -376,6 +410,7 @@ cron: 0 2 * * * papermill analysis.ipynb results/$(date +\%Y\%m\%d).ipynb
 ```
 
 #### 容器化
+
 ```dockerfile
 FROM jupyter/scipy-notebook:latest
 COPY requirements.txt .
@@ -437,6 +472,7 @@ common-framework/
 ### 4.3 项目类型特化层
 
 #### Web 应用特化
+
 ```python
 from common_framework.config import BaseConfig
 
@@ -447,6 +483,7 @@ class WebConfig(BaseConfig):
 ```
 
 #### CLI 工具特化
+
 ```python
 from common_framework.config import BaseConfig
 
@@ -457,6 +494,7 @@ class CLIConfig(BaseConfig):
 ```
 
 #### 数据分析特化
+
 ```python
 from common_framework.config import BaseConfig
 
@@ -469,6 +507,7 @@ class DataConfig(BaseConfig):
 ### 4.4 核心组件设计
 
 #### 配置管理
+
 ```python
 from pydantic_settings import BaseSettings
 
@@ -476,13 +515,14 @@ class BaseConfig(BaseSettings):
     app_name: str
     environment: str = "development"
     debug: bool = False
-    
+
     class Config:
         env_file = ".env"
         env_prefix = "APP_"
 ```
 
 #### 日志系统
+
 ```python
 from loguru import logger
 
@@ -500,6 +540,7 @@ class Logger:
 ```
 
 #### 错误处理
+
 ```python
 class AppError(Exception):
     """基础异常类"""
@@ -520,6 +561,7 @@ class ValidationError(AppError):
 ### 4.5 项目模板生成器
 
 #### 模板结构
+
 ```python
 templates = {
     "web": {
@@ -539,6 +581,7 @@ templates = {
 ```
 
 #### 生成器命令
+
 ```bash
 # 生成 FastAPI 项目
 python -m framework_gen create --type web --framework fastapi --database postgresql
@@ -587,17 +630,20 @@ python -m framework_gen create --type data --notebook jupyterlab
 ### 6.2 技术选型建议
 
 #### 优先使用现代工具
+
 - **包管理**: Poetry > pip + requirements.txt
 - **类型检查**: mypy, pyright
 - **代码质量**: ruff (linting + formatting)
 - **测试**: pytest + pytest-cov
 
 #### 配置管理
+
 - Pydantic Settings（类型安全 + 验证）
 - python-dotenv（环境变量）
 - dynaconf（多环境配置）
 
 #### 日志
+
 - Loguru（简单强大）
 - structlog（结构化日志）
 
@@ -612,6 +658,7 @@ python -m framework_gen create --type data --notebook jupyterlab
    - 手动实现工厂模式
 
 3. **配置分层**
+
    ```
    base.py         # 通用配置
    development.py  # 开发环境
@@ -647,4 +694,3 @@ python -m framework_gen create --type data --notebook jupyterlab
 3. 开发项目生成器 CLI 工具
 4. 编写完整文档和示例
 5. 构建测试套件验证框架可用性
-

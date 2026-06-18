@@ -1,8 +1,9 @@
 """
 Agent Execution Pydantic schemas for request/response validation
 """
+
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -13,7 +14,7 @@ class ExecutionCreate(BaseModel):
 
     task_id: UUID = Field(..., description="Task ID this execution belongs to")
     agent_type: str = Field(..., min_length=1, max_length=50, description="Type of agent")
-    state: Optional[dict[str, Any]] = Field(None, description="Execution state")
+    state: dict[str, Any] | None = Field(None, description="Execution state")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -30,7 +31,7 @@ class ExecutionStatusUpdate(BaseModel):
     """Schema for updating execution status"""
 
     status: str = Field(..., pattern="^(running|completed|failed)$", description="Execution status")
-    state: Optional[dict[str, Any]] = Field(None, description="Execution state")
+    state: dict[str, Any] | None = Field(None, description="Execution state")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -48,9 +49,9 @@ class ExecutionResponse(BaseModel):
     id: UUID = Field(..., description="Execution unique identifier")
     task_id: UUID = Field(..., description="Task ID")
     agent_type: str = Field(..., description="Type of agent")
-    state: Optional[dict[str, Any]] = Field(None, description="Execution state")
+    state: dict[str, Any] | None = Field(None, description="Execution state")
     status: str = Field(..., description="Execution status")
     started_at: datetime = Field(..., description="Execution start timestamp")
-    completed_at: Optional[datetime] = Field(None, description="Execution completion timestamp")
+    completed_at: datetime | None = Field(None, description="Execution completion timestamp")
 
     model_config = ConfigDict(from_attributes=True)

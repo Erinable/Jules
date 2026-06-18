@@ -1,16 +1,16 @@
 """
 Integration tests for Quality Metric API endpoints
 """
+
 from datetime import datetime
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from app.main import app
 from app.models.project import Project
 from app.models.quality_metric import QualityMetric
 from app.models.user import User
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 client = TestClient(app)
 
@@ -139,9 +139,7 @@ class TestQualityMetricAPI:
         response = client.get(f"/api/v1/quality/{sample_quality_metric_id}")
         assert response.status_code == 404
 
-    def test_get_latest_quality_metric(
-        self, db_session: Session, setup_project: Project
-    ) -> None:
+    def test_get_latest_quality_metric(self, db_session: Session, setup_project: Project) -> None:
         """Test retrieving latest quality metric for project"""
         # Create multiple metrics with different timestamps
         metric1 = QualityMetric(
@@ -175,9 +173,7 @@ class TestQualityMetricAPI:
         response = client.get(f"/api/v1/quality/project/{sample_project_id}/latest")
         assert response.status_code == 404
 
-    def test_get_quality_metric_history(
-        self, db_session: Session, setup_project: Project
-    ) -> None:
+    def test_get_quality_metric_history(self, db_session: Session, setup_project: Project) -> None:
         """Test retrieving quality metric history for project"""
         for i in range(5):
             metric = QualityMetric(

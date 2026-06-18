@@ -1,7 +1,7 @@
 """
 Tests for Agent Scheduler
 """
-import pytest
+
 from datetime import datetime
 
 from app.agent.scheduler import AgentScheduler

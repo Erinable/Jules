@@ -1,15 +1,15 @@
 """
 Tests for QualityMetricRepository
 """
+
 import uuid
 from datetime import datetime
 
 import pytest
-from sqlalchemy.orm import Session
-
 from app.models.project import Project
 from app.models.user import User
 from app.repositories.quality_metric_repository import QualityMetricRepository
+from sqlalchemy.orm import Session
 
 
 class TestQualityMetricRepository:
@@ -33,7 +33,9 @@ class TestQualityMetricRepository:
         db_session.flush()
         return project
 
-    def test_create_metric(self, db_session: Session, setup_project: Project, now: datetime) -> None:
+    def test_create_metric(
+        self, db_session: Session, setup_project: Project, now: datetime
+    ) -> None:
         """Test creating a new quality metric"""
         repo = QualityMetricRepository(db_session)
         metric = repo.create(

@@ -3,8 +3,9 @@ User Repository
 
 用户仓储层，提供用户数据访问方法
 """
+
 import uuid
-from typing import Optional
+from datetime import datetime
 
 from sqlalchemy.orm import Session
 
@@ -23,24 +24,37 @@ class UserRepository:
         """
         self.db = db
 
-    def create(self, email: str, name: str) -> User:
+    def create(
+        self,
+        email: str,
+        name: str,
+        password_hash: str | None = None,
+        role: str = "viewer",
+    ) -> User:
         """
         创建新用户
 
         Args:
             email: 用户邮箱
             name: 用户名称
+            password_hash: 密码哈希（可空，用于已有用户迁移）
+            role: 用户角色（admin/developer/viewer）
 
         Returns:
             User: 创建的用户对象
         """
-        user = User(email=email, name=name)
+        user = User(
+            email=email,
+            name=name,
+            password_hash=password_hash,
+            role=role,
+        )
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)
         return user
 
-    def get_by_id(self, user_id: uuid.UUID) -> Optional[User]:
+    def get_by_id(self, user_id: uuid.UUID) -> User | None:
         """
         根据 ID 获取用户
 
@@ -52,7 +66,7 @@ class UserRepository:
         """
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def get_by_email(self, email: str) -> Optional[User]:
+    def get_by_email(self, email: str) -> User | None:
         """
         根据邮箱获取用户
 
@@ -75,7 +89,39 @@ class UserRepository:
         Returns:
             list[User]: 用户列表
         """
-        return self.db.query(User).order_by(User.created_at.desc()).limit(limit).offset(offset).all()
+        return (
+            self.db.query(User).order_by(User.created_at.desc()).limit(limit).offset(offset).all()
+        )
+
+    def update_password(self, user_id: uuid.UUID, password_hash: str) -> bool:
+        """更新用户密码哈希"""
+        result = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .update({"password_hash": password_hash, "updated_at": datetime.utcnow()})
+        )
+        self.db.commit()
+        return result > 0
+
+    def update_last_login(self, user_id: uuid.UUID) -> bool:
+        """更新最后登录时间"""
+        result = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .update({"last_login_at": datetime.utcnow()})
+        )
+        self.db.commit()
+        return result > 0
+
+    def set_active(self, user_id: uuid.UUID, is_active: bool) -> bool:
+        """启用/禁用用户"""
+        result = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .update({"is_active": is_active, "updated_at": datetime.utcnow()})
+        )
+        self.db.commit()
+        return result > 0
 
     def update(self, user_id: uuid.UUID, name: str) -> bool:
         """
@@ -90,7 +136,11 @@ class UserRepository:
         Returns:
             bool: 操作是否成功
         """
-        result = self.db.query(User).filter(User.id == user_id).update({"name": name})
+        result = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .update({"name": name, "updated_at": datetime.utcnow()})
+        )
         self.db.commit()
         return result > 0
 

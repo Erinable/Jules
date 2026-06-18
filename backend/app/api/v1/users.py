@@ -1,6 +1,7 @@
 """
 User API routes
 """
+
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -68,7 +69,9 @@ def get_user(user_id: UUID, db: Session = Depends(get_db)) -> UserResponse:
 
 
 @router.get("/", response_model=list[UserResponse])
-def list_users(pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)) -> list[UserResponse]:
+def list_users(
+    pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)
+) -> list[UserResponse]:
     """
     List all users with pagination
 

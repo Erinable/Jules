@@ -1,18 +1,18 @@
 """
 Integration tests for Agent Execution API endpoints
 """
+
 from datetime import datetime
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from app.main import app
 from app.models.agent import Agent
 from app.models.agent_execution import AgentExecution
 from app.models.project import Project
 from app.models.task import Task
 from app.models.user import User
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 client = TestClient(app)
 
@@ -62,9 +62,7 @@ class TestAgentExecutionAPI:
             "agent_id": agent.id,
         }
 
-    def test_create_execution(
-        self, db_session: Session, setup_execution_deps: dict
-    ) -> None:
+    def test_create_execution(self, db_session: Session, setup_execution_deps: dict) -> None:
         """Test creating a new agent execution"""
         response = client.post(
             "/api/v1/executions/",
@@ -95,9 +93,7 @@ class TestAgentExecutionAPI:
         data = response.json()
         assert data["state"] == {"step": "initialization", "progress": 0}
 
-    def test_get_execution(
-        self, db_session: Session, setup_execution_deps: dict
-    ) -> None:
+    def test_get_execution(self, db_session: Session, setup_execution_deps: dict) -> None:
         """Test retrieving execution by ID"""
         execution = AgentExecution(
             task_id=setup_execution_deps["task_id"],
@@ -120,9 +116,7 @@ class TestAgentExecutionAPI:
         response = client.get(f"/api/v1/executions/{sample_execution_id}")
         assert response.status_code == 404
 
-    def test_list_executions(
-        self, db_session: Session, setup_execution_deps: dict
-    ) -> None:
+    def test_list_executions(self, db_session: Session, setup_execution_deps: dict) -> None:
         """Test listing executions with pagination"""
         for i in range(5):
             execution = AgentExecution(
@@ -139,9 +133,7 @@ class TestAgentExecutionAPI:
         data = response.json()
         assert len(data) <= 3
 
-    def test_update_execution_status(
-        self, db_session: Session, setup_execution_deps: dict
-    ) -> None:
+    def test_update_execution_status(self, db_session: Session, setup_execution_deps: dict) -> None:
         """Test updating execution status"""
         execution = AgentExecution(
             task_id=setup_execution_deps["task_id"],
@@ -181,9 +173,7 @@ class TestAgentExecutionAPI:
         )
         assert response.status_code == 422
 
-    def test_delete_execution(
-        self, db_session: Session, setup_execution_deps: dict
-    ) -> None:
+    def test_delete_execution(self, db_session: Session, setup_execution_deps: dict) -> None:
         """Test deleting execution"""
         execution = AgentExecution(
             task_id=setup_execution_deps["task_id"],

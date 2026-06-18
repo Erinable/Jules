@@ -3,6 +3,7 @@
 ## Installation
 
 ### Backend
+
 ```bash
 cd backend
 poetry install
@@ -10,6 +11,7 @@ poetry run pre-commit install
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install
@@ -19,6 +21,7 @@ npm install
 ## Running Hooks Manually
 
 ### Backend
+
 ```bash
 # All hooks on all files
 poetry run pre-commit run --all-files
@@ -33,6 +36,7 @@ poetry run pre-commit run
 ```
 
 ### Frontend
+
 ```bash
 # All checks
 npm run lint
@@ -57,6 +61,7 @@ npx lint-staged
 ```
 
 ### Valid Types
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation
@@ -70,6 +75,7 @@ npx lint-staged
 - `revert` - Revert commit
 
 ### Examples
+
 ```bash
 git commit -m "feat: add user authentication"
 git commit -m "fix(api): resolve timeout issue"
@@ -126,21 +132,25 @@ npm update husky lint-staged @commitlint/cli
 ## Troubleshooting
 
 ### Backend: Command not found
+
 ```bash
 poetry install
 poetry run pre-commit install
 ```
 
 ### Frontend: Hooks not running
+
 ```bash
 npm install
 chmod +x .husky/pre-commit .husky/commit-msg
 ```
 
 ### Hooks too slow
+
 Edit `.pre-commit-config.yaml` and add `stages: [manual]` to slow hooks
 
 ### CI passes but local fails
+
 ```bash
 # Update dependencies
 poetry update  # or npm update
@@ -161,28 +171,34 @@ poetry run pre-commit run --all-files
 ## Common Issues
 
 ### 1. Line too long
+
 **Error**: `E501 Line too long`
 **Fix**: Break line into multiple lines or use implicit string concatenation
 
 ### 2. Import not sorted
+
 **Error**: `I001 Import block is un-sorted`
 **Fix**: Auto-fixed by Ruff or reorder-python-imports
 
 ### 3. Missing type annotation
+
 **Error**: `ANN001 Missing type annotation`
 **Fix**: Add type hints to function arguments
 
 ### 4. Invalid commit message
+
 **Error**: `type may not be empty`
 **Fix**: Use format: `feat: description` or `fix: description`
 
 ### 5. TypeScript error
+
 **Error**: `Type 'X' is not assignable to type 'Y'`
 **Fix**: Fix type definitions or add proper type assertions
 
 ## CI Integration
 
 Pre-commit hooks run in CI:
+
 - Backend CI: `.github/workflows/backend-ci.yml`
 - Frontend CI: `.github/workflows/frontend-ci.yml`
 - PR Checks: `.github/workflows/pr-checks.yml`

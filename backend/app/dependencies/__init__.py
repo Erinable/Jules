@@ -1,6 +1,7 @@
 """
 FastAPI dependencies
 """
+
 from app.dependencies.database import get_db
 from app.dependencies.pagination import get_pagination
 

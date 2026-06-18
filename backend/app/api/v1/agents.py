@@ -1,19 +1,18 @@
 """
 Agent API routes
 """
-from uuid import UUID
-from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from uuid import UUID
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.agent.scheduler import scheduler
 from app.dependencies import get_db, get_pagination
+from app.repositories.agent_execution_repository import AgentExecutionRepository
 from app.repositories.agent_repository import AgentRepository
 from app.repositories.task_repository import TaskRepository
-from app.repositories.agent_execution_repository import AgentExecutionRepository
 from app.schemas.agent_schema import AgentCreate, AgentResponse, AgentUpdate
-from app.agent.scheduler import scheduler
-from app.agent.executor import AgentExecutor
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 
@@ -77,7 +76,9 @@ def get_agent(agent_id: UUID, db: Session = Depends(get_db)) -> AgentResponse:
 
 
 @router.get("/", response_model=list[AgentResponse])
-def list_agents(pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)) -> list[AgentResponse]:
+def list_agents(
+    pagination: dict = Depends(get_pagination), db: Session = Depends(get_db)
+) -> list[AgentResponse]:
     """
     List all agents with pagination
 
@@ -110,7 +111,9 @@ def list_active_agents(db: Session = Depends(get_db)) -> list[AgentResponse]:
 
 
 @router.put("/{agent_id}", response_model=AgentResponse)
-def update_agent(agent_id: UUID, agent: AgentUpdate, db: Session = Depends(get_db)) -> AgentResponse:
+def update_agent(
+    agent_id: UUID, agent: AgentUpdate, db: Session = Depends(get_db)
+) -> AgentResponse:
     """
     Update agent
 
@@ -182,7 +185,7 @@ def execute_agent_task(
     agent_type: str,
     priority: int = 5,
     background_tasks: BackgroundTasks = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> dict:
     """
     Execute an agent task.
@@ -205,8 +208,7 @@ def execute_agent_task(
 
     if not task:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Task {task_id} not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Task {task_id} not found"
         )
 
     # Submit task to scheduler
@@ -216,15 +218,12 @@ def execute_agent_task(
         "task_id": str(task_id),
         "submission_id": submission_id,
         "status": "queued",
-        "message": "Task submitted for execution"
+        "message": "Task submitted for execution",
     }
 
 
 @router.get("/status/{execution_id}")
-def get_execution_status(
-    execution_id: UUID,
-    db: Session = Depends(get_db)
-) -> dict:
+def get_execution_status(execution_id: UUID, db: Session = Depends(get_db)) -> dict:
     """
     Get execution status.
 
@@ -243,8 +242,7 @@ def get_execution_status(
 
     if not execution:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Execution {execution_id} not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Execution {execution_id} not found"
         )
 
     return {
@@ -260,10 +258,7 @@ def get_execution_status(
 
 
 @router.post("/retry/{execution_id}")
-def retry_execution(
-    execution_id: UUID,
-    db: Session = Depends(get_db)
-) -> dict:
+def retry_execution(execution_id: UUID, db: Session = Depends(get_db)) -> dict:
     """
     Retry a failed execution.
 
@@ -282,14 +277,13 @@ def retry_execution(
 
     if not execution:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Execution {execution_id} not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Execution {execution_id} not found"
         )
 
     if execution.status != "failed":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Execution is not in failed state (current: {execution.status})"
+            detail=f"Execution is not in failed state (current: {execution.status})",
         )
 
     # Retry the task
@@ -298,14 +292,14 @@ def retry_execution(
     if not success:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Task cannot be retried (max retries reached or not in failed state)"
+            detail="Task cannot be retried (max retries reached or not in failed state)",
         )
 
     return {
         "execution_id": str(execution_id),
         "task_id": str(execution.task_id),
         "status": "requeued",
-        "message": "Task resubmitted for execution"
+        "message": "Task resubmitted for execution",
     }
 
 
@@ -340,6 +334,5 @@ def get_queue_status() -> dict:
                 "error": task.get("error"),
             }
             for task in failed_tasks
-        ]
+        ],
     }
-

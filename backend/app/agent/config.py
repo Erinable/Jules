@@ -1,8 +1,8 @@
 """
 Agent configuration settings.
 """
+
 import os
-from typing import List
 
 
 class AgentConfig:
@@ -13,7 +13,7 @@ class AgentConfig:
 
     # Retry settings
     MAX_RETRY_ATTEMPTS: int = 3
-    RETRY_BACKOFF_SECONDS: List[int] = [1, 5, 15]
+    RETRY_BACKOFF_SECONDS: list[int] = [1, 5, 15]
 
     # LLM settings
     DEFAULT_LLM_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4")

@@ -1,11 +1,13 @@
 # Pre-commit Hooks Configuration Summary
 
 ## Overview
+
 Comprehensive pre-commit hooks configured for the Jules project to ensure code quality, security, and consistency before commits reach the repository.
 
 ## Created Files
 
 ### Root Level (3 files)
+
 1. **.pre-commit-config.yaml** - Root pre-commit configuration
    - File checks (YAML, JSON, large files, secrets)
    - Markdown linting
@@ -32,22 +34,24 @@ Comprehensive pre-commit hooks configured for the Jules project to ensure code q
    - Configuration files
 
 ### Backend (2 files)
+
 1. **backend/.pre-commit-config.yaml** - Backend-specific hooks
    - 14 hooks configured:
-     * Ruff (linter + formatter)
-     * mypy (type checking)
-     * Bandit (security)
-     * Safety (dependency security)
-     * Poetry (lock file validation)
-     * SQLFluff (SQL formatting)
-     * interrogate (docstring coverage)
-     * detect-secrets
-     * File quality checks
-     * Import sorting
+     - Ruff (linter + formatter)
+     - mypy (type checking)
+     - Bandit (security)
+     - Safety (dependency security)
+     - Poetry (lock file validation)
+     - SQLFluff (SQL formatting)
+     - interrogate (docstring coverage)
+     - detect-secrets
+     - File quality checks
+     - Import sorting
 
 2. **backend/.secrets.baseline** - Backend secrets baseline
 
 ### Frontend (4 files)
+
 1. **frontend/.husky/pre-commit** - Pre-commit hook script
    - Runs lint-staged
    - Runs TypeScript type checking
@@ -68,12 +72,14 @@ Comprehensive pre-commit hooks configured for the Jules project to ensure code q
 ## Features
 
 ### 🔒 Security
+
 - **Bandit**: Python security vulnerability scanner
 - **Safety**: Python dependency vulnerability checker
 - **detect-secrets**: Prevents committing secrets/credentials
 - **Private key detection**: Catches SSH keys, tokens, etc.
 
 ### 📊 Code Quality
+
 - **Ruff**: Fast Python linter + formatter (replaces flake8, black, isort)
 - **ESLint**: JavaScript/TypeScript linting with auto-fix
 - **Prettier**: Consistent code formatting
@@ -81,6 +87,7 @@ Comprehensive pre-commit hooks configured for the Jules project to ensure code q
 - **TypeScript**: Type checking for frontend
 
 ### 📝 Consistency
+
 - **Commitlint**: Enforces Conventional Commits format
 - **SQLFluff**: SQL formatting (PostgreSQL dialect)
 - **Trailing whitespace removal**
@@ -88,15 +95,18 @@ Comprehensive pre-commit hooks configured for the Jules project to ensure code q
 - **End-of-file newline**
 
 ### 📚 Documentation
+
 - **interrogate**: Python docstring coverage (50% minimum)
 - **Markdown linting**: README and docs formatting
 - **Name tests test**: Validates test file naming
 
 ### 🐳 Docker
+
 - **hadolint**: Dockerfile linting
 - **Docker Compose validation**
 
 ### 📦 Dependencies
+
 - **Poetry check**: Validates pyproject.toml
 - **Poetry lock**: Ensures lock file is up-to-date
 - **npm/package.json**: Validated by JSON checker
@@ -104,6 +114,7 @@ Comprehensive pre-commit hooks configured for the Jules project to ensure code q
 ## Hook Execution
 
 ### Backend
+
 ```bash
 cd backend
 poetry run pre-commit install
@@ -111,6 +122,7 @@ poetry run pre-commit run --all-files
 ```
 
 **Runs on commit:**
+
 1. File checks (whitespace, line endings, etc.)
 2. Ruff linter + formatter (auto-fix)
 3. mypy type checking
@@ -122,12 +134,14 @@ poetry run pre-commit run --all-files
 9. Docstring coverage
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install  # Auto-installs Husky
 ```
 
 **Runs on commit:**
+
 1. lint-staged:
    - ESLint --fix on .js/.jsx/.ts/.tsx
    - Prettier --write on all files
@@ -135,6 +149,7 @@ npm install  # Auto-installs Husky
 3. Commitlint (commit message validation)
 
 ### Root Level
+
 ```bash
 # Install at project root (optional - recommended for maintainers)
 pip install pre-commit
@@ -142,6 +157,7 @@ pre-commit install
 ```
 
 **Runs on commit:**
+
 - All file checks (YAML, JSON, Markdown, Docker)
 - Backend Python checks (backend/ directory)
 - Frontend JS/TS checks (frontend/ directory)
@@ -161,9 +177,11 @@ pre-commit install
 ```
 
 **Valid types:**
+
 - `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
 
 **Examples:**
+
 ```bash
 git commit -m "feat: add user authentication"
 git commit -m "fix(api): resolve timeout issue"
@@ -176,16 +194,19 @@ git commit -m "test(auth): add unit tests"
 Pre-commit hooks complement existing CI workflows:
 
 ### Backend CI (`.github/workflows/backend-ci.yml`)
+
 - Runs same checks as pre-commit
 - Enforces on all PRs
 - Coverage reports
 
 ### Frontend CI (`.github/workflows/frontend-ci.yml`)
+
 - Runs ESLint, Prettier, TypeScript
 - Enforces on all PRs
 - Build verification
 
 ### PR Checks (`.github/workflows/pr-checks.yml`)
+
 - Validates commit message format
 - Checks PR title (Conventional Commits)
 - PR description validation
@@ -195,6 +216,7 @@ Pre-commit hooks complement existing CI workflows:
 ### Quick Start
 
 **Backend:**
+
 ```bash
 cd backend
 poetry install
@@ -202,6 +224,7 @@ poetry run pre-commit install
 ```
 
 **Frontend:**
+
 ```bash
 cd frontend
 npm install
@@ -211,11 +234,13 @@ npm install
 ### Verification
 
 **Backend:**
+
 ```bash
 poetry run pre-commit run --all-files
 ```
 
 **Frontend:**
+
 ```bash
 npm run lint
 npm run type-check
@@ -234,12 +259,14 @@ git commit -m "docs: test pre-commit hooks"
 ## Configuration Customization
 
 ### Backend: Edit `.pre-commit-config.yaml`
+
 - Add/remove hooks
 - Exclude directories
 - Change hook versions
 - Add custom hooks
 
 ### Frontend: Edit `package.json` or `commitlint.config.js`
+
 - Modify lint-staged rules
 - Customize commitlint rules
 - Add more file patterns
@@ -247,18 +274,21 @@ git commit -m "docs: test pre-commit hooks"
 ## Troubleshooting
 
 ### Backend: "Command not found"
+
 ```bash
 poetry install
 poetry run pre-commit install
 ```
 
 ### Frontend: "Hooks not running"
+
 ```bash
 npm install
 chmod +x .husky/pre-commit .husky/commit-msg
 ```
 
 ### Skip Hooks (Emergency Only)
+
 ```bash
 git commit --no-verify -m "emergency fix"
 ```
@@ -278,6 +308,7 @@ git commit --no-verify -m "emergency fix"
 ## Benefits
 
 ### For Developers
+
 - ✅ Catch issues before CI
 - ✅ Auto-fix common problems
 - ✅ Consistent code style
@@ -285,6 +316,7 @@ git commit --no-verify -m "emergency fix"
 - ✅ Less CI failures
 
 ### For Team
+
 - ✅ Enforced code standards
 - ✅ Security vulnerability prevention
 - ✅ Consistent commit history
@@ -292,6 +324,7 @@ git commit --no-verify -m "emergency fix"
 - ✅ Reduced technical debt
 
 ### For Project
+
 - ✅ Higher code quality
 - ✅ Better security posture
 - ✅ Easier maintenance
@@ -309,20 +342,24 @@ git commit --no-verify -m "emergency fix"
 ## Maintenance
 
 ### Weekly
+
 - Check hook execution time
 - Review any skipped hooks
 
 ### Monthly
+
 - Update hook versions:
+
   ```bash
   # Backend
   poetry run pre-commit autoupdate
-  
+
   # Frontend
   npm update husky lint-staged @commitlint/cli
   ```
 
 ### Quarterly
+
 - Review and optimize hook configuration
 - Add new hooks as needed
 - Update documentation
@@ -338,6 +375,6 @@ git commit --no-verify -m "emergency fix"
 
 **Configuration Status**: ✅ Complete and Ready to Use
 
-**Created**: 2026-06-17  
-**Version**: 1.0.0  
+**Created**: 2026-06-17
+**Version**: 1.0.0
 **Maintainer**: DevOps Team

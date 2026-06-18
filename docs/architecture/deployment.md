@@ -1,7 +1,7 @@
 # 部署架构
 
-**版本**: v1.0  
-**日期**: 2026-06-16  
+**版本**: v1.0
+**日期**: 2026-06-16
 
 ---
 
@@ -37,7 +37,7 @@ services:
       - /app/node_modules
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
-  
+
   backend:
     build:
       context: ./backend
@@ -53,7 +53,7 @@ services:
     depends_on:
       - postgres
       - redis
-  
+
   postgres:
     image: postgres:16-alpine
     ports:
@@ -64,14 +64,14 @@ services:
       - POSTGRES_DB=aicodegen
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  
+
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-  
+
   celery_worker:
     build:
       context: ./backend
@@ -111,6 +111,7 @@ docker-compose down
 ### 3.1 云平台选择
 
 推荐部署方案：
+
 1. **AWS**: ECS + RDS + ElastiCache
 2. **GCP**: Cloud Run + Cloud SQL + Memorystore
 3. **Azure**: Container Apps + Azure Database + Azure Cache
@@ -121,28 +122,28 @@ docker-compose down
 graph TB
     Internet[互联网] --> CF[CloudFront CDN]
     CF --> ALB[Application Load Balancer]
-    
+
     ALB --> FE1[Frontend<br/>ECS Fargate]
     ALB --> FE2[Frontend<br/>ECS Fargate]
-    
+
     FE1 --> APIALB[API Load Balancer]
     FE2 --> APIALB
-    
+
     APIALB --> BE1[Backend API<br/>ECS Fargate]
     APIALB --> BE2[Backend API<br/>ECS Fargate]
-    
+
     BE1 --> RDS[(RDS PostgreSQL<br/>Multi-AZ)]
     BE2 --> RDS
-    
+
     BE1 --> ElastiCache[(ElastiCache Redis<br/>Cluster)]
     BE2 --> ElastiCache
-    
+
     BE1 --> S3[S3 Bucket<br/>代码存储]
     BE2 --> S3
-    
+
     Worker1[Celery Worker<br/>ECS Fargate] --> ElastiCache
     Worker2[Celery Worker<br/>ECS Fargate] --> ElastiCache
-    
+
     CloudWatch[CloudWatch Logs] --> BE1
     CloudWatch --> BE2
 ```
@@ -268,43 +269,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov
-      
+
       - name: Run tests
         run: pytest --cov=app tests/
-      
+
       - name: Run quality checks
         run: |
           ruff check app/
           mypy app/
           bandit -r app/
-  
+
   build-and-push:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      
+
       - name: Build and push Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -314,7 +315,7 @@ jobs:
           docker push $ECR_REGISTRY/backend:$IMAGE_TAG
           docker tag $ECR_REGISTRY/backend:$IMAGE_TAG $ECR_REGISTRY/backend:latest
           docker push $ECR_REGISTRY/backend:latest
-  
+
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -352,7 +353,7 @@ def run_migrations_online():
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-    
+
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)
         with context.begin_transaction():
@@ -381,7 +382,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-  
+
   grafana:
     image: grafana/grafana
     ports:
@@ -462,11 +463,13 @@ find $BACKUP_DIR -name "backup_*.sql" -mtime +30 -delete
 ### 9.1 水平扩展
 
 **API 层**：
+
 - Auto Scaling Group（AWS）
 - 目标：CPU 使用率 < 70%
 - 最小实例：2，最大实例：10
 
 **Worker 层**：
+
 - 基于队列长度自动扩展
 - 队列任务 > 100 时增加 Worker
 
